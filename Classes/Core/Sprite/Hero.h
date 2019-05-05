@@ -1,7 +1,11 @@
 #pragma once
 //http://www.87g.com/zixun/16123.html    一个链接   王者荣耀英雄图
+
+//在SelectHero界面中会有选择英雄的界面，   用户点击某个英雄，通过一个回调函数，返回一个hero_role参数，
+//然后对这个参数进行判断   根据不同情况生成英雄
 #include"cocos2d.h"
 #include<vector>
+//#include"Scene/SelectHero.h"
 using namespace std;
 USING_NS_CC;
 typedef enum {
@@ -27,6 +31,7 @@ class Hero:public Sprite
 {
 private:
 	Sprite * blood;   //血量
+	//int blood;
 	//vector<achievement_type> Achievement;  //所获得的成就
 	hero_type type;                //英雄属于那种角色  
 	//hero_role role;
@@ -36,7 +41,6 @@ public:
 	//Hero(hero_role role);  //重载构造函数
 	
 	virtual bool init();   //  英雄的总的控制
-    //void createHero(hero_role role);  //创建英雄的函数
 	virtual bool attack();   //攻击
 	virtual bool checkIsAttack();  //检查是否受到攻击
 	virtual void move();           //移动
@@ -44,3 +48,4 @@ public:
 	
 	//CREATE_FUNC(Hero);
 };
+

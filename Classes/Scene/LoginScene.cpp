@@ -62,6 +62,6 @@ void LoginScene::addLoginButton()
 void LoginScene::menuItemStartCallback(Ref *pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto sc = GameScene::createScene();
+	auto sc = SelectHeroScene::createScene();
 	Director::getInstance()->pushScene(sc);
 }
