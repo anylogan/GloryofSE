@@ -1,6 +1,7 @@
 #include"Scene/SelectHeroScene.h"
 hero_role HeroRole = daji; //定义一个全局变量  并且初始化
 using namespace CocosDenshion;
+
 Scene*  SelectHeroScene::createScene()
 {
 	return  SelectHeroScene::create();
@@ -91,6 +92,6 @@ void  SelectHeroScene::DajiCallback(Ref *pSender)
 {
 	HeroRole =daji;;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto sc = GameController::createScene();
-	Director::getInstance()->pushScene(sc);
+	auto scene = GameScene::createScene();
+	Director::getInstance()->pushScene(scene);
 }

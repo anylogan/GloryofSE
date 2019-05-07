@@ -2,9 +2,8 @@
 //考虑在选择英雄的时候背景音是王者荣耀中英雄专属的那种
 #include"cocos2d.h"
 #include"SimpleAudioEngine.h"
-#include"Scene/GameScene.h"
+#include"Core/Controller/GameScene.h"
 #include"Core/Controller/GameController.h"
-
 USING_NS_CC;
 
 

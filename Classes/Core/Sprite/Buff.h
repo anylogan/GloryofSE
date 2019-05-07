@@ -3,9 +3,11 @@
 USING_NS_CC;
 class Buff : public Sprite
 {
+public:
+	Sprite * blood;   //ÑªÁ¿
+	int bloodnum;  //ÑªÁ¿
 
-
-
+	void attack();
 
 
 
