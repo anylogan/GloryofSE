@@ -33,3 +33,11 @@ bool Hero::attackTrick(const char *format,int num)   //攻击方法  放大招
 	this->runAction(RepeatForever::create(action));
 	return true;
 }
+void Hero::updateHeroSpeed(float newspeed)
+{
+	speed = newspeed;
+}
+float Hero::getHeroSpeed()
+{
+	return speed;
+}

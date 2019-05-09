@@ -12,6 +12,17 @@
 #include"Core/Sprite/CannonFodder .h"
 #include"Core/Sprite/Tower.h"
 USING_NS_CC;
+
+enum{
+		up = 6,
+		down = 4,
+		lefts = 5,//
+		rigth = 7,//
+		rigth_up = 3,//
+		rigth_down = 0,//
+		left_down = 1,//
+		left_up = 2//
+};
 class GameController : public Layer   //游戏控制类
 {
 	
@@ -22,6 +33,7 @@ public:
 	//
 	//属性
 	TMXTiledMap * _tileMap;
+	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
 	Vector<Buff*> BuffVector;    //存放Buff对象的容器
 	Vector<CannonFodder*>CannonFodderVector;  //存放炮灰对象的容器
@@ -37,6 +49,14 @@ public:
 	int smallSkillNum;    //大招动画的照片数
 //方法
 
+	ValueMap spawnPoint;
+	void setViewpointCenter(Vec2 position);
+	Vec2 tileCoordFromPosition(Vec2 pos);
+	int getNowPointDir(Vec2 newpoint);
+	void setPlayerPosition(Vec2 position);
+	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event);
+	virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event);
     static GameController* createScene(); //创建对象
 	virtual bool init(); //初始化控制层
 
