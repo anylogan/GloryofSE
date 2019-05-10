@@ -21,7 +21,7 @@ typedef enum {
 //       //·······
 //}achievement_type;
 //typedef enum {
-//	daji = 0,    //妲己
+//	moonGoddess = 0,    //妲己
 //	houyi = 1,     //后羿
 //	yase = 2,   //亚瑟
 //

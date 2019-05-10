@@ -9,14 +9,14 @@ USING_NS_CC;
 
 
 typedef enum {
-	daji = 0,    //妲己
+	moonGoddess = 0,    //妲己
 	houyi = 1,     //后羿
 	yase = 2,   //亚瑟
 
 }hero_role;
 
 
-//hero_role HeroRole=daji; //定义一个全局变量  并且初始化
+//hero_role HeroRole=moonGoddess; //定义一个全局变量  并且初始化
 //extern hero_role HeroRole; 
 
 class SelectHeroScene :public Scene
@@ -35,7 +35,7 @@ public:
 	//void menuItemStartCallback(cocos2d::Ref*pSender);
 	//void menuItem2Callback(cocos2d::Ref*pSender);
 
-	void DajiCallback(Ref *pSender);
+	void moonGoddessCallback(Ref *pSender);
 
     // implement the "static create()" method manually
 

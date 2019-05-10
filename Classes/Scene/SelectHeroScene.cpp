@@ -1,5 +1,5 @@
 #include"Scene/SelectHeroScene.h"
-hero_role HeroRole = daji; //定义一个全局变量  并且初始化
+hero_role HeroRole = moonGoddess; //定义一个全局变量  并且初始化
 using namespace CocosDenshion;
 
 Scene*  SelectHeroScene::createScene()
@@ -65,13 +65,13 @@ bool  SelectHeroScene::init()
 
 
 	//设置开始和设置菜单
-	MenuItemFont*DajiItem = MenuItemFont::create("Daji", CC_CALLBACK_1( SelectHeroScene::DajiCallback, this));
-	DajiItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+	MenuItemFont*moonGoddessItem = MenuItemFont::create("moonGoddess", CC_CALLBACK_1( SelectHeroScene::moonGoddessCallback, this));
+	moonGoddessItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
 	
 
 	//将菜单项放到菜单对象中
-	Menu *mn = Menu::create(DajiItem,NULL);
+	Menu *mn = Menu::create(moonGoddessItem,NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 	return true;
@@ -88,9 +88,9 @@ void  SelectHeroScene::menuCloseCallback(Ref* pSender)
 #endif
 
 }
-void  SelectHeroScene::DajiCallback(Ref *pSender)
+void  SelectHeroScene::moonGoddessCallback(Ref *pSender)
 {
-	HeroRole =daji;;   //给全局变量赋值
+	HeroRole =moonGoddess;;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	auto scene = GameScene::createScene();
 	Director::getInstance()->pushScene(scene);

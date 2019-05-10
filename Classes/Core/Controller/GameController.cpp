@@ -1,12 +1,12 @@
 #include"Core/Controller/GameController.h"
-#define hero_daji "hero/change/zhan/0649-3ea35add-00000.png"
+#define hero_moonGoddess "hero/change/zhan/0649-3ea35add-00000.png"
 #define hero_houyi "hero/houyi.jpg"
 #define hero_yase "hero/yase.jpg"
 
-#define hero_daji_pao ""
-#define daji_big_skill "skills\role_skill\ziqidonglai%d.png"
-#define daji_medium_skill "skills\role_skill\ziqidonglai%d.png"
-#define daji_small_skill "skills\role_skill\ziqidonglai%d.png"
+#define hero_moonGoddess_pao ""
+#define moonGoddess_big_skill "skills\role_skill\ziqidonglai%d.png"
+#define moonGoddess_medium_skill "skills\role_skill\ziqidonglai%d.png"
+#define moonGoddess_small_skill "skills\role_skill\ziqidonglai%d.png"
 
 #define yase_big_skill "skills\role_skill\ziqidonglai%d.png"
 #define yase_medium_skill "skills\role_skill\ziqidonglai%d.png"
@@ -17,9 +17,9 @@
 #define houyi_medium_skill "skills\role_skill\ziqidonglai%d.png"
 #define houyi_small_skill "skills\role_skill\ziqidonglai%d.png"
 
-#define daji_big_skill_num 13
-#define daji_medium_skill_num 13
-#define daji_small_skill_num 13
+#define moonGoddess_big_skill_num 13
+#define moonGoddess_medium_skill_num 13
+#define moonGoddess_small_skill_num 13
 
 
 #define houyi_big_skill_num 13
@@ -61,24 +61,16 @@ bool GameController::init()
 	addChild(_tileMap, 0, 100);
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
 	spawnPoint = group->getObject("Player1");
-	////创建英雄
-	//createHero();    //创建英雄
-	//hero1->setPosition(Vec2(origin.x + visibleSize.width * 0.2, origin.y + visibleSize.height * 0.2));
-	//addChild(hero1, 1)
 	_collidable = _tileMap->getLayer("Collidable");
 	float x = spawnPoint["x"].asFloat();
 	float y = spawnPoint["y"].asFloat();
 	hero1->setPosition(Vec2(x, y));
 	addChild(hero1);
 	this->setViewpointCenter(hero1->getPosition());
-
-	//设置英雄的位置
-
-
-	createBuff();  //创建Buff
+	//createBuff();  //创建Buff
 
 				   //创建CannonFodder     简单起见  实现隔一段时间创建一队炮灰让他们沿着固定路径前进  
-	createCannonFodder();  //创建炮灰
+	//createCannonFodder();  //创建炮灰
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	this->schedule(schedule_selector(GameController::updateGame), 0.2f);
@@ -90,35 +82,6 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
 
 	Layer::onEnter();
-
-	//注册事件监听器  根据鼠标走的位置移动英雄
-	/*
-	auto moveHeroListener = EventListenerMouse::create();
-	moveHeroListener->onMouseDown = [this](Event *e)
-	{
-		EventMouse* em = (EventMouse*)e;
-		mouse_down = em->getLocation();
-		mouse_down = Director::getInstance()->convertToGL(mouse_down);
-		ismousedown = true;
-		//mouse_down = location+repair;
-	};
-	moveHeroListener->onMouseUp = [this](Event *e)
-	{
-		EventMouse* em = (EventMouse*)e;
-
-		if (ismousedown)
-		{
-			auto heroPostion = hero1->getPosition();
-			heroPostion = Director::getInstance()->convertToGL(heroPostion);
-			auto move = mouse_down - heroPostion;
-			//需要加一个瞬时动作让精灵朝向运动方向
-			Action*moveaction = hero1->runAction(MoveBy::create(10,move));
-			moveaction->setTag(1);
-		}
-		ismousedown = false;
-
-	};
-	*/
 	////注册事件监听器  监听键盘  hero可以释放技能
 	auto releaseSkillListener = EventListenerKeyboard::create();
 	releaseSkillListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event)
@@ -143,7 +106,7 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 	};
 
 	EventDispatcher* eventDispatcher = Director::getInstance()->getEventDispatcher();
-	//eventDispatcher->addEventListenerWithSceneGraphPriority(moveHeroListener, this);
+
 	eventDispatcher->addEventListenerWithSceneGraphPriority(releaseSkillListener, this);
 
 }
@@ -154,16 +117,16 @@ void GameController::createHero()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	switch (HeroRole)       //创建英雄
 	{
-	case daji:
+	case moonGoddess:
 	{
-		hero1 = (Hero*)Hero::create(hero_daji);
+		hero1 = (Hero*)Hero::create(hero_moonGoddess);
 		/*
-		bigSkillFormat = daji_big_skill;
-		mediumSkillFormat = daji_medium_skill;
-		smallSkillFormat = daji_small_skill;
-		bigSkillNum = daji_big_skill_num;
-		mediumSkillNum= daji_medium_skill_num;   
-		smallSkillNum= daji_small_skill_num;   
+		bigSkillFormat = moonGoddess_big_skill;
+		mediumSkillFormat = moonGoddess_medium_skill;
+		smallSkillFormat = moonGoddess_small_skill;
+		bigSkillNum = moonGoddess_big_skill_num;
+		mediumSkillNum= moonGoddess_medium_skill_num;   
+		smallSkillNum= moonGoddess_small_skill_num;   
 		*/
 		hero1->isHeroWalking = false;
 		hero1->initHeroAttr(100, 2.0);
@@ -196,7 +159,7 @@ void GameController::createHero()
 	default:break;
 	}
 	hero1->setPosition(Vec2(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.5));
-	this->addChild(hero1);
+	//this->addChild(hero1);
 }
 
 void GameController::createBuff()
