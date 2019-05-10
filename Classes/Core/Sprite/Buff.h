@@ -5,7 +5,7 @@ class Buff : public Sprite
 {
 public:
 	Sprite * blood;   //ÑªÁ¿
-	int bloodnum;  //ÑªÁ¿
+	int bloodNum;  //ÑªÁ¿
 
 	void attack();
 

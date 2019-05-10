@@ -11,6 +11,7 @@
 #include"Core/Sprite/Buff.h"
 #include"Core/Sprite/CannonFodder .h"
 #include"Core/Sprite/Tower.h"
+#include"Core/Sprite/fieldMonster.h"
 USING_NS_CC;
 
 enum{
@@ -36,6 +37,8 @@ public:
 	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
 	Vector<Buff*> BuffVector;    //存放Buff对象的容器
+	fieldMonster* monster1;
+    fieldMonster* monster2;
 	Vector<CannonFodder*>CannonFodderVector;  //存放炮灰对象的容器
 	Vector<Tower*>TowerVector;      //存放塔指针的容器
 	Vec2 mouse_up;      //鼠标离开坐标
@@ -48,8 +51,7 @@ public:
 	int mediumSkillNum;    //大招动画的照片数
 	int smallSkillNum;    //大招动画的照片数
 //方法
-
-	ValueMap spawnPoint;
+	ValueMap player1_initPos;
 	void setViewpointCenter(Vec2 position);
 	Vec2 tileCoordFromPosition(Vec2 pos);
 	int getNowPointDir(Vec2 newpoint);

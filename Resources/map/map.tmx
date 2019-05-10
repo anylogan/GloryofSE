@@ -100,9 +100,8 @@
  <objectgroup name="Objects">
   <object id="1" name="Player1" x="300" y="1147" width="26" height="26"/>
   <object id="8" name="Player2" x="1578" y="266" width="44" height="37"/>
-  <object id="10" name="fieldMonster1" x="990" y="326" width="60" height="53"/>
-  <object id="11" name="fieldMonster2" x="1067" y="915" width="44" height="46"/>
-  <object id="12" x="1061" y="265"/>
+  <object id="10" name="fieldMonster1" x="990" y="325" width="60" height="53"/>
+  <object id="11" name="fieldMonster2" x="1088" y="896" width="44" height="46"/>
   <object id="13" x="1769" y="187"/>
  </objectgroup>
 </map>

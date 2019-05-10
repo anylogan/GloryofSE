@@ -60,12 +60,34 @@ bool GameController::init()
 	_tileMap = TMXTiledMap::create("map/map.tmx");
 	addChild(_tileMap, 0, 100);
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
-	spawnPoint = group->getObject("Player1");
+	auto spawnPoint = group->getObject("Player1");
 	_collidable = _tileMap->getLayer("Collidable");
 	float x = spawnPoint["x"].asFloat();
 	float y = spawnPoint["y"].asFloat();
+	log("x is %f y is %f", x,y);
+	hero1->initPos = Vec2(x, y);
 	hero1->setPosition(Vec2(x, y));
+	hero1->initBloodBar();
+	spawnPoint = group->getObject("fieldMonster1");
+	 x = spawnPoint["x"].asFloat();
+	 y = spawnPoint["y"].asFloat();
+	 log("x is %f y is %f", x,y);
+	monster1 = (fieldMonster*)fieldMonster::create("monster/monsterofField_1.png");
+	monster1->initPos = Vec2(x, y);
+	monster1->setPosition(Vec2(x, y));
+	spawnPoint = group->getObject("fieldMonster2");
+	 x = spawnPoint["x"].asFloat();
+	 y = spawnPoint["y"].asFloat();
+	monster2 = (fieldMonster*)fieldMonster::create("monster/monsterofField_2.png");
+	monster2->initPos = Vec2(x, y);
+	monster2->setPosition(Vec2(x, y));
+	monster1->initBloodBar();
+	monster2->initBloodBar();
+
 	addChild(hero1);
+	addChild(monster1);
+	addChild(monster2);
+
 	this->setViewpointCenter(hero1->getPosition());
 	//createBuff();  //创建Buff
 
@@ -73,6 +95,7 @@ bool GameController::init()
 	//createCannonFodder();  //创建炮灰
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
+	//log("monster pos %f,%f", monster1->getPositionX(), monster1->getPositionY());
 	this->schedule(schedule_selector(GameController::updateGame), 0.2f);
 	return true;
 	
@@ -129,7 +152,7 @@ void GameController::createHero()
 		smallSkillNum= moonGoddess_small_skill_num;   
 		*/
 		hero1->isHeroWalking = false;
-		hero1->initHeroAttr(100, 2.0);
+		hero1->initHeroAttr(100, 1.0,100);
 		break;
 	}
 	case yase:
@@ -233,7 +256,7 @@ void GameController::backHome()  //回城
 
 bool GameController::isHeroDeath()          //判断英雄是否死亡
 {
-	if (hero1->bloodnum < 0)
+	if (hero1->bloodNum < 0)
 		return true;
 	else
 		return false;
@@ -295,6 +318,8 @@ Vec2 GameController::tileCoordFromPosition(Vec2 pos)
 	int y = ((_tileMap->getMapSize().height * _tileMap->getTileSize().height) - pos.y) / _tileMap->getTileSize().height;
 	return Vec2(x, y);
 }
+
+
 int GameController::getNowPointDir(Vec2 newpoint)
 {
 	int thisdir = rigth_down; //默认为右下

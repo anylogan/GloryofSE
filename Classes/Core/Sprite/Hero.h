@@ -30,26 +30,27 @@ class Hero:public Sprite
 {
 	
 public:
-	Sprite * blood;   //血量
-	int bloodnum;
+	ProgressTimer* blood;   //血量
+	int bloodNum;
 	//vector<achievement_type> Achievement;  //所获得的成就
 	hero_type type;                //英雄属于那种角色  
 	//hero_role role;
 	int money;       //经济
 	float speed;		//人物移动速度
-
+	Vec2 initPos;
 	
 	virtual bool init();   //  英雄的总的控制
-
 	bool attackTrick(const char *format,int num);   //  放招
 
 	virtual bool checkIsAttack();  //检查是否受到攻击   
 	bool isHeroWalking;
 	float getHeroSpeed();	     //返回速度
+	void initBloodBar();
 	void updateHeroSpeed(float newspeed);
-	void initHeroAttr(int _money, float _speed) {
+	void initHeroAttr(int _money, float _speed,int _blood) {
 		money = _money;
 		speed = _speed;
+		bloodNum = _blood;
 	}
 	//CREATE_FUNC(Hero);   这句代码不能写！！不然无法create英雄
 };
