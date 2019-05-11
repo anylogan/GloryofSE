@@ -3,7 +3,8 @@
 #define hero_houyi "hero/houyi.jpg"
 #define hero_yase "hero/yase.jpg"
 
-#define hero_moonGoddess_pao ""
+#define hero_moonGoddess_pao " "
+#define hero_moonGoddess_attack "hero\change\attck\0649-3ea35add-0%d00%d.png"
 #define moonGoddess_big_skill "skills\role_skill\ziqidonglai%d.png"
 #define moonGoddess_medium_skill "skills\role_skill\ziqidonglai%d.png"
 #define moonGoddess_small_skill "skills\role_skill\ziqidonglai%d.png"
@@ -81,13 +82,11 @@ bool GameController::init()
 	monster2 = (fieldMonster*)fieldMonster::create("monster/monsterofField_2.png");
 	monster2->initPos = Vec2(x, y);
 	monster2->setPosition(Vec2(x, y));
-	monster1->initBloodBar();
-	monster2->initBloodBar();
-
-	addChild(hero1);
-	addChild(monster1);
-	addChild(monster2);
-
+	monster1->initMonsterAttr(); //初始化属性，相当于构造函数 仍需更改其他！
+	monster2->initMonsterAttr();
+	addChild(monster1,100);
+	addChild(monster2,200);
+	addChild(hero1,300);
 	this->setViewpointCenter(hero1->getPosition());
 	//createBuff();  //创建Buff
 
@@ -96,7 +95,7 @@ bool GameController::init()
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	//log("monster pos %f,%f", monster1->getPositionX(), monster1->getPositionY());
-	this->schedule(schedule_selector(GameController::updateGame), 0.2f);
+	this->schedule(schedule_selector(GameController::updateGame), 0.01f);
 	return true;
 	
 }
@@ -107,6 +106,7 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 	Layer::onEnter();
 	////注册事件监听器  监听键盘  hero可以释放技能
 	auto releaseSkillListener = EventListenerKeyboard::create();
+	/*
 	releaseSkillListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		if (keyCode == EventKeyboard::KeyCode::KEY_W)    //放大招 
@@ -123,8 +123,13 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 		}
 
 	};
-	releaseSkillListener->onKeyReleased = [](EventKeyboard::KeyCode keyCode, Event* event)
+	*/
+	releaseSkillListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event* event)
 	{
+		if (keyCode == EventKeyboard::KeyCode::KEY_W) {
+			//换成clientPlayer
+			clientPlayerAttack();
+		}
 		log("Key with keycode %d released", keyCode);
 	};
 
@@ -133,7 +138,42 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 	eventDispatcher->addEventListenerWithSceneGraphPriority(releaseSkillListener, this);
 
 }
+void GameController::clientPlayerAttack() {
+	//换成clientPlayer,加死亡判断；
+	hero1->attackEnemy(getAttackDir(hero1->currentPos));//播放攻击动画
+	auto monster1Hit = checkHit(hero1->currentPos, getNowPointDir(monster1->getPosition()));
+	auto monster2Hit = checkHit(hero1->currentPos, getNowPointDir(monster1->getPosition()));
+	
+	if (monster1Hit) 
+		if(monster1->attack_rect->containsPoint(hero1->getPosition()))
+			monster1->minusBlood(hero1->commonAttack);
+	
+	if (monster2Hit)
+		if (monster2->attack_rect->containsPoint(hero1->getPosition()))
+			monster2->minusBlood(hero1->commonAttack);
+}
+void GameController::collidableCheck()
+{
+	//日后改成clientPlayer
+		auto pos = hero1->getPosition();
+		Vec2 tileCoord = this->tileCoordFromPosition(pos);
+		//获得瓦片的GID
+		int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
+		if (tileGid > 0 && lastCollidablePos!=pos) {
+			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
+			hero1->stopAllActions();
+			//thisCollidableCheck = false;
+			lastCollidablePos = pos;
+		}
+	}
 
+
+/* WASD
+Key with keycode 146 released
+Key with keycode 124 released
+Key with keycode 142 released
+Key with keycode 127 released
+*/
 void GameController::createHero()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -152,7 +192,7 @@ void GameController::createHero()
 		smallSkillNum= moonGoddess_small_skill_num;   
 		*/
 		hero1->isHeroWalking = false;
-		hero1->initHeroAttr(100, 1.0,100);
+		hero1->initHeroAttr(100, 1.0,100,10);
 		break;
 	}
 	case yase:
@@ -202,9 +242,6 @@ void GameController::createBuff()
 void GameController::createCannonFodder() //创建炮灰
 {
 
-
-
-
 }
 
 void GameController::createTower()    //创建塔
@@ -215,18 +252,20 @@ void GameController::createTower()    //创建塔
 
 void  GameController::updateGame(float dt)  //刷新函数
 {
-	CannonFodderMoving();  //让炮灰走几步   
-	if (isHeroDeath())
-	{
-		//进入阵亡界面
+	this->setViewpointCenter(hero1->getPosition());
+	//CannonFodderMoving();  //让炮灰走几步   
+	collidableCheck();
+	if (monster1->checkHeroInRect(hero1, hero2) == true) {
+		if (monster1->isAttacking == false) {
+			monster1->isAttacking = true;
+			monster1->scheduleAttack();
+		}
 	}
-	if (isGameOver())
-	{
-		//进入战绩界面
-	}
-	if (isCannonFodderDeath())
-	{
-		//把炮灰从容器中移除
+	if (monster2->checkHeroInRect(hero1, hero2) == true) {
+		if (monster2->isAttacking == false) {
+			monster2->isAttacking = true;
+			monster2->scheduleAttack();
+		}
 	}
 
 }
@@ -380,6 +419,17 @@ int GameController::getNowPointDir(Vec2 newpoint)
 	}
 	return thisdir;
 }
+int GameController::getAttackDir(int tempDir) { //转换8个方向
+	//int tempDir = getNowPointDir(newPoint);
+	if (tempDir == rigth_down || tempDir == down)
+		return 0;
+	if (tempDir == left_down || tempDir == lefts)
+		return 1;
+	if (tempDir == left_up || tempDir == up)
+		return 2;
+	if (tempDir == rigth_up || tempDir == rigth)
+		return 3;
+}
 void GameController::setPlayerPosition(Vec2 position) {
 	//hero1->stopAllActions();
 
@@ -402,18 +452,6 @@ void GameController::setPlayerPosition(Vec2 position) {
 
 }
 
-/*
-void GameScene::menuCloseCallback(Ref* pSender)
-{
-//Close the cocos2d-x game scene and quit the application
-Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-exit(0);
-#endif
-
-}
-*/
 
 bool GameController::onTouchBegan(Touch* touch, Event* event)
 {
@@ -427,7 +465,41 @@ void GameController::onTouchMoved(Touch *touch, Event *event)
 
 	log("onTouchMoved");
 }
-
+bool GameController::checkHit(int standDir, int monsterDir) {
+	if (monsterDir == rigth_down) {
+		if (standDir == down || standDir == rigth || standDir == rigth_down)
+			return true;
+	}
+	if (monsterDir == rigth_up) {
+		if (standDir == up || standDir == rigth || standDir == rigth_up)
+			return true;
+	}
+	if (monsterDir == rigth) {
+		if (standDir == rigth_up || standDir == rigth || standDir == rigth_down)
+			return true;
+	}
+	if (monsterDir == down) {
+		if (standDir == left_down || standDir == down || standDir == rigth_down)
+			return true;
+	}
+	if (monsterDir == lefts) {
+		if (standDir == left_up || standDir == lefts || standDir == left_down)
+			return true;
+	}
+	if (monsterDir == left_up) {
+		if (standDir == left_up || standDir == lefts || standDir == up)
+			return true;
+	}
+	if (monsterDir == left_down) {
+		if (standDir == left_down || standDir == lefts || standDir == down)
+			return true;
+	}
+	if (monsterDir == up) {
+		if (standDir == up || standDir == left_up || standDir == rigth_up)
+			return true;
+	}
+	return false;
+}
 void GameController::onTouchEnded(Touch *touch, Event *event)
 {
 	if (hero1->isHeroWalking == true)
@@ -443,6 +515,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	Vec2 playerPos = hero1->getPosition();
 	Vec2 diff = touchLocation - playerPos;
 	int newDir = getNowPointDir(touchLocation);
+	hero1->currentPos = newDir;
 	Animation* animation = Animation::create();
 	for (int i = 0; i <= 7; i++)
 	{
@@ -474,55 +547,11 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	float dif_x = x1 - x2;
 	float dif_y = y1 - y2;
 	float dis = sqrt(dif_x*dif_x + dif_y * dif_y);
-	log("dis is %f", dis);
+	//log("dis is %f", dis);
 	hero1->runAction(MoveTo::create(dis*speed / 100, touchLocation));
-	/*
-	while (abs(diff.x) > 0 || abs(diff.x) > 0) {
-	if (abs(diff.x) > abs(diff.y)) {
-	if (diff.x > 0) {
-	playerPos.x += 1.0;
-	diff.x -= 1.0;
-	if (diff.x < 0)
-	diff.x = 0;
-	//hero1->runAction(FlipX::create(false));
-	}
-	else {
-	playerPos.x -= 1.0;
-	diff.x += 1.0;
-	if (diff.x > 0)
-	diff.x = 0;
-	//hero1->runAction(FlipX::create(true));
-	}
-	}
-	else {
-	if (diff.y > 0) {
-	playerPos.y += 1.0;
-	diff.y -= 1.0;
-	if (diff.y < 0)
-	diff.y = 0;
-	}
-	else {
-	playerPos.y -= 1.0;
-	diff.y += 1.0;
-	if (diff.y > 0)
-	diff.y = 0;
-	}
-	}
-
-	hero1->setPosition(playerPos);
-	//滚动地图
-	this->setViewpointCenter(hero1->getPosition());
-	//this->setPlayerPosition(playerPos);
-	}
-	*/
-	//hero1->stopAllActions();
-	//hero1->setPosition(playerPos);
-	//滚动地图
 	hero1->isHeroWalking = false;
 	//hero1->stopAllActions();
-	this->setViewpointCenter(hero1->getPosition());
-
-
+	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动
 }
 
 

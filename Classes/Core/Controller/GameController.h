@@ -55,29 +55,29 @@ public:
 	void setViewpointCenter(Vec2 position);
 	Vec2 tileCoordFromPosition(Vec2 pos);
 	int getNowPointDir(Vec2 newpoint);
+	int getAttackDir(int tempDir);
 	void setPlayerPosition(Vec2 position);
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event);
+	bool checkHit(int standDir, int monsterDir);
 	virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event);
     static GameController* createScene(); //创建对象
 	virtual bool init(); //初始化控制层
-
-	void onEnter();//   重写onEnter 函数
+	Vec2 lastCollidablePos;
+	void onEnter();
+	void clientPlayerAttack();
+	//   重写onEnter 函数
 	void onExit();   //重写onExit 函数
-
-
+	
+	void collidableCheck();
 	void createHero();//hero_role HeroRole);  //创建英雄
 	void createBuff();  //创建Buff
 	void createCannonFodder();  //创建炮灰
 	void createTower();    //创建塔
 
 	void updateGame(float dt);  //刷新函数
-
 	void CannonFodderMoving();   //炮灰移动函数
 	void backHome();  //回城
-
-
-
 	bool isHeroDeath();           //判断英雄是否死亡
 	bool isCannonFodderDeath(); //判断炮灰是否死亡
 	bool isBuffDeath();         //判断Buff是否死亡
@@ -85,6 +85,9 @@ public:
 	bool isGameOver(); //判断游戏是否结束
 	bool isTowerPushed();   //判断塔是否被推
 	void menuCloseCallback(cocos2d::Ref* pSender);
+	GameController() {
+		lastCollidablePos = Vec2(0, 0);
+	}
 	CREATE_FUNC(GameController);    
 
 };

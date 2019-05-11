@@ -15,23 +15,22 @@ bool Hero::checkIsAttack()  //检查是否受到攻击
 	return true;
 }
 
-bool Hero::attackTrick(const char *format,int num)   //攻击方法  放大招
+void Hero::attackEnemy(int dir)   //攻击方法  放大招
 {
+	this->stopAllActions();
 	Animation *animation = Animation::create();
-
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		__String *frameName = __String::createWithFormat(format, i);
-		SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frameName
-			->getCString());
-		animation->addSpriteFrame(spriteFrame);
+		__String *frameName = __String::createWithFormat(hero_moonGoddess_attack, dir, i);
+		log("frameName = %s", frameName->getCString());
+		//SpriteFrame *spriteFrame = SpriteFrame::
+		animation->addSpriteFrameWithFile(frameName->getCString());
 
 	}
 	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 	animation->setRestoreOriginalFrame(true);
 	Animate *action = Animate::create(animation);
-	this->runAction(RepeatForever::create(action));
-	return true;
+	this->runAction(Repeat::create(action,1)); //播放一次
 }
 void Hero::updateHeroSpeed(float newspeed)
 {
@@ -57,3 +56,17 @@ void Hero::initBloodBar() {	//初始化血条
 	blood->setPercentage(100);//满值 100%
 	addChild(blood, 0, 0);
 }
+void Hero::minusBlood(int num) {
+	if (bloodNum - num >= 0) {
+		bloodNum -= num;
+		blood->setPercentage(bloodNum);
+	}
+	else {//离世判断
+		blood->setPercentage(0);
+		this->setVisible(false);	//离世了，不可见
+		bloodNum = 0;
+		this->setPosition(initPos);
+
+	}
+}
+

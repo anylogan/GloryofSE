@@ -5,6 +5,8 @@
 //然后对这个参数进行判断   根据不同情况生成英雄
 #include"cocos2d.h"
 #include<vector>
+#define hero_moonGoddess_attack "hero/change/attck/1047-6a75dcb1-0%d00%d.png"
+
 using namespace std;
 USING_NS_CC;
 typedef enum {
@@ -38,19 +40,22 @@ public:
 	int money;       //经济
 	float speed;		//人物移动速度
 	Vec2 initPos;
-	
+	int commonAttack; //普通攻击值
 	virtual bool init();   //  英雄的总的控制
 	bool attackTrick(const char *format,int num);   //  放招
-
 	virtual bool checkIsAttack();  //检查是否受到攻击   
 	bool isHeroWalking;
+	int currentPos;
 	float getHeroSpeed();	     //返回速度
 	void initBloodBar();
+	void minusBlood(int num);
+	void attackEnemy(int dir);
 	void updateHeroSpeed(float newspeed);
-	void initHeroAttr(int _money, float _speed,int _blood) {
+	void initHeroAttr(int _money, float _speed,int _blood,int _commonAttack) {
 		money = _money;
 		speed = _speed;
 		bloodNum = _blood;
+		commonAttack = _commonAttack;
 	}
 	//CREATE_FUNC(Hero);   这句代码不能写！！不然无法create英雄
 };
