@@ -14,12 +14,11 @@ public:
 	int attackMinusNum;		//每次打人的
 	virtual bool init();   //  野怪总的控制
 	Rect* attack_rect;
-	void setReward();
 	void initBloodBar();
-	void initMonsterAttr();
+	void initMonsterAttr(int attackAbility, int _bloodNum, int _rewardMoney, int _rewardExp);//用这个初始化怪物属性
 	bool checkHeroInRect(Hero* hero1,Hero* hero2);
 	void attackHero(float dt);
-	void minusBlood(int num);
+	void minusBlood(int num,Hero* hero);
 	Hero* heroInRect;
 	bool isAttacking;
 	void scheduleAttack();

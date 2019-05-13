@@ -2,38 +2,7 @@
 #define hero_moonGoddess "hero/change/zhan/0649-3ea35add-00000.png"
 #define hero_houyi "hero/houyi.jpg"
 #define hero_yase "hero/yase.jpg"
-
 #define hero_moonGoddess_pao " "
-#define hero_moonGoddess_attack "hero\change\attck\0649-3ea35add-0%d00%d.png"
-#define moonGoddess_big_skill "skills\role_skill\ziqidonglai%d.png"
-#define moonGoddess_medium_skill "skills\role_skill\ziqidonglai%d.png"
-#define moonGoddess_small_skill "skills\role_skill\ziqidonglai%d.png"
-
-#define yase_big_skill "skills\role_skill\ziqidonglai%d.png"
-#define yase_medium_skill "skills\role_skill\ziqidonglai%d.png"
-#define yase_small_skill "skills\role_skill\ziqidonglai%d.png"
-
-
-#define houyi_big_skill "skills\role_skill\ziqidonglai%d.png"
-#define houyi_medium_skill "skills\role_skill\ziqidonglai%d.png"
-#define houyi_small_skill "skills\role_skill\ziqidonglai%d.png"
-
-#define moonGoddess_big_skill_num 13
-#define moonGoddess_medium_skill_num 13
-#define moonGoddess_small_skill_num 13
-
-
-#define houyi_big_skill_num 13
-#define houyi_medium_skill_num 13
-#define houyi_small_skill_num 13
-
-
-#define yase_big_skill_num 13
-#define yase_medium_skill_num 13
-#define yase_small_skill_num 13
-
-
-#define map1_buff_num 8
 USING_NS_CC;
 extern hero_role HeroRole;
 GameController* GameController::createScene()
@@ -53,77 +22,113 @@ void GameController::menuCloseCallback(Ref* pSender)
 
 bool GameController::init()
 {
-	//创建地图
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	createHero();
-
+	/*创建地图*/
 	_tileMap = TMXTiledMap::create("map/map.tmx");
 	addChild(_tileMap, 0, 100);
-	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
-	auto spawnPoint = group->getObject("Player1");
-	_collidable = _tileMap->getLayer("Collidable");
-	float x = spawnPoint["x"].asFloat();
-	float y = spawnPoint["y"].asFloat();
-	log("x is %f y is %f", x,y);
-	hero1->initPos = Vec2(x, y);
-	hero1->setPosition(Vec2(x, y));
-	hero1->initBloodBar();
-	spawnPoint = group->getObject("fieldMonster1");
-	 x = spawnPoint["x"].asFloat();
-	 y = spawnPoint["y"].asFloat();
-	 log("x is %f y is %f", x,y);
-	monster1 = (fieldMonster*)fieldMonster::create("monster/monsterofField_1.png");
-	monster1->initPos = Vec2(x, y);
-	monster1->setPosition(Vec2(x, y));
-	spawnPoint = group->getObject("fieldMonster2");
-	 x = spawnPoint["x"].asFloat();
-	 y = spawnPoint["y"].asFloat();
-	monster2 = (fieldMonster*)fieldMonster::create("monster/monsterofField_2.png");
-	monster2->initPos = Vec2(x, y);
-	monster2->setPosition(Vec2(x, y));
-	monster1->initMonsterAttr(); //初始化属性，相当于构造函数 仍需更改其他！
-	monster2->initMonsterAttr();
-	addChild(monster1,100);
-	addChild(monster2,200);
-	addChild(hero1,300);
+	mapElementsInit();
 	this->setViewpointCenter(hero1->getPosition());
-	//createBuff();  //创建Buff
+	//createEnemySoldier();  //创建EnemySoldier
 
 				   //创建CannonFodder     简单起见  实现隔一段时间创建一队炮灰让他们沿着固定路径前进  
 	//createCannonFodder();  //创建炮灰
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	//log("monster pos %f,%f", monster1->getPositionX(), monster1->getPositionY());
-	this->schedule(schedule_selector(GameController::updateGame), 0.01f);
+	this->schedule(schedule_selector(GameController::updateView), 0.01f);
+	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
+
 	return true;
 	
 }
+void GameController::mapElementsInit() {
+	/*创建对象元素-Players*/
 
+	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
+	auto spawnPoint = group->getObject("Player1");
+	_collidable = _tileMap->getLayer("Collidable");
+	float x = spawnPoint["x"].asFloat();
+	float y = spawnPoint["y"].asFloat();
+	hero1->initPos = Vec2(x, y);
+	hero1->setPosition(Vec2(x, y));
+	/*创建对象元素-Monsters*/
+	spawnPoint = group->getObject("fieldMonster1");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	monster1 = (fieldMonster*)fieldMonster::create("monster/monsterofField_1.png");
+	monster1->initPos = Vec2(x, y);	//初始位置供死亡以后用
+	monster1->setPosition(Vec2(x, y));
+	spawnPoint = group->getObject("fieldMonster2");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	monster2 = (fieldMonster*)fieldMonster::create("monster/monsterofField_2.png");
+	monster2->initPos = Vec2(x, y);
+	monster2->setPosition(Vec2(x, y));
+	monster1->initMonsterAttr(2, 100, 150, 20); //初始化属性，相当于构造函数 仍需更改其他！
+	monster2->initMonsterAttr(2, 100, 150, 20);
+	/*创建对象元素-Soldiers*/
+	spawnPoint = group->getObject("soldier1");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	auto clientSoldier1 = (EnemySoldier*)EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png");
+	clientSoldier1->initPos = Vec2(x, y);
+	clientSoldier1->setPosition(Vec2(x, y));
+	clientSoldier1->enemyHero = hero1;
+	clientSoldierVector.pushBack(clientSoldier1);
+	spawnPoint = group->getObject("soldier2");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	auto clientSoldier2 = (EnemySoldier*)EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png");
+	clientSoldier2->initPos = Vec2(x, y);
+	clientSoldier2->setPosition(Vec2(x, y));
+	clientSoldier2->enemyHero = hero1;
+	clientSoldierVector.pushBack(clientSoldier2);
+	spawnPoint = group->getObject("soldier3");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	auto clientSoldier3 = (EnemySoldier*)EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png");
+	clientSoldier3->initPos = Vec2(x, y);
+	clientSoldier3->setPosition(Vec2(x, y));
+	clientSoldier3->enemyHero = hero1;
+	clientSoldierVector.pushBack(clientSoldier3);
+	/*建塔—Tower*/
+	spawnPoint = group->getObject("Tower1");
+	auto tower1 = (Tower*)Tower::create("towerTile.png");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	//Tower1->initPos = Vec2(x, y);
+	TowerVector.pushBack(tower1);
+	tower1->setPosition(Vec2(x, y));
+	addChild(monster1, 100);
+	addChild(monster2, 200);
+	addChild(hero1, 300);
+	for (auto it = TowerVector.begin(); it != TowerVector.end(); it++) {
+		(*it)->initTowerAttr(10, 1000, 150, 20,hero1);	//应该分开！
+		//(*it)->initBloodBar();
+		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
+		addChild(*it);
+	}
+	//因为tower没有初始化，所以hero放在这里初始化。
+	hero1->initHeroAttr(100, 1.0, 1000, 10, 0, TowerVector.at(0)); //如果是tower1，就是0号 这里做测试用 记得改回来
+	hero1->initBloodBar();
+
+	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(); it++) {
+		(*it)->initMonsterAttr(20, 100, 150, 20,tower1->getPosition()); //先设置小怪攻击量20
+		//(*it)->initBloodBar();
+		addChild(*it);
+		(*it)->enemyTower = tower1;		//后需修改！！
+		tower1->enemySoldierOfTower->pushBack(*it);
+	}
+
+}
 void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
 
 	Layer::onEnter();
 	////注册事件监听器  监听键盘  hero可以释放技能
 	auto releaseSkillListener = EventListenerKeyboard::create();
-	/*
-	releaseSkillListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event)
-	{
-		if (keyCode == EventKeyboard::KeyCode::KEY_W)    //放大招 
-		{
-			hero1->attackTrick(bigSkillFormat, bigSkillNum);
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_A)    //放中招 
-		{
-			hero1->attackTrick(mediumSkillFormat, mediumSkillNum);
-		}
-		else if (keyCode == EventKeyboard::KeyCode::KEY_D)    //放小招 
-		{
-			hero1->attackTrick(smallSkillFormat,smallSkillNum);
-		}
-
-	};
-	*/
 	releaseSkillListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		if (keyCode == EventKeyboard::KeyCode::KEY_W) {
@@ -140,17 +145,28 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 }
 void GameController::clientPlayerAttack() {
 	//换成clientPlayer,加死亡判断；
-	hero1->attackEnemy(getAttackDir(hero1->currentPos));//播放攻击动画
-	auto monster1Hit = checkHit(hero1->currentPos, getNowPointDir(monster1->getPosition()));
-	auto monster2Hit = checkHit(hero1->currentPos, getNowPointDir(monster1->getPosition()));
-	
-	if (monster1Hit) 
+	hero1->attackEnemyAnimation(getAttackDir(hero1->currentPos));//播放攻击动画
+	auto monster1Hit = checkHit(hero1->currentPos, getNowPointDir(hero1,monster1->getPosition()));
+	auto monster2Hit = checkHit(hero1->currentPos, getNowPointDir(hero1,monster1->getPosition()));
+
+	if (monster1Hit && monster1->blood>=0) //可以再加入hero2
 		if(monster1->attack_rect->containsPoint(hero1->getPosition()))
-			monster1->minusBlood(hero1->commonAttack);
-	
-	if (monster2Hit)
+			monster1->minusBlood(hero1->getCommonAttack(),hero1);
+		
+	if (monster2Hit && monster1->blood >= 0)//可以再加入hero2
 		if (monster2->attack_rect->containsPoint(hero1->getPosition()))
-			monster2->minusBlood(hero1->commonAttack);
+			monster2->minusBlood(hero1->getCommonAttack(), hero1);
+	for (int i = 0; i < 3; i++) {
+		auto testEnemy = clientSoldierVector.at(i);
+		auto checkPlayerHit = checkHit(hero1->currentPos, getNowPointDir(hero1, testEnemy->getPosition()));
+		if (checkPlayerHit && testEnemy->attack_rect->containsPoint(hero1->getPosition()))
+			testEnemy->minusBlood(hero1->getCommonAttack());
+	}
+	auto testTower = hero1->enemyTower;
+	auto checkPlayerHit = checkHit(hero1->currentPos, getNowPointDir(hero1, testTower->getPosition()));
+	if (checkPlayerHit && testTower->attack_rect->containsPoint(hero1->getPosition()))
+			testTower->minusBlood(hero1->getCommonAttack(),hero1);
+	
 }
 void GameController::collidableCheck()
 {
@@ -183,91 +199,103 @@ void GameController::createHero()
 	case moonGoddess:
 	{
 		hero1 = (Hero*)Hero::create(hero_moonGoddess);
-		/*
-		bigSkillFormat = moonGoddess_big_skill;
-		mediumSkillFormat = moonGoddess_medium_skill;
-		smallSkillFormat = moonGoddess_small_skill;
-		bigSkillNum = moonGoddess_big_skill_num;
-		mediumSkillNum= moonGoddess_medium_skill_num;   
-		smallSkillNum= moonGoddess_small_skill_num;   
-		*/
 		hero1->isHeroWalking = false;
-		hero1->initHeroAttr(100, 1.0,100,10);
 		break;
 	}
 	case yase:
 	{
 		hero1 = (Hero*)Hero::create(hero_yase);
-		bigSkillFormat = yase_big_skill;
-		mediumSkillFormat = yase_medium_skill;
-		smallSkillFormat = yase_small_skill;
-
-		bigSkillNum = yase_big_skill_num;
-		mediumSkillNum = yase_medium_skill_num;
-		smallSkillNum = yase_small_skill_num;
 		break;
 	}
 	case houyi:
 	{
 		hero1 = (Hero*)Hero::create(hero_houyi);
-		bigSkillFormat = houyi_big_skill;
-		mediumSkillFormat = houyi_medium_skill;
-		smallSkillFormat = houyi_small_skill;
-
-		bigSkillNum = houyi_big_skill_num;
-		mediumSkillNum = houyi_medium_skill_num;
-		smallSkillNum = houyi_small_skill_num;
 		break;
 	}
 	default:break;
 	}
-	hero1->setPosition(Vec2(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.5));
-	//this->addChild(hero1);
 }
 
-void GameController::createBuff()
-{
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	for (int i = 0; i < map1_buff_num; i++)
-	{
-		Buff *buff = new Buff();// ("npc/buff1.png");
-		buff->initWithFile("npc/buff1.png");
-		buff->setPosition(Vec2(origin.x + visibleSize.width * (0.1*i), origin.y + visibleSize.height * 0.2));// 设置野怪的位置  让它在初始位置生成
-		this->addChild(buff);    //加到层中
-		BuffVector.pushBack(buff);   //加到容器中
-	}
-}
-
-void GameController::createCannonFodder() //创建炮灰
-{
-
-}
-
-void GameController::createTower()    //创建塔
-{
-
-}
-
-
-void  GameController::updateGame(float dt)  //刷新函数
+void  GameController::updateView(float dt)  //刷新函数
 {
 	this->setViewpointCenter(hero1->getPosition());
 	//CannonFodderMoving();  //让炮灰走几步   
 	collidableCheck();
+}
+
+void GameController::spriteRectCheck(float dt) {
 	if (monster1->checkHeroInRect(hero1, hero2) == true) {
-		if (monster1->isAttacking == false) {
+		if (monster1->isAttacking == false && monster1->bloodNum>=0) {
 			monster1->isAttacking = true;
 			monster1->scheduleAttack();
 		}
 	}
-	if (monster2->checkHeroInRect(hero1, hero2) == true) {
+	if (monster2->checkHeroInRect(hero1, hero2) == true && monster2->bloodNum >= 0) {
 		if (monster2->isAttacking == false) {
 			monster2->isAttacking = true;
 			monster2->scheduleAttack();
 		}
 	}
-
+	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(); it++) {
+		log("A new judge");
+		(*it)->setNewAttackRect();
+		bool judge = (*it)->checkHeroInRect();
+		bool towerJudge = (*it)->enemyTower->attack_rect->containsPoint((*it)->getPosition());
+		/*
+		if(judge==false)
+			log ("Enemy is not in rect");
+		else log("Enemy is  in rect");
+		*/
+		if ((*it)->isAttacking == false && (*it)->isWalking == false) {
+			int tempDir = getNowPointDir(*it, TowerVector.at(0)->getPosition()); //改一下
+			int attackDir = getAttackDir(tempDir);
+			(*it)->startWalkTowardsTower(attackDir);
+			(*it)->isWalking = true;
+			log("enemy is walking");
+			continue;
+		}
+		if ((*it)->isAttacking == false && (*it)->isWalking == true) {
+			if (towerJudge && (*it)->enemyTower->bloodNum>0) {		//英雄没有死才可以进入攻击状态
+				(*it)->isWalking = false;
+				(*it)->isAttacking = true;
+				(*it)->stopAllActions();
+				(*it)->scheduleAttack(1);
+				log("enemy is attacking");
+				continue;
+			}
+			if (judge && (*it)->enemyHero->getBloodNum()>0) {		//英雄没有死才可以进入攻击状态
+				(*it)->isWalking = false;
+				(*it)->isAttacking = true;
+				(*it)->stopAllActions();
+				(*it)->scheduleAttack(0);//0打人
+				log("enemy is attacking");
+				continue;
+			}
+		}
+		if ((*it)->isAttacking == true && (*it)->isWalking == false) {
+			if (!judge) {
+				if (!towerJudge) {
+					(*it)->isAttacking = false;
+					(*it)->isWalking = true;
+					(*it)->stopAllActions();
+					(*it)->unscheduleAttack();
+					int tempDir = getNowPointDir(*it, TowerVector.at(0)->getPosition()); //改一下
+					int attackDir = getAttackDir(tempDir);
+					(*it)->startWalkTowardsTower(attackDir);
+					log("enemy stop attacking");
+					continue;
+				}
+			}
+		}
+	}
+	for (auto it1 = TowerVector.begin(); it1 != TowerVector.end(); it1++) {
+		for (auto it2 = (*it1)->enemySoldierOfTower->begin(); it2 != (*it1)->enemySoldierOfTower->end(); it2++) {
+			if ((*it1)->attack_rect->containsPoint((*it2)->getPosition()))
+				(*it2)->minusBlood((*it1)->attackMinusNum);
+		}
+		if ((*it1)->attack_rect->containsPoint((*it1)->enemyHero->getPosition()))
+			(*it1)->enemyHero->minusBlood((*it1)->attackMinusNum);
+	}
 }
 
 void GameController::onExit()
@@ -277,56 +305,19 @@ void GameController::onExit()
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 }
 
-
-
-
-
-void GameController::CannonFodderMoving()
-{
-
-}
-void GameController::backHome()  //回城
-{
-
-
-
-
-}
-
 bool GameController::isHeroDeath()          //判断英雄是否死亡
 {
-	if (hero1->bloodNum < 0)
+	if (hero1->getBloodNum() < 0)
 		return true;
 	else
 		return false;
 }
-bool GameController::isGameOver()       //判断游戏是否结束
-{
-	//判断大本营的塔是否被推
-	//建出来再说
-	return true;
-}
-bool GameController::isCannonFodderDeath()//判断炮灰是否死亡
-{
-	return true;
-}
-bool GameController::isBuffDeath()//判断Buff是否死亡
-{
-	return true;
-}
-bool GameController::isHeroResurrection()//英雄复活函数
-{
-	return true;
-}
-bool GameController::isTowerPushed()   //判断塔是否被推
-{
-	return true;
-}
+
 void GameController::setViewpointCenter(Vec2 position)
 {
-	log("setViewpointCenter");
+	//log("setViewpointCenter");
 
-	log("position (%f ,%f) ", position.x, position.y);
+	//log("position (%f ,%f) ", position.x, position.y);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	//可以防止，视图左边超出屏幕之外。
@@ -342,11 +333,11 @@ void GameController::setViewpointCenter(Vec2 position)
 	Vec2 pointA = Vec2(visibleSize.width / 2, visibleSize.height / 2);
 	//使精灵处于屏幕中心，移动地图目标位置
 	Vec2 pointB = Vec2(x, y);
-	log("目标位置 (%f ,%f) ", pointB.x, pointB.y);
+	//log("目标位置 (%f ,%f) ", pointB.x, pointB.y);
 
 	//地图移动偏移量
 	Vec2 offset = pointA - pointB;
-	log("offset (%f ,%f) ", offset.x, offset.y);
+	//log("offset (%f ,%f) ", offset.x, offset.y);
 	this->setPosition(offset);
 
 }
@@ -359,7 +350,7 @@ Vec2 GameController::tileCoordFromPosition(Vec2 pos)
 }
 
 
-int GameController::getNowPointDir(Vec2 newpoint)
+int GameController::getNowPointDir(Node* player,Vec2 newpoint)
 {
 	int thisdir = rigth_down; //默认为右下
 							  //计算移动数据
@@ -371,8 +362,8 @@ int GameController::getNowPointDir(Vec2 newpoint)
 
 	center_x = size.width / 2;
 	center_y = size.height / 2;
-	player_x = hero1->getPositionX();
-	player_y = hero1->getPositionY();
+	player_x = player->getPositionX();
+	player_y = player->getPositionY();
 
 	move_x = (int)(player_x - newpoint.x);
 	move_y = (int)(player_y - newpoint.y - 20);
@@ -438,7 +429,7 @@ void GameController::setPlayerPosition(Vec2 position) {
 	Vec2 tileCoord = this->tileCoordFromPosition(position);
 	//获得瓦片的GID
 	int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
-	log("new Gid %d", tileGid);
+	//log("new Gid %d", tileGid);
 	if (tileGid > 0) {
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
 		hero1->stopAllActions();
@@ -465,7 +456,7 @@ void GameController::onTouchMoved(Touch *touch, Event *event)
 
 	log("onTouchMoved");
 }
-bool GameController::checkHit(int standDir, int monsterDir) {
+bool GameController::checkHit(int standDir, int monsterDir) { //检查人物方向和怪物方向是否相符
 	if (monsterDir == rigth_down) {
 		if (standDir == down || standDir == rigth || standDir == rigth_down)
 			return true;
@@ -506,7 +497,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 		return;
 	hero1->isHeroWalking = true;
 	hero1->stopAllActions();
-	log("onTouchEnded");
+	//log("onTouchEnded");
 	//获得在OpenGL坐标
 	Vec2 touchLocation = touch->getLocation();
 	//转换为当前层的模型坐标系
@@ -514,7 +505,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 
 	Vec2 playerPos = hero1->getPosition();
 	Vec2 diff = touchLocation - playerPos;
-	int newDir = getNowPointDir(touchLocation);
+	int newDir = getNowPointDir(hero1,touchLocation);
 	hero1->currentPos = newDir;
 	Animation* animation = Animation::create();
 	for (int i = 0; i <= 7; i++)
@@ -532,7 +523,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	Vec2 tileCoord = this->tileCoordFromPosition(touchLocation);
 	//获得瓦片的GID
 	int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
-	log("new Gid %d", tileGid);
+	//log("new Gid %d", tileGid);
 	if (tileGid > 0) {
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
 		hero1->isHeroWalking = false;

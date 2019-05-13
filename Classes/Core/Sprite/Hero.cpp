@@ -15,7 +15,7 @@ bool Hero::checkIsAttack()  //检查是否受到攻击
 	return true;
 }
 
-void Hero::attackEnemy(int dir)   //攻击方法  放大招
+void Hero::attackEnemyAnimation(int dir)   //播放动画
 {
 	this->stopAllActions();
 	Animation *animation = Animation::create();
@@ -25,7 +25,6 @@ void Hero::attackEnemy(int dir)   //攻击方法  放大招
 		log("frameName = %s", frameName->getCString());
 		//SpriteFrame *spriteFrame = SpriteFrame::
 		animation->addSpriteFrameWithFile(frameName->getCString());
-
 	}
 	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 	animation->setRestoreOriginalFrame(true);
@@ -53,13 +52,15 @@ void Hero::initBloodBar() {	//初始化血条
 	blood->setBarChangeRate(cocos2d::ccp(1, 0));
 	blood->setMidpoint(Point(0, 0.5));
 	blood->setBarChangeRate(Point(1, 0));
-	blood->setPercentage(100);//满值 100%
-	addChild(blood, 0, 0);
+	blood->setPercentage(((float)bloodNum)/10.0);//满值 100%
+	log("Hero blood percentage %f", ((float)bloodNum) / 10.0);
+	//addChild(blood, 0, 0);
+	addChild(blood);
 }
 void Hero::minusBlood(int num) {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
-		blood->setPercentage(bloodNum);
+		blood->setPercentage(((float)bloodNum) / 10.0);
 	}
 	else {//离世判断
 		blood->setPercentage(0);

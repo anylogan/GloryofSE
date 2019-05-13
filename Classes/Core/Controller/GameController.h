@@ -8,22 +8,14 @@
 
 //包含精灵类头文件
 #include"Core/Sprite/Hero.h"
-#include"Core/Sprite/Buff.h"
+#include"Core/Sprite/EnemySoldier.h"
 #include"Core/Sprite/CannonFodder .h"
 #include"Core/Sprite/Tower.h"
 #include"Core/Sprite/fieldMonster.h"
+#include"Core/Sprite/EnemySoldier.h"
+
 USING_NS_CC;
 
-enum{
-		up = 6,
-		down = 4,
-		lefts = 5,//
-		rigth = 7,//
-		rigth_up = 3,//
-		rigth_down = 0,//
-		left_down = 1,//
-		left_up = 2//
-};
 class GameController : public Layer   //游戏控制类
 {
 	
@@ -36,13 +28,10 @@ public:
 	TMXTiledMap * _tileMap;
 	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
-	Vector<Buff*> BuffVector;    //存放Buff对象的容器
+	Vector<EnemySoldier*> clientSoldierVector;    //存放EnemySoldier对象的容器
 	fieldMonster* monster1;
     fieldMonster* monster2;
-	Vector<CannonFodder*>CannonFodderVector;  //存放炮灰对象的容器
-	Vector<Tower*>TowerVector;      //存放塔指针的容器
-	Vec2 mouse_up;      //鼠标离开坐标
-	Vec2 mouse_down;    //鼠标点下坐标
+	Vector<Tower*>TowerVector;				//存放塔指针的容器
 	bool ismousedown;
 	char *bigSkillFormat;    //大招路径
 	char *mediumSkillFormat;  //中招路径
@@ -54,8 +43,8 @@ public:
 	ValueMap player1_initPos;
 	void setViewpointCenter(Vec2 position);
 	Vec2 tileCoordFromPosition(Vec2 pos);
-	int getNowPointDir(Vec2 newpoint);
-	int getAttackDir(int tempDir);
+	 int getNowPointDir(Node* player, Vec2 newpoint);
+	 int getAttackDir(int tempDir);
 	void setPlayerPosition(Vec2 position);
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event);
@@ -63,27 +52,20 @@ public:
 	virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event);
     static GameController* createScene(); //创建对象
 	virtual bool init(); //初始化控制层
+	void mapElementsInit();
+	int successPlayerID; //判断胜利的时候再用
 	Vec2 lastCollidablePos;
 	void onEnter();
 	void clientPlayerAttack();
+	void spriteRectCheck(float dt);
 	//   重写onEnter 函数
 	void onExit();   //重写onExit 函数
 	
 	void collidableCheck();
-	void createHero();//hero_role HeroRole);  //创建英雄
-	void createBuff();  //创建Buff
-	void createCannonFodder();  //创建炮灰
-	void createTower();    //创建塔
-
-	void updateGame(float dt);  //刷新函数
-	void CannonFodderMoving();   //炮灰移动函数
-	void backHome();  //回城
+	void createHero();
+	void updateView(float dt);
+	//hero_role HeroRole);  //创建英雄
 	bool isHeroDeath();           //判断英雄是否死亡
-	bool isCannonFodderDeath(); //判断炮灰是否死亡
-	bool isBuffDeath();         //判断Buff是否死亡
-	bool isHeroResurrection();//英雄复活函数
-	bool isGameOver(); //判断游戏是否结束
-	bool isTowerPushed();   //判断塔是否被推
 	void menuCloseCallback(cocos2d::Ref* pSender);
 	GameController() {
 		lastCollidablePos = Vec2(0, 0);

@@ -90,7 +90,7 @@ void  SelectHeroScene::menuCloseCallback(Ref* pSender)
 }
 void  SelectHeroScene::moonGoddessCallback(Ref *pSender)
 {
-	HeroRole =moonGoddess;;   //给全局变量赋值
+	HeroRole =moonGoddess;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	auto scene = GameScene::createScene();
 	Director::getInstance()->pushScene(scene);

@@ -8,7 +8,6 @@ bool fieldMonster::init()  //  英雄的总的控制
 void fieldMonster::initBloodBar() {	//初始化血条
 	auto bgSprite = Sprite::create("empty_bar.png");
 	bgSprite->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));//坐标点，相对于背景的
-
 	addChild(bgSprite);
 	auto hpSprite = Sprite::create("full_bar.png");
 	blood = ProgressTimer::create(hpSprite);
@@ -19,16 +18,19 @@ void fieldMonster::initBloodBar() {	//初始化血条
 	blood->setMidpoint(Point(0, 0.5));
 	blood->setBarChangeRate(Point(1, 0));
 	blood->setPercentage(100);//满值 100%
-	addChild(blood, 0, 0);
+	//addChild(blood, 0, 0);
+	addChild(blood);
 }
 
-void fieldMonster::initMonsterAttr()
+void fieldMonster::initMonsterAttr(int attackAbility,int _bloodNum,int _rewardMoney,int _rewardExp)
 {
 	attack_rect = new Rect(this->getPositionX()- 100, this->getPositionY() - 100, 200, 200);
 	isAttacking = false;
-	attackMinusNum = 2;
+	attackMinusNum = attackAbility;
 	bloodNum = 100;
 	initBloodBar();
+	deadRewardmoney = _rewardMoney;
+	deadRewardExp = _rewardExp;
 }
 
 bool fieldMonster::checkHeroInRect(Hero * hero1, Hero * hero2)
@@ -76,7 +78,7 @@ void fieldMonster::attackHero(float dt) {
 		this->unscheduleAttack(); //在1.0f之后执行，并且只执行一次。
 	}
 }
-void fieldMonster::minusBlood(int num) {
+void fieldMonster::minusBlood(int num,Hero* hero) {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
 		blood->setPercentage(bloodNum);
@@ -86,6 +88,7 @@ void fieldMonster::minusBlood(int num) {
 		this->setVisible(false);	//离世了，不可见
 		bloodNum = 0;
 		//this->setPosition(initPos);
+		hero->addReward(deadRewardmoney, deadRewardExp);
 		this->unscheduleAllSelectors();
 	}
 }
