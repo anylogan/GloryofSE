@@ -6,6 +6,7 @@ USING_NS_CC;
 #include<vector>
 #include<utility>
 
+int playMoney=0;
 //各购买按钮位置
 std::vector<std::pair<int, int> > storeButtonPosition = { std::pair<int, int>(325,570),std::pair<int, int>(560,570),std::pair<int, int>(805,570),\
 std::pair<int, int>(1060, 570), std::pair<int, int>(325, 425), std::pair<int, int>(570, 425), std::pair<int, int>(805, 425),\
@@ -36,7 +37,7 @@ bool StoreScene::init()
 	Sprite *storebg = Sprite::create("storeground.png");
 	storebg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	addChild(storebg,1,155);
-
+	playMoney = clientPlayer->getMoney();
 	//金钱的显示
 	auto moneyLabel = LabelTTF::create("Money:  0", "Arial", 58);
 	moneyLabel->setPosition(Vec2(630, 705));
@@ -122,6 +123,7 @@ bool StoreScene::init()
 void StoreScene::storeReturnCallback(Ref* pSender)
 {
 	this->removeFromParent();
+	this->release();
 }
 //购买按钮回调函数
 void StoreScene::buyCallback(Ref* pSender)
@@ -148,7 +150,7 @@ void StoreScene::buyCallback(Ref* pSender)
 	//由于button按钮点击会响应多次， equipmentBoughtList[tag] ==0判断的作用是使按钮的显示效果只有一次
 	if (leftMoney >= 0&& equipmentBoughtList[tag] ==0)
 	{
-		playMoney = leftMoney;
+		clientPlayer->setMoney(leftMoney);
 		equipmentBoughtList[tag] = 1;
 		//更新金钱显示
 		LabelTTF *label = (LabelTTF*)(this->getChildByTag(155)->getChildByTag(156));

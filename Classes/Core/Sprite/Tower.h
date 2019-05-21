@@ -1,13 +1,15 @@
 #pragma once
 #include"cocos2d.h"
 #include"Core/Sprite/Hero.h"
+#include"Core/Sprite/Progress.h"
+
 class EnemySoldier;		//声明类
 
 USING_NS_CC;
 class Tower :public Sprite
 {
 public:
-	ProgressTimer * blood;   //血量
+	Progress * blood;   //血量
 	int bloodNum;  //血量
 	Vec2 initPos;
 	Vec2 attackTowerPos;
@@ -19,6 +21,7 @@ public:
 	void initTowerAttr(int attackAbility, int _bloodNum, int _rewardMoney, int _rewardExp,Hero* hero);//用这个初始化怪物属性
 	void attackHero(float dt);
 	void minusBlood(int num, Node* attacker);
+	void soldierAttackMinusBlood(int num);
 	Hero* enemyHero;
 	Vector<EnemySoldier*> *enemySoldierOfTower;
 	bool isAttacking;

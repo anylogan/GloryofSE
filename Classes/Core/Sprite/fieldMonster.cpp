@@ -5,22 +5,7 @@ bool fieldMonster::init()  //  英雄的总的控制
 	Sprite::init();
 	return true;
 }
-void fieldMonster::initBloodBar() {	//初始化血条
-	auto bgSprite = Sprite::create("empty_bar.png");
-	bgSprite->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));//坐标点，相对于背景的
-	addChild(bgSprite);
-	auto hpSprite = Sprite::create("full_bar.png");
-	blood = ProgressTimer::create(hpSprite);
-	blood->setType(ProgressTimer::Type::BAR);
-	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));//坐标点，相对于背景的
-	blood->setMidpoint(cocos2d::ccp(1, 0.5));
-	blood->setBarChangeRate(cocos2d::ccp(1, 0));
-	blood->setMidpoint(Point(0, 0.5));
-	blood->setBarChangeRate(Point(1, 0));
-	blood->setPercentage(100);//满值 100%
-	//addChild(blood, 0, 0);
-	addChild(blood);
-}
+
 
 void fieldMonster::initMonsterAttr(int attackAbility,int _bloodNum,int _rewardMoney,int _rewardExp)
 {
@@ -28,9 +13,13 @@ void fieldMonster::initMonsterAttr(int attackAbility,int _bloodNum,int _rewardMo
 	isAttacking = false;
 	attackMinusNum = attackAbility;
 	bloodNum = 100;
-	initBloodBar();
 	deadRewardmoney = _rewardMoney;
 	deadRewardExp = _rewardExp;
+	blood = Progress::create("empty_bar.png", "full_bar.png");
+	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
+	this->addChild(blood);
+	this->retain();
+
 }
 
 bool fieldMonster::checkHeroInRect(Hero * hero1, Hero * hero2)

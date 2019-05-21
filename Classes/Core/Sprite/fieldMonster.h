@@ -1,11 +1,13 @@
 #pragma once
 #include"cocos2d.h"
 #include"Core/Sprite/Hero.h"
+#include"Core/Sprite/Progress.h"
+
 USING_NS_CC;
 class fieldMonster : public Sprite
 {
 public:
-	ProgressTimer * blood;   //ÑªÁ¿
+	Progress * blood;   //ÑªÁ¿
 	int bloodNum;  //ÑªÁ¿
 	//void attack();
 	Vec2 initPos;

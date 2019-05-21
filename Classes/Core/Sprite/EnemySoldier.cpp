@@ -5,22 +5,6 @@ bool EnemySoldier::init()  //  英雄的总的控制
 	Sprite::init();
 	return true;
 }
-void EnemySoldier::initBloodBar() {	//初始化血条
-	auto bgSprite = Sprite::create("empty_bar.png");
-	bgSprite->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));//坐标点，相对于背景的
-	addChild(bgSprite);
-	auto hpSprite = Sprite::create("full_bar.png");
-	blood = ProgressTimer::create(hpSprite);
-	blood->setType(ProgressTimer::Type::BAR);
-	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));//坐标点，相对于背景的
-	blood->setMidpoint(cocos2d::ccp(1, 0.5));
-	blood->setBarChangeRate(cocos2d::ccp(1, 0));
-	blood->setMidpoint(Point(0, 0.5));
-	blood->setBarChangeRate(Point(1, 0));
-	blood->setPercentage(100);//满值 100%
-							  //addChild(blood, 0, 0);
-	addChild(blood);
-}
 
 void EnemySoldier::initMonsterAttr(int attackAbility, int _bloodNum, int _rewardMoney, int _rewardExp,Vec2 towerPos)
 {
@@ -32,8 +16,10 @@ void EnemySoldier::initMonsterAttr(int attackAbility, int _bloodNum, int _reward
 	deadRewardmoney = _rewardMoney;
 	deadRewardExp = _rewardExp;
 	attackTowerPos = towerPos;
-	initBloodBar();
-
+	blood = Progress::create("Enemy_empty_bar.png", "Enemy_full_bar.png");
+	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
+	this->addChild(blood);
+	this->retain();
 }
 void EnemySoldier::setNewAttackRect() {
 	attack_rect = new Rect(this->getPositionX() - 100, this->getPositionY() - 100, 200, 200);
@@ -177,7 +163,7 @@ void EnemySoldier::attackTower(float dt) {
 	//isAttacking = true;
 
 	if (enemyTower != NULL && isAttacking == true) {
-		enemyTower->minusBlood(attackMinusNum, this);
+		enemyTower->soldierAttackMinusBlood(attackMinusNum);
 		Animation *animation = Animation::create();
 		int dir = getAttackDir(getNowPointDir(this, enemyTower->getPosition()));
 		for (int i = 0; i < 10; i++)
@@ -198,7 +184,7 @@ void EnemySoldier::attackTower(float dt) {
 		this->unscheduleAttack();	//在1.0f之后执行，并且只执行一次。
 	}
 }
-void EnemySoldier::minusBlood(int num) {
+void EnemySoldier::minusBlood(int num,Hero* hero) {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
 		blood->setPercentage(bloodNum);
@@ -208,6 +194,7 @@ void EnemySoldier::minusBlood(int num) {
 		this->setVisible(false);	//离世了，不可见
 		bloodNum = 0;
 		//this->setPosition(initPos);
+		hero->addReward(deadRewardmoney, deadRewardExp);
 		this->unscheduleAllSelectors();
 	}
 }
@@ -236,4 +223,19 @@ void EnemySoldier::startWalkTowardsTower(int dir) {
 	//log("dis is %f", dis);
 	runAction(MoveTo::create(dis*4 / 100, attackTowerPos));
 
+}
+
+void EnemySoldier::towerAttackMinusBlood(int num)
+{
+	if (bloodNum - num >= 0) {
+		bloodNum -= num;
+		blood->setPercentage(bloodNum);
+	}
+	else {//离世判断
+		blood->setPercentage(0);
+		this->setVisible(false);	//离世了，不可见
+		bloodNum = 0;
+		//this->setPosition(initPos);
+		this->unscheduleAllSelectors();
+	}
 }
