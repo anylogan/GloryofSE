@@ -151,6 +151,7 @@ void StoreScene::buyCallback(Ref* pSender)
 	if (leftMoney >= 0&& equipmentBoughtList[tag] ==0)
 	{
 		clientPlayer->setMoney(leftMoney);
+		playMoney = clientPlayer->getMoney();
 		equipmentBoughtList[tag] = 1;
 		//更新金钱显示
 		LabelTTF *label = (LabelTTF*)(this->getChildByTag(155)->getChildByTag(156));

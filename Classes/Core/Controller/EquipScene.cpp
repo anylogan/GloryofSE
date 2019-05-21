@@ -148,52 +148,52 @@ void EquipScene::equipCallback(Ref* pSender)
 		switch (tag)
 		{
 		case 0:
-
+			clientPlayer->bounsAttack +=10;
 			break;
 		case 1:
-
+			clientPlayer->bounsAttack += 25;
 			break;
 		case 2:
-
+			clientPlayer->bounsAttack += 50;
 			break;
 		case 3:
-
+			clientPlayer->bounsAttack += 80;
 			break;
 		case 4:
-
+			clientPlayer->bounsDefend += 10;
 			break;
 		case 5:
-
+			clientPlayer->bounsDefend += 25;
 			break;
 		case 6:
-
+			clientPlayer->bounsDefend += 50;
 			break;
 		case 7:
-
+			clientPlayer->bounsDefend += 80;
 			break;
 		case 8:
-
+			clientPlayer->bounsBlood += 50;
 			break;
 		case 9:
-
+			clientPlayer->bounsBlood += 100;
 			break;
 		case 10:
-
+			clientPlayer->bounsBlood += 150;
 			break;
 		case 11:
-
+			clientPlayer->bounsBlood += 200;
 			break;
 		case 12:
-
+			clientPlayer->bounsSpeed += 5;
 			break;
 		case 13:
-
+			clientPlayer->bounsSpeed += 15;
 			break;
 		case 14:
-
+			clientPlayer->bounsSpeed += 25;
 			break;
 		case 15:
-
+			clientPlayer->bounsSpeed += 50;
 			break;
 		}
 	}
@@ -202,56 +202,56 @@ void EquipScene::equipCallback(Ref* pSender)
 		{
 			//撤销标记
 			equipmentEquippedList[tag] = 0;
-			//只撤销添加了的属性
+			//只撤销添加了的属性(若减少为负数，则取0)
 			switch (tag)
 			{
 			case 0:
-
+				clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 10) > 0 ? (clientPlayer->bounsAttack - 10) : 0);
 				break;
 			case 1:
-
+				clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 25) > 0 ? (clientPlayer->bounsAttack - 25) : 0);
 				break;
 			case 2:
-
+				clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 50) > 0 ? (clientPlayer->bounsAttack - 50) : 0);
 				break;
 			case 3:
-
+				clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 80) > 0 ? (clientPlayer->bounsAttack - 80) : 0);
 				break;
 			case 4:
-
+				clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 10) > 0 ? (clientPlayer->bounsDefend - 10) : 0);
 				break;
 			case 5:
-
+				clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 25) > 0 ? (clientPlayer->bounsDefend - 25) : 0);
 				break;
 			case 6:
-
+				clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 50) > 0 ? (clientPlayer->bounsDefend - 50) : 0);
 				break;
 			case 7:
-
+				clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 80) > 0 ? (clientPlayer->bounsDefend - 80) : 0);
 				break;
 			case 8:
-
+				clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 50) > 0 ? (clientPlayer->bounsBlood - 50) : 0);
 				break;
 			case 9:
-
+				clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 100) > 0 ? (clientPlayer->bounsBlood - 100) : 0);
 				break;
 			case 10:
-
+				clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 150) > 0 ? (clientPlayer->bounsBlood - 150) : 0);
 				break;
 			case 11:
-
+				clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 200) > 0 ? (clientPlayer->bounsBlood - 200) : 0);
 				break;
 			case 12:
-
+				clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 5) > 0 ? (clientPlayer->bounsSpeed - 5) : 0);
 				break;
 			case 13:
-
+				clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 15) > 0 ? (clientPlayer->bounsSpeed - 15) : 0);
 				break;
 			case 14:
-
+				clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 25) > 0 ? (clientPlayer->bounsSpeed - 25) : 0);
 				break;
 			case 15:
-
+				clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 50) > 0 ? (clientPlayer->bounsSpeed - 50) : 0);
 				break;
 			}
 		}
@@ -269,52 +269,52 @@ void EquipScene::equipCallbackEquipped(Ref* pSender)
 		switch (tag)
 		{
 		case 0:
-
+			clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 10) > 0 ? (clientPlayer->bounsAttack - 10) : 0);
 			break;
 		case 1:
-
+			clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 25) > 0 ? (clientPlayer->bounsAttack - 25) : 0);
 			break;
 		case 2:
-
+			clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 50) > 0 ? (clientPlayer->bounsAttack - 50) : 0);
 			break;
 		case 3:
-
+			clientPlayer->bounsAttack = ((clientPlayer->bounsAttack - 80) > 0 ? (clientPlayer->bounsAttack - 80) : 0);
 			break;
 		case 4:
-
+			clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 10) > 0 ? (clientPlayer->bounsDefend - 10) : 0);
 			break;
 		case 5:
-
+			clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 25) > 0 ? (clientPlayer->bounsDefend - 25) : 0);
 			break;
 		case 6:
-
+			clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 50) > 0 ? (clientPlayer->bounsDefend - 50) : 0);
 			break;
 		case 7:
-
+			clientPlayer->bounsDefend = ((clientPlayer->bounsDefend - 80) > 0 ? (clientPlayer->bounsDefend - 80) : 0);
 			break;
 		case 8:
-
+			clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 50) > 0 ? (clientPlayer->bounsBlood - 50) : 0);
 			break;
 		case 9:
-
+			clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 100) > 0 ? (clientPlayer->bounsBlood - 100) : 0);
 			break;
 		case 10:
-
+			clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 150) > 0 ? (clientPlayer->bounsBlood - 150) : 0);
 			break;
 		case 11:
-
+			clientPlayer->bounsBlood = ((clientPlayer->bounsBlood - 200) > 0 ? (clientPlayer->bounsBlood - 200) : 0);
 			break;
 		case 12:
-
+			clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 5) > 0 ? (clientPlayer->bounsSpeed - 5) : 0);
 			break;
 		case 13:
-
+			clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 15) > 0 ? (clientPlayer->bounsSpeed - 15) : 0);
 			break;
 		case 14:
-
+			clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 25) > 0 ? (clientPlayer->bounsSpeed - 25) : 0);
 			break;
 		case 15:
-
+			clientPlayer->bounsSpeed = ((clientPlayer->bounsSpeed - 50) > 0 ? (clientPlayer->bounsSpeed - 50) : 0);
 			break;
 		}
 	}
@@ -372,52 +372,52 @@ void EquipScene::equipCallbackEquipped(Ref* pSender)
 			switch (tag)
 			{
 			case 0:
-
+				clientPlayer->bounsAttack += 10;
 				break;
 			case 1:
-
+				clientPlayer->bounsAttack += 25;
 				break;
 			case 2:
-
+				clientPlayer->bounsAttack += 50;
 				break;
 			case 3:
-
+				clientPlayer->bounsAttack += 80;
 				break;
 			case 4:
-
+				clientPlayer->bounsDefend += 10;
 				break;
 			case 5:
-
+				clientPlayer->bounsDefend += 25;
 				break;
 			case 6:
-
+				clientPlayer->bounsDefend += 50;
 				break;
 			case 7:
-
+				clientPlayer->bounsDefend += 80;
 				break;
 			case 8:
-
+				clientPlayer->bounsBlood += 50;
 				break;
 			case 9:
-
+				clientPlayer->bounsBlood += 100;
 				break;
 			case 10:
-
+				clientPlayer->bounsBlood += 150;
 				break;
 			case 11:
-
+				clientPlayer->bounsBlood += 200;
 				break;
 			case 12:
-
+				clientPlayer->bounsSpeed += 5;
 				break;
 			case 13:
-
+				clientPlayer->bounsSpeed += 15;
 				break;
 			case 14:
-
+				clientPlayer->bounsSpeed += 25;
 				break;
 			case 15:
-
+				clientPlayer->bounsSpeed += 50;
 				break;
 			}
 		}

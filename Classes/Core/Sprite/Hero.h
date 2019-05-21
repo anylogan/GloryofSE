@@ -58,9 +58,10 @@ private:
 public:
 	Vec2 initPos;			//瓦片地图初始化位置
 	Tower* enemyTower;
-	int bounsSpeed;
-	int bounsAttack;
-	int bounsDefend;
+	int bounsSpeed=0;
+	int bounsAttack=0;
+	int bounsDefend=0;
+	int bounsBlood = 0;
 	Vector<EnemySoldier*> *thisSoldierVector; //定义的是客户端用户的soldier
 	void addReward(int moneyNum,int expNum) {
 		money += moneyNum;
