@@ -15,6 +15,8 @@
 #include"Core/Sprite/EnemySoldier.h"
 
 USING_NS_CC;
+//全局变量
+extern int playMoney;
 
 class GameController : public Layer   //游戏控制类
 {

@@ -4,6 +4,9 @@
 #define hero_yase "hero/yase.jpg"
 #define hero_moonGoddess_pao " "
 USING_NS_CC;
+//初始化全局变量
+int playMoney = 15000;
+
 extern hero_role HeroRole;
 GameController* GameController::createScene()
 {
