@@ -53,8 +53,8 @@ bool GameController::init()
 void GameController::mapElementsInit() {
 	/*创建对象元素-Players*/
 	//创建player1
-	hero1->thisSoldierVector = new Vector<EnemySoldier*>;
-	hero2->thisSoldierVector = new Vector<EnemySoldier*>;
+	hero1->thisSoldierVector = new std::vector<EnemySoldier*>;
+	hero2->thisSoldierVector = new std::vector<EnemySoldier*>;
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
 	auto spawnPoint = group->getObject("Player1");
 	_collidable = _tileMap->getLayer("Collidable");
@@ -71,6 +71,25 @@ void GameController::mapElementsInit() {
 	y = spawnPoint["y"].asFloat();
 	hero2->initPos = Vec2(x, y);
 	hero2->setPosition(Vec2(x, y));
+	/*建塔—Tower*/
+	spawnPoint = group->getObject("Tower1");
+	auto tower1 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	//Tower1->initPos = Vec2(x, y);
+	TowerVector.push_back(tower1);
+	tower1->setPosition(Vec2(x, y));
+
+	spawnPoint = group->getObject("Tower2");
+	auto tower2 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	//Tower1->initPos = Vec2(x, y);
+	TowerVector.push_back(tower2);
+	tower2->setPosition(Vec2(x, y));
+	/*hero 初始化*/
+	hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+	hero2->initHeroAttr(100, 1.0, 1000, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
 	/*创建对象元素-Monsters*/
 	spawnPoint = group->getObject("fieldMonster1");
 	x = spawnPoint["x"].asFloat();
@@ -94,8 +113,8 @@ void GameController::mapElementsInit() {
 	clientSoldier1->initPos = Vec2(x, y);
 	clientSoldier1->setPosition(Vec2(x, y));
 	clientSoldier1->enemyHero = hero1;
-	clientSoldierVector.pushBack(clientSoldier1);
-	hero1->thisSoldierVector->pushBack(clientSoldier1);
+	clientSoldierVector.push_back(clientSoldier1);
+	hero1->thisSoldierVector->push_back(clientSoldier1);
 	spawnPoint = group->getObject("soldier2");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -103,8 +122,8 @@ void GameController::mapElementsInit() {
 	clientSoldier2->initPos = Vec2(x, y);
 	clientSoldier2->setPosition(Vec2(x, y));
 	clientSoldier2->enemyHero = hero1;
-	clientSoldierVector.pushBack(clientSoldier2);	
-	hero1->thisSoldierVector->pushBack(clientSoldier2);
+	clientSoldierVector.push_back(clientSoldier2);	
+	hero1->thisSoldierVector->push_back(clientSoldier2);
 
 	spawnPoint = group->getObject("soldier3");
 	x = spawnPoint["x"].asFloat();
@@ -113,8 +132,8 @@ void GameController::mapElementsInit() {
 	clientSoldier3->initPos = Vec2(x, y);
 	clientSoldier3->setPosition(Vec2(x, y));
 	clientSoldier3->enemyHero = hero1;
-	clientSoldierVector.pushBack(clientSoldier3);
-	hero1->thisSoldierVector->pushBack(clientSoldier3);
+	clientSoldierVector.push_back(clientSoldier3);
+	hero1->thisSoldierVector->push_back(clientSoldier3);
 
 	spawnPoint = group->getObject("soldier4");
 	x = spawnPoint["x"].asFloat();
@@ -123,8 +142,8 @@ void GameController::mapElementsInit() {
 	clientSoldier4->initPos = Vec2(x, y);
 	clientSoldier4->setPosition(Vec2(x, y));
 	clientSoldier4->enemyHero = hero2;
-	clientSoldierVector.pushBack(clientSoldier4);
-	hero2->thisSoldierVector->pushBack(clientSoldier4);
+	clientSoldierVector.push_back(clientSoldier4);
+	hero2->thisSoldierVector->push_back(clientSoldier4);
 
 	spawnPoint = group->getObject("soldier5");
 	x = spawnPoint["x"].asFloat();
@@ -133,8 +152,8 @@ void GameController::mapElementsInit() {
 	clientSoldier5->initPos = Vec2(x, y);
 	clientSoldier5->setPosition(Vec2(x, y));
 	clientSoldier5->enemyHero = hero2;
-	clientSoldierVector.pushBack(clientSoldier5);
-	hero2->thisSoldierVector->pushBack(clientSoldier5);
+	clientSoldierVector.push_back(clientSoldier5);
+	hero2->thisSoldierVector->push_back(clientSoldier5);
 
 	spawnPoint = group->getObject("soldier6");
 	x = spawnPoint["x"].asFloat();
@@ -143,26 +162,10 @@ void GameController::mapElementsInit() {
 	clientSoldier6->initPos = Vec2(x, y);
 	clientSoldier6->setPosition(Vec2(x, y));
 	clientSoldier6->enemyHero = hero2;
-	clientSoldierVector.pushBack(clientSoldier6);
-	hero2->thisSoldierVector->pushBack(clientSoldier6);
+	clientSoldierVector.push_back(clientSoldier6);
+	hero2->thisSoldierVector->push_back(clientSoldier6);
 
-	/*建塔—Tower*/
-	spawnPoint = group->getObject("Tower1");
-	auto tower1 = static_cast<Tower*>(Tower::create("towerTile.png"));
-	x = spawnPoint["x"].asFloat();
-	y = spawnPoint["y"].asFloat();
-	//Tower1->initPos = Vec2(x, y);
-	TowerVector.pushBack(tower1);
-	tower1->setPosition(Vec2(x, y));
-
-	spawnPoint = group->getObject("Tower2");
-	auto tower2 = static_cast<Tower*>(Tower::create("towerTile.png"));
-	x = spawnPoint["x"].asFloat();
-	y = spawnPoint["y"].asFloat();
-	//Tower1->initPos = Vec2(x, y);
-	TowerVector.pushBack(tower2);
-	tower2->setPosition(Vec2(x, y));
-
+	/*addchild 设置初值*/
 	addChild(monster1, 100);
 	addChild(monster2, 200);
 	addChild(hero1, 300);
@@ -170,15 +173,14 @@ void GameController::mapElementsInit() {
 	int i = 0;
 	for (auto it = TowerVector.begin(); it != TowerVector.end(),i<2; it++,i++) {
 		if(i==0)
-			(*it)->initTowerAttr(10, 1000, 150, 20,hero2);	//应该分开！
+			(*it)->initTowerAttr(10, 1000, 150, 20, hero2);	//应该分开！
 		else  (*it)->initTowerAttr(10, 1000, 150, 20, hero1);	//应该分开！
 		//(*it)->initBloodBar();
-		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
+		(*it)->enemySoldierOfTower = new std::vector<EnemySoldier*>;
 		addChild(*it);
 	}
 	//因为tower没有初始化，所以hero放在这里初始化。
-	hero1->initHeroAttr(100, 1.0, 1000, 10, 0, TowerVector.at(1)); //如果是tower1，就是0号 这里做测试用 记得改回来
-	hero2->initHeroAttr(100, 1.0, 1000, 10, 0, TowerVector.at(0)); //如果是tower1，就是0号 这里做测试用 记得改回来
+
 
 	i = 0;
 	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(),i<6; it++,i++) {
@@ -187,14 +189,14 @@ void GameController::mapElementsInit() {
 			//(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower1;		//后需修改！！
-			tower1->enemySoldierOfTower->pushBack(*it);
+			tower1->enemySoldierOfTower->push_back(*it);
 		}
 		else {
 			(*it)->initMonsterAttr(20, 100, 150, 20, tower2->getPosition()); //先设置小怪攻击量20
 																			 //(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower2;		//后需修改！！
-			tower2->enemySoldierOfTower->pushBack(*it);
+			tower2->enemySoldierOfTower->push_back(*it);
 		}
 	}
 
@@ -224,24 +226,28 @@ void GameController::clientPlayerAttack() {
 	clientPlayer->attackEnemyAnimation(getAttackDir(hero1->currentPos));//播放攻击动画
 	auto monster1Hit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer,monster1->getPosition()));
 	auto monster2Hit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer,monster1->getPosition()));
+	auto serverPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, serverPlayer->getPosition()));
+	if (serverPlayerHit && serverPlayer->getBloodNum() >= 0) //可以再加入hero2
+		if (clientPlayer->inRect->containsPoint(serverPlayer->getPosition()))
+			serverPlayer->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack);
 
 	if (monster1Hit && monster1->blood>=0) //可以再加入hero2
 		if(monster1->attack_rect->containsPoint(clientPlayer->getPosition()))
-			monster1->minusBlood(clientPlayer->getCommonAttack()+clientPlayer->bounsAttack, clientPlayer);
+			monster1->minusBlood(clientPlayer->getCommonAttack()+clientPlayer->bonusAttack, clientPlayer);
 		
 	if (monster2Hit && monster1->blood >= 0)//可以再加入hero2
 		if (monster2->attack_rect->containsPoint(clientPlayer->getPosition()))
-			monster2->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bounsAttack, clientPlayer);
+			monster2->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	for (int i = 0; i < 3; i++) {
 		auto testEnemy = clientSoldierVector.at(i);
 		auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testEnemy->getPosition()));
 		if (checkPlayerHit && testEnemy->attack_rect->containsPoint(clientPlayer->getPosition()))
-			testEnemy->minusBlood(clientPlayer->getCommonAttack(),clientPlayer);
+			testEnemy->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack,clientPlayer);
 	}
 	auto testTower = clientPlayer->enemyTower;
 	auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testTower->getPosition()));
 	if (checkPlayerHit && testTower->attack_rect->containsPoint(clientPlayer->getPosition()))
-			testTower->minusBlood(clientPlayer->getCommonAttack(), clientPlayer);
+			testTower->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	
 }
 void GameController::collidableCheck()
@@ -298,13 +304,13 @@ void  GameController::updateView(float dt)  //刷新函数
 	collidableCheck();
 }
 void GameController::AI_Hero_Run(float dt) {
-	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum > 0) {
+	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum >0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(0)->getPosition());
 	}
 	else if (serverPlayer->thisSoldierVector->at(1)->bloodNum>0) {
 			serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(1)->getPosition());
 	}
-	else if (serverPlayer->thisSoldierVector->at(2)->bloodNum > 0) {
+	else if (serverPlayer->thisSoldierVector->at(2)->bloodNum>0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(2)->getPosition());
 	}
 	else {
@@ -313,20 +319,37 @@ void GameController::AI_Hero_Run(float dt) {
 }
 
 void GameController::AI_Hero_Attack(float dt) {
+	/*
 	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum > 0) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 	}
 	else if (serverPlayer->thisSoldierVector->at(1)->bloodNum>0) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 	}
-	else if (serverPlayer->thisSoldierVector->at(2)->bloodNum > 0) {
+	else if (serverPlayer->thisSoldierVector->at(2)->bloodNum >0) {
+		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
+	}
+	else if (hero1->getBloodNum() >0) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
 	}
 	else {
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 	}
+	*/
+		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
+		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
+		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
+		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
+		serverPlayer->autoAttack(serverPlayer->enemyTower);
+		serverPlayer->autoAttack(clientPlayer);
+
 }
+
+
 void GameController::spriteRectCheck(float dt) {
+	clientPlayer->inRect= new Rect(clientPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
+	//serverPlayer->inRect = new Rect(serverPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
+
 	if (monster1->checkHeroInRect(hero1, hero2) == true) {
 		if (monster1->isAttacking == false && monster1->bloodNum>=0) {
 			monster1->isAttacking = true;
@@ -648,7 +671,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	float dif_y = y1 - y2;
 	float dis = sqrt(dif_x*dif_x + dif_y * dif_y);
 	//log("dis is %f", dis);
-	clientPlayer->runAction(MoveTo::create(dis*speed / 100, touchLocation));
+	clientPlayer->runAction(MoveTo::create(dis*(speed-(float)(clientPlayer->bonusSpeed/100.0)) / 100.0, touchLocation));
 	clientPlayer->isHeroWalking = false;
 	//hero1->stopAllActions();
 	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动

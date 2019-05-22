@@ -55,14 +55,16 @@ private:
 	float speed;			//人物移动速度
 	int commonAttack;	   //普通攻击值
 	int exp;
+	int fullBlood;
+
 public:
 	Vec2 initPos;			//瓦片地图初始化位置
 	Tower* enemyTower;
-	int bounsSpeed=0;
-	int bounsAttack=0;
-	int bounsDefend=0;
-	int bounsBlood = 0;
-	Vector<EnemySoldier*> *thisSoldierVector; //定义的是客户端用户的soldier
+	int bonusSpeed;
+	int bonusAttack;
+	int bonusDefend;
+	int bonusBlood;
+	std::vector<EnemySoldier*> *thisSoldierVector; //定义的是客户端用户的soldier
 	void addReward(int moneyNum,int expNum) {
 		money += moneyNum;
 		exp += expNum;
@@ -74,6 +76,7 @@ public:
 	void autoRun(Vec2 pos);
 	int getAttackDir(int tempDir);
 	bool isHeroWalking;
+	Rect *inRect;
 	int currentPos;
 	float getHeroSpeed();	     //返回速度
 	int getCommonAttack() { return commonAttack; }       //返回普通攻击值
@@ -86,6 +89,7 @@ public:
 	void setMoney(int num) { money = num; }
 	int getMoney() { return money; }
 	void initHeroAttr(int _money, float _speed, int _blood, int _commonAttack, int _exp, Tower* _tower);
+	void equipbonusBlood(int num);
 	//CREATE_FUNC(Hero);   //这句代码不能写！！不然无法create英雄
 };
 

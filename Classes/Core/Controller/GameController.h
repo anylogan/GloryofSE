@@ -1,7 +1,7 @@
 #pragma once
 
 #include"cocos2d.h"
-
+#include <vector>
 #include"Scene/SelectHeroScene.h"
 //包含层类头文件
 #include"Scene/ButtonLayer.h"
@@ -26,10 +26,10 @@ public:
 	TMXTiledMap * _tileMap;
 	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
-	Vector<EnemySoldier*> clientSoldierVector;    //存放EnemySoldier对象的容器
+	std::vector<EnemySoldier*> clientSoldierVector;    //存放EnemySoldier对象的容器
 	fieldMonster* monster1;
     fieldMonster* monster2;
-	Vector<Tower*>TowerVector;				//存放塔指针的容器
+	std::vector<Tower*>TowerVector;				//存放塔指针的容器
 	bool ismousedown;
 	char *bigSkillFormat;    //大招路径
 	char *mediumSkillFormat;  //中招路径

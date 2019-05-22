@@ -1,7 +1,7 @@
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/EnemySoldier.h"
-
-
+#include<vector>
+extern Hero* clientPlayer;
 
 bool Hero::init()  //  英雄的总的控制
 {
@@ -16,15 +16,25 @@ void Hero::autoAttack(Node* thisSoldier) {
 	if (thisSoldier == this->enemyTower) {
 		Tower* tempSoldier = static_cast<Tower*> (thisSoldier);
 		bool checkInRect = tempSoldier->attack_rect->containsPoint(this->getPosition());
-		if (checkInRect) {
+		if (checkInRect && tempSoldier->bloodNum>0) {
 			int attackDir = getAttackDir(getNowPointDir(this, tempSoldier->getPosition()));
 			attackEnemyAnimation(attackDir);
 			tempSoldier->minusBlood(commonAttack, this);
 		}
-	} {
+	} 
+	else if(thisSoldier==clientPlayer){
+		Hero* tempSoldier = static_cast<Hero*> (thisSoldier);
+		bool checkInRect = tempSoldier->inRect->containsPoint(this->getPosition());
+		if (checkInRect && tempSoldier->getBloodNum()>0) {
+			int attackDir = getAttackDir(getNowPointDir(this, tempSoldier->getPosition()));
+			attackEnemyAnimation(attackDir);
+			tempSoldier->minusBlood(commonAttack);
+		}
+	}
+	else {
 		EnemySoldier* tempSoldier = static_cast<EnemySoldier*> (thisSoldier);
 		bool checkInRect = tempSoldier->attack_rect->containsPoint(this->getPosition());
-		if (checkInRect) {
+		if (checkInRect  && tempSoldier->bloodNum>0) {
 			int attackDir = getAttackDir(getNowPointDir(this, tempSoldier->getPosition()));
 			attackEnemyAnimation(attackDir);
 			tempSoldier->minusBlood(commonAttack, this);
@@ -157,6 +167,8 @@ void Hero::updateHeroSpeed(float newspeed)
 }
 void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack, int _exp, Tower * _tower)
 {
+	inRect = new Rect(this->getPositionX() - 100, this->getPositionY() - 100, 200, 200);
+	fullBlood = _blood;
 	money = _money;
 	speed = _speed;
 	bloodNum = _blood;
@@ -164,13 +176,18 @@ void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack,
 	isHeroWalking = false;
 	exp = _exp;
 	enemyTower = _tower;
-	bounsSpeed = 0;
-	bounsDefend = 0;
-	bounsAttack = 0;
+	bonusSpeed = 0;
+	bonusDefend = 0;
+	bonusAttack = 0;
+	bonusBlood = 0;
 	blood = Progress::create("empty_bar.png", "full_bar.png");
 	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
 	isHeroWalking = false;
 	this->addChild(blood);
+}
+void Hero::equipbonusBlood(int num) {
+	this->bloodNum += num;
+	this->fullBlood += num;
 }
 float Hero::getHeroSpeed()
 {
@@ -178,16 +195,19 @@ float Hero::getHeroSpeed()
 }
 
 void Hero::minusBlood(int num) {
-	if (bloodNum - num >= 0) {
-		bloodNum -= num;
-		blood->setPercentage(((float)bloodNum) / 10.0);
-	}
-	else {//离世判断
-		blood->setPercentage(0);
-		this->setVisible(false);	//离世了，不可见
-		bloodNum = 0;
-		this->setPosition(initPos);
+	int actualMinus = num - bonusAttack;		//bonus
+	if (actualMinus > 0) {
+		if (bloodNum - actualMinus >= 0) {
+			bloodNum -= actualMinus;
+			blood->setPercentage(((float)bloodNum) / ((float)(fullBlood)/100.0));
+		}
+		else {//离世判断
+			blood->setPercentage(0);
+			this->setVisible(false);	//离世了，不可见
+			bloodNum = 0;
+			this->setPosition(initPos);
 
+		}
 	}
 }
 

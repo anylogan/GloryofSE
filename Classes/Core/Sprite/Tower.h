@@ -2,7 +2,7 @@
 #include"cocos2d.h"
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/Progress.h"
-
+#include <vector>
 class EnemySoldier;		//ÉùÃ÷Àà
 
 USING_NS_CC;
@@ -23,7 +23,7 @@ public:
 	void minusBlood(int num, Node* attacker);
 	void soldierAttackMinusBlood(int num);
 	Hero* enemyHero;
-	Vector<EnemySoldier*> *enemySoldierOfTower;
+	std::vector<EnemySoldier*> *enemySoldierOfTower;
 	bool isAttacking;
 	void scheduleAttack();
 	void unscheduleAttack();
