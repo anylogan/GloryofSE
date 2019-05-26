@@ -1,47 +1,13 @@
 #include"Scene/SelectHeroScene.h"
-hero_role HeroRole = moonGoddess; //定义一个全局变量  并且初始化
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
 using namespace CocosDenshion;
+hero_role HeroRole; //定义一个全局变量  并且初始化
 
 Scene*  SelectHeroScene::createScene()
 {
 	return  SelectHeroScene::create();
 }
-void  SelectHeroScene::onEnter()
-{
-	Scene::onEnter();
-	log("MainMenu onEnter");
-}
-
-void  SelectHeroScene::onEnterTransitionDidFinish()
-{
-	Scene::onEnterTransitionDidFinish();
-	log("MainMenu onEnterTransitionDidFinish");
-	//播放
-	//if (UserDefault::getInstance()->getBoolForKey(MUSIC_KEY)) {
-	//	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
-	//}
-}
-
-void  SelectHeroScene::onExit()
-{
-	Scene::onExit();
-	log("MainMenu onExit");
-}
-
-void  SelectHeroScene::onExitTransitionDidStart()
-{
-	Scene::onExitTransitionDidStart();
-	log("MainMenu onExitTransitionDidStart");
-}
-
-void  SelectHeroScene::cleanup()
-{
-	Scene::cleanup();
-	log("MainMenu cleanup");
-	//停止
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
-}
-
 
 bool  SelectHeroScene::init()
 {
@@ -50,47 +16,36 @@ bool  SelectHeroScene::init()
 		return false;
 	}
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
-
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	//添加背景
-	Sprite *bg = Sprite::create("SelectHeroground.jpg");
-	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-	this->addChild(bg);
-
-	//添加菜单
-	/*MenuItemFont::setFontName("Times New Roman");
-	MenuItemFont::setFontSize(86);*/
-
-
-	//设置开始和设置菜单
-	MenuItemFont*moonGoddessItem = MenuItemFont::create("moonGoddess", CC_CALLBACK_1( SelectHeroScene::moonGoddessCallback, this));
-	moonGoddessItem->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-
-	
-
-	//将菜单项放到菜单对象中
-	Menu *mn = Menu::create(moonGoddessItem,NULL);
-	mn->setPosition(Vec2::ZERO);
-	this->addChild(mn);
+	auto rootNode = CSLoader::createNode("SelectHeroScene.csb");
+	auto ChangEbutton = static_cast<ui::Button*>(rootNode->getChildByName("CreateChange"));
+	ChangEbutton->addClickEventListener(CC_CALLBACK_1(SelectHeroScene::ChangeCallBack, this));
+	auto HuaMuLanbutton = static_cast<ui::Button*>(rootNode->getChildByName("CreateHuamulan"));
+	HuaMuLanbutton->addClickEventListener(CC_CALLBACK_1(SelectHeroScene::HuamulanCallBack, this));
+	auto SunWuKongbutton = static_cast<ui::Button*>(rootNode->getChildByName("CreateSunwukong"));
+	SunWuKongbutton->addClickEventListener(CC_CALLBACK_1(SelectHeroScene::SunCallBack, this));
+	addChild(rootNode);
 	return true;
-}
-
-
-void  SelectHeroScene::menuCloseCallback(Ref* pSender)
-{
-	//Close the cocos2d-x game scene and quit the application
-	Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 
 }
-void  SelectHeroScene::moonGoddessCallback(Ref *pSender)
+
+
+void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
-	HeroRole =moonGoddess;   //给全局变量赋值
+	HeroRole =ChangE;   //给全局变量赋值
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	auto scene = GameScene::createScene();
+	Director::getInstance()->pushScene(scene);
+}
+void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
+{
+	HeroRole = HuaMulan;   //给全局变量赋值
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	auto scene = GameScene::createScene();
+	Director::getInstance()->pushScene(scene);
+}
+void  SelectHeroScene::SunCallBack(Ref *pSender)
+{
+	HeroRole = SunWukong;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	auto scene = GameScene::createScene();
 	Director::getInstance()->pushScene(scene);

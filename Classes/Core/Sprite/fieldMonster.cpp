@@ -68,7 +68,7 @@ void fieldMonster::attackHero(float dt) {
 	}
 }
 void fieldMonster::minusBlood(int num,Hero* hero) {
-	if (bloodNum - num >= 0) {
+	if (bloodNum - num >0) {
 		bloodNum -= num;
 		blood->setPercentage(bloodNum);
 	}

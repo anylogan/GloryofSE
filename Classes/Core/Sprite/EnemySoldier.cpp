@@ -140,10 +140,21 @@ void EnemySoldier::attackHero(float dt) {
 		enemyHero->minusBlood(attackMinusNum);
 		Animation *animation = Animation::create();
 		int dir = getAttackDir(getNowPointDir(this, enemyHero->getPosition()));
-		for (int i = 0; i < 10; i++)
+		__String *frameName;
+		for (int i = 0; i < 8; i++)
 		{
-			__String *frameName = __String::createWithFormat(enemy_attck, dir, i);
-			log("frameName = %s", frameName->getCString());
+			switch (monsterType) {
+			case 1:
+				frameName = __String::createWithFormat(xixuebianfu_attck, dir, i);
+				break;
+			case 2:
+				frameName = __String::createWithFormat(kongjumo_attck, dir, i);
+				break;
+			case 3:
+				frameName = __String::createWithFormat(houjing_attck, dir, i);
+				break;
+			}			
+			//log("frameName = %s", frameName->getCString());
 			//SpriteFrame *spriteFrame = SpriteFrame::
 			animation->addSpriteFrameWithFile(frameName->getCString());
 		}
@@ -166,10 +177,21 @@ void EnemySoldier::attackTower(float dt) {
 		enemyTower->soldierAttackMinusBlood(attackMinusNum);
 		Animation *animation = Animation::create();
 		int dir = getAttackDir(getNowPointDir(this, enemyTower->getPosition()));
-		for (int i = 0; i < 10; i++)
+		__String *frameName;
+		for (int i = 0; i < 8; i++)
 		{
-			__String *frameName = __String::createWithFormat(enemy_attck, dir, i);
-			log("frameName = %s", frameName->getCString());
+			switch (monsterType) {
+				case 1:
+					frameName = __String::createWithFormat(xixuebianfu_attck, dir, i);
+					break;
+				case 2:
+					frameName = __String::createWithFormat(kongjumo_attck, dir, i);
+					break;
+				case 3:
+					frameName = __String::createWithFormat(houjing_attck, dir, i);
+					break;
+			}
+			//log("frameName = %s", frameName->getCString());
 			//SpriteFrame *spriteFrame = SpriteFrame::
 			animation->addSpriteFrameWithFile(frameName->getCString());
 		}
@@ -185,7 +207,7 @@ void EnemySoldier::attackTower(float dt) {
 	}
 }
 void EnemySoldier::minusBlood(int num,Hero* hero) {
-	if (bloodNum - num >= 0) {
+	if (bloodNum - num > 0) {
 		bloodNum -= num;
 		blood->setPercentage(bloodNum);
 	}
@@ -201,10 +223,22 @@ void EnemySoldier::minusBlood(int num,Hero* hero) {
 void EnemySoldier::startWalkTowardsTower(int dir) {
 	//this->stopAllActions();
 	Animation *animation = Animation::create();
-	for (int i = 0; i < 9; i++)
+	__String *frameName;
+
+	for (int i = 0; i < 8; i++)
 	{
-		__String *frameName = __String::createWithFormat(enemy_pao, dir, i);
-		log("frameName = %s", frameName->getCString());
+		switch (monsterType) {
+		case 1:
+			frameName = __String::createWithFormat(xixuebianfu_pao, dir, i);
+			break;
+		case 2:
+			frameName = __String::createWithFormat(kongjumo_pao, dir, i);
+			break;
+		case 3:
+			frameName = __String::createWithFormat(houjing_pao, dir, i);
+			break;
+		}
+		//log("frameName = %s", frameName->getCString());
 		//SpriteFrame *spriteFrame = SpriteFrame::
 		animation->addSpriteFrameWithFile(frameName->getCString());
 	}

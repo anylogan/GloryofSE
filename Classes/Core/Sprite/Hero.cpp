@@ -2,6 +2,7 @@
 #include"Core/Sprite/EnemySoldier.h"
 #include<vector>
 extern Hero* clientPlayer;
+extern hero_role HeroRole;
 
 bool Hero::init()  //  英雄的总的控制
 {
@@ -50,10 +51,18 @@ void Hero::autoRun(Vec2 pos) {
 	int newDir = getNowPointDir(this, pos);
 	this->currentPos = newDir;
 	Animation* animation = Animation::create();
+	__String *frameName;
 	for (int i = 0; i <= 7; i++)
 	{
-		__String *frameName = __String::createWithFormat("hero/change/pao/2154-e1380841-0%d00%d.png", newDir, i);
-		log("frameName = %s", frameName->getCString());
+		switch (HeroRole) {
+		case ChangE:
+			frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
+		case HuaMulan:
+			frameName = __String::createWithFormat(hero_HuaMulan_pao, newDir, i); break;
+		case SunWukong:
+			frameName = __String::createWithFormat(hero_SunWukong_pao, newDir, i);
+		}		
+		//log("frameName = %s", frameName->getCString());
 		//SpriteFrame *spriteFrame = SpriteFrame::
 		animation->addSpriteFrameWithFile(frameName->getCString());
 	}
@@ -149,10 +158,19 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 {
 	this->stopAllActions();
 	Animation *animation = Animation::create();
+	__String *frameName;
 	for (int i = 0; i < 10; i++)
 	{
-		__String *frameName = __String::createWithFormat(hero_moonGoddess_attack, dir, i);
-		log("frameName = %s", frameName->getCString());
+
+		switch (HeroRole) {
+		case ChangE:
+			frameName = __String::createWithFormat(hero_ChangE_attack, dir, i); break;
+		case HuaMulan:
+			frameName = __String::createWithFormat(hero_HuaMulan_attack, dir, i); break;
+		case SunWukong:
+			frameName = __String::createWithFormat(hero_SunWukong_attack, dir, i);
+		}
+		//log("frameName = %s", frameName->getCString());
 		//SpriteFrame *spriteFrame = SpriteFrame::
 		animation->addSpriteFrameWithFile(frameName->getCString());
 	}
@@ -183,6 +201,7 @@ void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack,
 	blood = Progress::create("empty_bar.png", "full_bar.png");
 	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
 	isHeroWalking = false;
+	killCount = 0;
 	this->addChild(blood);
 }
 void Hero::equipbonusBlood(int num) {

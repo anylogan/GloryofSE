@@ -3,8 +3,7 @@
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/Tower.h"
 #include"Core/Sprite/Progress.h"
-#define enemy_pao "monster/kongjumo/pao/1004-6579bfb5-0%d00%d.png"
-#define enemy_attck "monster/kongjumo/attck/1881-c1b24bac-0%d00%d.png"
+
 USING_NS_CC;
 //class Tower;
 
@@ -12,6 +11,7 @@ class EnemySoldier : public Sprite
 {
 public:
 	Progress * blood;   //ÑªÁ¿
+	int monsterType;
 	int bloodNum;  //ÑªÁ¿
 	Vec2 initPos;
 	Vec2 attackTowerPos;

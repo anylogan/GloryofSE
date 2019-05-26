@@ -1,4 +1,6 @@
 #include"StartScene.h"
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
 //#include"Scene/GameScene.h"
 USING_NS_CC;
 using namespace CocosDenshion;
@@ -25,31 +27,20 @@ bool StartScene::init()
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	//添加背景
-	Sprite *bg = Sprite::create("bg.jpg");
-	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
-	this->addChild(bg);
-
-	//添加菜单
-	/*MenuItemFont::setFontName("Times New Roman");
-	MenuItemFont::setFontSize(86);*/
-
-	
-	//设置开始和设置菜单
-	MenuItemImage*startMenuItem = MenuItemImage::create("startbutton.png", "startbutton2.png", CC_CALLBACK_1(StartScene::menuItemLoginCallback, this));
-	MenuItemImage*settingMenuItem = MenuItemImage::create("setbutton.png", "setbutton2.png", CC_CALLBACK_1(StartScene::menuItemSettingCallback, this));
-	
+	auto rootNode = CSLoader::createNode("MainScene.csb");
+	auto StartGamebutton = static_cast<ui::Button*>(rootNode->getChildByName("StartGame"));
+	StartGamebutton->addClickEventListener(CC_CALLBACK_1(StartScene::menuItemLoginCallback, this));
+	auto Settingbutton = static_cast<ui::Button*>(rootNode->getChildByName("Setting"));
+	Settingbutton->addClickEventListener(CC_CALLBACK_1(StartScene::menuItemSettingCallback, this));
+	auto QuitGamebutton = static_cast<ui::Button*>(rootNode->getChildByName("QuitGame"));
+	QuitGamebutton->addClickEventListener(CC_CALLBACK_1(StartScene::menuCloseCallback, this));
 	//设置帮助菜单
 	MenuItemImage*helpMenuItem = MenuItemImage::create("help.jpg", "help.jpg", CC_CALLBACK_1(StartScene::menuItemHelpCallback, this));
-	startMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.2);//(Director::getInstance()->convertToGL(Vec2(570, 230)));
-	//startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(960, 780)));
-	settingMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.1);//(Director::getInstance()->convertToGL(Vec2(570, 320)));
 	helpMenuItem->setPosition(origin.x + visibleSize.width * 0.015, origin.y + visibleSize.height *0.97);
-	
 	//将菜单项放到菜单对象中
-	Menu *mn = Menu::create(startMenuItem,settingMenuItem,helpMenuItem,NULL);
+	Menu *mn = Menu::create(helpMenuItem,NULL);
 	mn->setPosition(Vec2::ZERO);
+	this->addChild(rootNode);
 	this->addChild(mn);
 	return true;
 }
@@ -85,6 +76,7 @@ void StartScene::menuItemSettingCallback(cocos2d::Ref*pSender)
 	Director::getInstance()->pushScene(sc);
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 }
+
 void StartScene::menuItemHelpCallback(cocos2d::Ref*pSender)
 {
 	auto sc = HelpScene::createScene();

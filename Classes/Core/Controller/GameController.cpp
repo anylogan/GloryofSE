@@ -1,14 +1,14 @@
 #include"Core/Controller/GameController.h"
-#define hero_moonGoddess "hero/change/zhan/0649-3ea35add-00000.png"
-#define hero_houyi "hero/houyi.jpg"
-#define hero_yase "hero/yase.jpg"
-#define hero_moonGoddess_pao " "
+#include"Scene/GameResultSuccess.h"
+#include"Scene/GameResultFailure.h"
+
 USING_NS_CC;
 //初始化全局变量
 extern hero_role HeroRole;
 Hero* clientPlayer;
 Hero* serverPlayer;
-
+int GameResult[4]; //传递游戏结果
+int playTime = 0;
 GameController* GameController::createScene()
 {
 	return GameController::create();
@@ -33,7 +33,7 @@ bool GameController::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	createHero();
-	hero2 = (Hero*)Hero::create(hero_moonGoddess); //Just for test,revise;
+	hero2 = (Hero*)Hero::create(hero_ChangE); //Just for test,revise;
 
 	/*创建地图*/
 	_tileMap = TMXTiledMap::create("map/map.tmx");
@@ -43,6 +43,7 @@ bool GameController::init()
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	this->schedule(schedule_selector(GameController::updateView), 0.01f);
+	//spriteRectCheck 也做结束检查、时间增加
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//执行一次；
 	this->schedule(schedule_selector(GameController::AI_Hero_Run), 6.0f);
@@ -50,11 +51,13 @@ bool GameController::init()
 
 	return true;
 }
-void GameController::mapElementsInit() {
+inline void GameController::mapElementsInit() {
 	/*创建对象元素-Players*/
 	//创建player1
 	hero1->thisSoldierVector = new std::vector<EnemySoldier*>;
 	hero2->thisSoldierVector = new std::vector<EnemySoldier*>;
+	hero1->retain();
+	hero2->retain();
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
 	auto spawnPoint = group->getObject("Player1");
 	_collidable = _tileMap->getLayer("Collidable");
@@ -66,7 +69,7 @@ void GameController::mapElementsInit() {
 	clientPlayer = hero1;
 	serverPlayer = hero2;
 	//创建player2
-	 spawnPoint = group->getObject("Player2");
+	spawnPoint = group->getObject("Player2");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
 	hero2->initPos = Vec2(x, y);
@@ -90,7 +93,7 @@ void GameController::mapElementsInit() {
 	/*hero 初始化*/
 	hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
 	hero2->initHeroAttr(100, 1.0, 1000, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
-	/*创建对象元素-Monsters*/
+														/*创建对象元素-Monsters*/
 	spawnPoint = group->getObject("fieldMonster1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -109,28 +112,31 @@ void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier1 = static_cast<EnemySoldier*>(EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png"));
+	auto clientSoldier1 = static_cast<EnemySoldier*>(EnemySoldier::create(xixuebianfu_init));
 	clientSoldier1->initPos = Vec2(x, y);
 	clientSoldier1->setPosition(Vec2(x, y));
 	clientSoldier1->enemyHero = hero1;
+	clientSoldier1->monsterType = 1;
 	clientSoldierVector.push_back(clientSoldier1);
 	hero1->thisSoldierVector->push_back(clientSoldier1);
 	spawnPoint = group->getObject("soldier2");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier2 = static_cast<EnemySoldier*>(EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png"));
+	auto clientSoldier2 = static_cast<EnemySoldier*>(EnemySoldier::create(kongjumo_init));
 	clientSoldier2->initPos = Vec2(x, y);
 	clientSoldier2->setPosition(Vec2(x, y));
 	clientSoldier2->enemyHero = hero1;
-	clientSoldierVector.push_back(clientSoldier2);	
+	clientSoldier2->monsterType = 2;
+	clientSoldierVector.push_back(clientSoldier2);
 	hero1->thisSoldierVector->push_back(clientSoldier2);
 
 	spawnPoint = group->getObject("soldier3");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier3 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png"));
+	auto clientSoldier3 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create(houjing_init));
 	clientSoldier3->initPos = Vec2(x, y);
 	clientSoldier3->setPosition(Vec2(x, y));
+	clientSoldier3->monsterType = 3;
 	clientSoldier3->enemyHero = hero1;
 	clientSoldierVector.push_back(clientSoldier3);
 	hero1->thisSoldierVector->push_back(clientSoldier3);
@@ -138,30 +144,32 @@ void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier4");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier4 = static_cast<EnemySoldier*>(EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-00000.png"));
+	auto clientSoldier4 = static_cast<EnemySoldier*>(EnemySoldier::create(xixuebianfu_init));
 	clientSoldier4->initPos = Vec2(x, y);
 	clientSoldier4->setPosition(Vec2(x, y));
 	clientSoldier4->enemyHero = hero2;
+	clientSoldier4->monsterType = 1;
 	clientSoldierVector.push_back(clientSoldier4);
 	hero2->thisSoldierVector->push_back(clientSoldier4);
-
 	spawnPoint = group->getObject("soldier5");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier5 = static_cast<EnemySoldier*>(EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-03000.png"));
+	auto clientSoldier5 = static_cast<EnemySoldier*>(EnemySoldier::create(kongjumo_init));
 	clientSoldier5->initPos = Vec2(x, y);
 	clientSoldier5->setPosition(Vec2(x, y));
 	clientSoldier5->enemyHero = hero2;
+	clientSoldier5->monsterType = 2;
 	clientSoldierVector.push_back(clientSoldier5);
 	hero2->thisSoldierVector->push_back(clientSoldier5);
 
 	spawnPoint = group->getObject("soldier6");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier6 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create("monster/kongjumo/pao/1004-6579bfb5-02000.png"));
+	auto clientSoldier6 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create(houjing_init));
 	clientSoldier6->initPos = Vec2(x, y);
 	clientSoldier6->setPosition(Vec2(x, y));
 	clientSoldier6->enemyHero = hero2;
+	clientSoldier6->monsterType = 3;
 	clientSoldierVector.push_back(clientSoldier6);
 	hero2->thisSoldierVector->push_back(clientSoldier6);
 
@@ -171,34 +179,35 @@ void GameController::mapElementsInit() {
 	addChild(hero1, 300);
 	addChild(hero2, 400);
 	int i = 0;
-	for (auto it = TowerVector.begin(); it != TowerVector.end(),i<2; it++,i++) {
-		if(i==0)
+	for (auto it = TowerVector.begin(); it != TowerVector.end(), i<2; it++, i++) {
+		if (i == 0)
 			(*it)->initTowerAttr(10, 1000, 150, 20, hero2);	//应该分开！
 		else  (*it)->initTowerAttr(10, 1000, 150, 20, hero1);	//应该分开！
-		//(*it)->initBloodBar();
-		(*it)->enemySoldierOfTower = new std::vector<EnemySoldier*>;
+																//(*it)->initBloodBar();
+		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
 		addChild(*it);
 	}
 	//因为tower没有初始化，所以hero放在这里初始化。
 
 
 	i = 0;
-	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(),i<6; it++,i++) {
+	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(), i<6; it++, i++) {
 		if (i <= 2) {
 			(*it)->initMonsterAttr(20, 100, 150, 20, tower1->getPosition()); //先设置小怪攻击量20
-			//(*it)->initBloodBar();
+																			 //(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower1;		//后需修改！！
-			tower1->enemySoldierOfTower->push_back(*it);
+			tower1->enemySoldierOfTower->pushBack(*it);
 		}
 		else {
 			(*it)->initMonsterAttr(20, 100, 150, 20, tower2->getPosition()); //先设置小怪攻击量20
 																			 //(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower2;		//后需修改！！
-			tower2->enemySoldierOfTower->push_back(*it);
+			tower2->enemySoldierOfTower->pushBack(*it);
 		}
 	}
+
 
 }
 void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
@@ -239,7 +248,7 @@ void GameController::clientPlayerAttack() {
 		if (monster2->attack_rect->containsPoint(clientPlayer->getPosition()))
 			monster2->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	for (int i = 0; i < 3; i++) {
-		auto testEnemy = clientSoldierVector.at(i);
+		auto testEnemy = clientSoldierVector[i];
 		auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testEnemy->getPosition()));
 		if (checkPlayerHit && testEnemy->attack_rect->containsPoint(clientPlayer->getPosition()))
 			testEnemy->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack,clientPlayer);
@@ -278,19 +287,19 @@ void GameController::createHero()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	switch (HeroRole)       //创建英雄
 	{
-	case moonGoddess:
+	case ChangE:
 	{
-		hero1 = (Hero*)Hero::create(hero_moonGoddess);
+		hero1 = (Hero*)Hero::create(hero_ChangE);
 		break;
 	}
-	case yase:
+	case SunWukong:
 	{
-		hero1 = (Hero*)Hero::create(hero_yase);
+		hero1 = (Hero*)Hero::create(hero_SunWukong);
 		break;
 	}
-	case houyi:
+	case HuaMulan:
 	{
-		hero1 = (Hero*)Hero::create(hero_houyi);
+		hero1 = (Hero*)Hero::create(hero_HuaMulan);
 		break;
 	}
 	default:break;
@@ -304,8 +313,11 @@ void  GameController::updateView(float dt)  //刷新函数
 	collidableCheck();
 }
 void GameController::AI_Hero_Run(float dt) {
+	log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
+
 	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum >0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(0)->getPosition());
+		log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
 	}
 	else if (serverPlayer->thisSoldierVector->at(1)->bloodNum>0) {
 			serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(1)->getPosition());
@@ -339,7 +351,7 @@ void GameController::AI_Hero_Attack(float dt) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
-		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
+		//serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 		serverPlayer->autoAttack(clientPlayer);
 
@@ -347,6 +359,29 @@ void GameController::AI_Hero_Attack(float dt) {
 
 
 void GameController::spriteRectCheck(float dt) {
+	playTime++;
+	if (TowerVector.at(0)->bloodNum <= 0 || clientPlayer->getBloodNum()<=0) {
+		this->unscheduleAllSelectors();
+		GameResult[0] = playTime;
+		GameResult[1] = clientPlayer->getExp();
+		GameResult[2] = clientPlayer->killCount;
+		GameResult[3] = clientPlayer->getMoney();
+		auto sc = GameResultFailure::createScene();
+		Director::getInstance()->pushScene(sc);
+	}
+	else {
+		if (TowerVector.at(1)->bloodNum <= 0) {
+			this->unscheduleAllSelectors();
+			GameResult[0] = playTime;
+			GameResult[1] = clientPlayer->getExp();
+			GameResult[2] = clientPlayer->killCount;
+			GameResult[3] = clientPlayer->getMoney();
+
+			auto sc = GameResultSuccess::createScene();
+			Director::getInstance()->pushScene(sc);
+		}
+	}
+
 	clientPlayer->inRect= new Rect(clientPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
 	//serverPlayer->inRect = new Rect(serverPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
 
@@ -362,12 +397,11 @@ void GameController::spriteRectCheck(float dt) {
 			monster2->scheduleAttack();
 		}
 	}
-	int i = 0;
-	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(),i<6; it++,i++) {
+	for (auto i=0; i<6; i++) {
 		log("A new judge %d",i);
-		(*it)->setNewAttackRect();
-		bool judge = (*it)->checkHeroInRect();
-		bool towerJudge = (*it)->enemyTower->attack_rect->containsPoint((*it)->getPosition());
+		clientSoldierVector[i]->setNewAttackRect();
+		bool judge = clientSoldierVector[i]->checkHeroInRect();
+		bool towerJudge = clientSoldierVector[i]->enemyTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
 		/*
 		if(judge==false)
 			log ("Enemy is not in rect");
@@ -378,42 +412,42 @@ void GameController::spriteRectCheck(float dt) {
 			tempEnemyTower = TowerVector.at(0);
 		else tempEnemyTower = TowerVector.at(1);
 
-		if ((*it)->isAttacking == false && (*it)->isWalking == false) {
-			int tempDir = getNowPointDir(*it, tempEnemyTower->getPosition()); //改一下
+		if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == false) {
+			int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
 			int attackDir = getAttackDir(tempDir);
-			(*it)->startWalkTowardsTower(attackDir);
-			(*it)->isWalking = true;
+			clientSoldierVector[i]->startWalkTowardsTower(attackDir);
+			clientSoldierVector[i]->isWalking = true;
 			log("enemy is walking");
 			continue;
 		}
-		if ((*it)->isAttacking == false && (*it)->isWalking == true) {
-			if (towerJudge && (*it)->enemyTower->bloodNum>0) {		//塔没有死才可以进入攻击状态
-				(*it)->isWalking = false;
-				(*it)->isAttacking = true;
-				(*it)->stopAllActions();
-				(*it)->scheduleAttack(1);
+		if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == true) {
+			if (towerJudge &&clientSoldierVector[i]->enemyTower->bloodNum>0) {		//塔没有死才可以进入攻击状态
+				clientSoldierVector[i]->isWalking = false;
+				clientSoldierVector[i]->isAttacking = true;
+				clientSoldierVector[i]->stopAllActions();
+				clientSoldierVector[i]->scheduleAttack(1);
 				log("enemy is attacking");
 				continue;
 			}
-			if (judge && (*it)->enemyHero->getBloodNum()>0) {		//英雄没有死才可以进入攻击状态
-				(*it)->isWalking = false;
-				(*it)->isAttacking = true;
-				(*it)->stopAllActions();
-				(*it)->scheduleAttack(0);//0打人
+			if (judge && clientSoldierVector[i]->enemyHero->getBloodNum()>0) {		//英雄没有死才可以进入攻击状态
+				clientSoldierVector[i]->isWalking = false;
+				clientSoldierVector[i]->isAttacking = true;
+				clientSoldierVector[i]->stopAllActions();
+				clientSoldierVector[i]->scheduleAttack(0);//0打人
 				log("enemy is attacking");
 				continue;
 			}
 		}
-		if ((*it)->isAttacking == true && (*it)->isWalking == false) {
+		if (clientSoldierVector[i]->isAttacking == true && clientSoldierVector[i]->isWalking == false) {
 			if (!judge) {
 				if (!towerJudge) {
-					(*it)->isAttacking = false;
-					(*it)->isWalking = true;
-					(*it)->stopAllActions();
-					(*it)->unscheduleAttack();
-					int tempDir = getNowPointDir(*it, tempEnemyTower->getPosition()); //改一下
+					clientSoldierVector[i]->isAttacking = false;
+					clientSoldierVector[i]->isWalking = true;
+					clientSoldierVector[i]->stopAllActions();
+					clientSoldierVector[i]->unscheduleAttack();
+					int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
 					int attackDir = getAttackDir(tempDir);
-					(*it)->startWalkTowardsTower(attackDir);
+					clientSoldierVector[i]->startWalkTowardsTower(attackDir);
 					log("enemy stop attacking");
 					continue;
 				}
@@ -640,9 +674,18 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	int newDir = getNowPointDir(clientPlayer,touchLocation);
 	clientPlayer->currentPos = newDir;
 	Animation* animation = Animation::create();
+	__String * frameName;
 	for (int i = 0; i <= 7; i++)
 	{
-		__String *frameName = __String::createWithFormat("hero/change/pao/2154-e1380841-0%d00%d.png", newDir, i);
+
+		switch (HeroRole) {
+		case ChangE:
+			frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
+		case HuaMulan:
+			frameName = __String::createWithFormat(hero_HuaMulan_pao, newDir, i); break;
+		case SunWukong:
+			frameName = __String::createWithFormat(hero_SunWukong_pao, newDir, i);
+		}
 		log("frameName = %s", frameName->getCString());
 		//SpriteFrame *spriteFrame = SpriteFrame::
 		animation->addSpriteFrameWithFile(frameName->getCString());

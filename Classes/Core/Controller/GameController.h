@@ -16,11 +16,11 @@ USING_NS_CC;
 //extern int playMoney;
 class GameController : public Layer   //游戏控制类
 {
-	
+
 public:
-//属性
+	//属性
 	//层属性
-	ButtonLayer*button;
+	ButtonLayer * button;
 	//
 	//属性
 	TMXTiledMap * _tileMap;
@@ -28,7 +28,7 @@ public:
 	Hero * hero1, *hero2;
 	std::vector<EnemySoldier*> clientSoldierVector;    //存放EnemySoldier对象的容器
 	fieldMonster* monster1;
-    fieldMonster* monster2;
+	fieldMonster* monster2;
 	std::vector<Tower*>TowerVector;				//存放塔指针的容器
 	bool ismousedown;
 	char *bigSkillFormat;    //大招路径
@@ -37,18 +37,18 @@ public:
 	int bigSkillNum;    //大招动画的照片数
 	int mediumSkillNum;    //大招动画的照片数
 	int smallSkillNum;    //大招动画的照片数
-//方法
+						  //方法
 	ValueMap player1_initPos;
 	void setViewpointCenter(Vec2 position);
 	Vec2 tileCoordFromPosition(Vec2 pos);
-	 int getNowPointDir(Node* player, Vec2 newpoint);
-	 int getAttackDir(int tempDir);
+	int getNowPointDir(Node* player, Vec2 newpoint);
+	int getAttackDir(int tempDir);
 	void setPlayerPosition(Vec2 position);
 	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 	virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event);
 	bool checkHit(int standDir, int monsterDir);
 	virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event);
-    static GameController* createScene(); //创建对象
+	static GameController* createScene(); //创建对象
 	virtual bool init(); //初始化控制层
 	void mapElementsInit();
 	int successPlayerID; //判断胜利的时候再用
@@ -67,6 +67,6 @@ public:
 	//hero_role HeroRole);  //创建英雄
 	bool isHeroDeath();           //判断英雄是否死亡
 	void menuCloseCallback(cocos2d::Ref* pSender);
-	CREATE_FUNC(GameController);    
+	CREATE_FUNC(GameController);
 
 };

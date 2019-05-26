@@ -23,7 +23,7 @@ public:
 	void minusBlood(int num, Node* attacker);
 	void soldierAttackMinusBlood(int num);
 	Hero* enemyHero;
-	std::vector<EnemySoldier*> *enemySoldierOfTower;
+	Vector<EnemySoldier*> *enemySoldierOfTower;
 	bool isAttacking;
 	void scheduleAttack();
 	void unscheduleAttack();

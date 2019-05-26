@@ -4,16 +4,8 @@
 #include"SimpleAudioEngine.h"
 #include"Core/Controller/GameScene.h"
 #include"Core/Controller/GameController.h"
+#include"Scene/GlobalDefine.h"
 USING_NS_CC;
-
-
-
-typedef enum {
-	moonGoddess = 0,    //妲己
-	houyi = 1,     //后羿
-	yase = 2,   //亚瑟
-
-}hero_role;
 
 
 //hero_role HeroRole=moonGoddess; //定义一个全局变量  并且初始化
@@ -25,21 +17,11 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
-	virtual void onEnter();
-	virtual void onEnterTransitionDidFinish();
-	virtual void onExit();
-	virtual void onExitTransitionDidStart();
-	virtual void cleanup();
-	// a selector callback
-	void menuCloseCallback(cocos2d::Ref* pSender);
-	//void menuItemStartCallback(cocos2d::Ref*pSender);
-	//void menuItem2Callback(cocos2d::Ref*pSender);
-
-	void moonGoddessCallback(Ref *pSender);
+	void ChangeCallBack(Ref *pSender);
+	void HuamulanCallBack(Ref *pSender);
+	void SunCallBack(Ref *pSender);
 
     // implement the "static create()" method manually
-
-
 
 	CREATE_FUNC(SelectHeroScene);
 
