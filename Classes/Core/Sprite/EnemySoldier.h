@@ -21,6 +21,7 @@ public:
 	virtual bool init();   
 	Rect* attack_rect;
 	void initBloodBar();
+	int fullBlood;
 	void initMonsterAttr(int attackAbility, int _bloodNum, int _rewardMoney, int _rewardExp,Vec2 towerPos);
 	void setNewAttackRect();
 	int getAttackDir(int tempDir);
@@ -34,6 +35,7 @@ public:
 	//Hero* heroInRect;
 	Hero* enemyHero;
 	Tower* enemyTower;
+	Tower* enemyDefendTower;
 	bool isAttacking;
 	bool isWalking;
 	void scheduleAttack(int way);

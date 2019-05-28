@@ -12,7 +12,8 @@ void EnemySoldier::initMonsterAttr(int attackAbility, int _bloodNum, int _reward
 	isAttacking = false;
 	isWalking = false;
 	attackMinusNum = attackAbility;
-	bloodNum = 100;
+	bloodNum = _bloodNum;
+	fullBlood = _bloodNum;
 	deadRewardmoney = _rewardMoney;
 	deadRewardExp = _rewardExp;
 	attackTowerPos = towerPos;
@@ -97,7 +98,7 @@ int EnemySoldier::getNowPointDir(Node* player, Vec2 newpoint)
 }
 bool EnemySoldier::checkHeroInRect()
 {
-	auto pos1 = enemyHero->getPosition();
+	Vec2 pos1 = this->enemyHero->getPosition();
 	log("Soldier %f,%f", getPositionX(), getPositionY());
 	log("Enemy %f,%f", enemyHero->getPositionX(), enemyHero->getPositionY());
 	if (attack_rect->containsPoint(pos1)){	//特别注意要重新设置rect
@@ -201,7 +202,34 @@ void EnemySoldier::attackTower(float dt) {
 		this->runAction(Repeat::create(action, 1)); //播放一次
 		log("enemyTower minusBloos %d", attackMinusNum);
 	}
-	else {
+	else if (enemyDefendTower != NULL && isAttacking == true) {
+		enemyDefendTower->soldierAttackMinusBlood(attackMinusNum);
+		Animation *animation = Animation::create();
+		int dir = getAttackDir(getNowPointDir(this, enemyDefendTower->getPosition()));
+		__String *frameName;
+		for (int i = 0; i < 8; i++)
+		{
+			switch (monsterType) {
+			case 1:
+				frameName = __String::createWithFormat(xixuebianfu_attck, dir, i);
+				break;
+			case 2:
+				frameName = __String::createWithFormat(kongjumo_attck, dir, i);
+				break;
+			case 3:
+				frameName = __String::createWithFormat(houjing_attck, dir, i);
+				break;
+			}
+			//log("frameName = %s", frameName->getCString());
+			//SpriteFrame *spriteFrame = SpriteFrame::
+			animation->addSpriteFrameWithFile(frameName->getCString());
+		}
+		animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
+		animation->setRestoreOriginalFrame(true);
+		Animate *action = Animate::create(animation);
+		this->runAction(Repeat::create(action, 1)); //播放一次
+		log("enemyDefendTower minusBloos %d", attackMinusNum);
+	}else{
 		isAttacking = false;
 		this->unscheduleAttack();	//在1.0f之后执行，并且只执行一次。
 	}
@@ -209,7 +237,7 @@ void EnemySoldier::attackTower(float dt) {
 void EnemySoldier::minusBlood(int num,Hero* hero) {
 	if (bloodNum - num > 0) {
 		bloodNum -= num;
-		blood->setPercentage(bloodNum);
+		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//离世判断
 		blood->setPercentage(0);
@@ -255,7 +283,7 @@ void EnemySoldier::startWalkTowardsTower(int dir) {
 	float dif_y = y1 - y2;
 	float dis = sqrt(dif_x*dif_x + dif_y * dif_y);
 	//log("dis is %f", dis);
-	runAction(MoveTo::create(dis*4 / 100, attackTowerPos));
+	runAction(MoveTo::create(dis*4 / 50, attackTowerPos));
 
 }
 
@@ -263,7 +291,7 @@ void EnemySoldier::towerAttackMinusBlood(int num)
 {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
-		blood->setPercentage(bloodNum);
+		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//离世判断
 		blood->setPercentage(0);

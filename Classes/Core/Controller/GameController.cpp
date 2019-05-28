@@ -38,7 +38,9 @@ bool GameController::init()
 	/*创建地图*/
 	_tileMap = TMXTiledMap::create("map/map.tmx");
 	addChild(_tileMap, 0, 100);
+	NotificationCenter::getInstance()->removeAllObservers(this);
 	mapElementsInit();
+	this->retain();//???
 	this->setViewpointCenter(clientPlayer->getPosition());
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
@@ -54,8 +56,6 @@ bool GameController::init()
 inline void GameController::mapElementsInit() {
 	/*创建对象元素-Players*/
 	//创建player1
-	hero1->thisSoldierVector = new std::vector<EnemySoldier*>;
-	hero2->thisSoldierVector = new std::vector<EnemySoldier*>;
 	hero1->retain();
 	hero2->retain();
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
@@ -91,9 +91,47 @@ inline void GameController::mapElementsInit() {
 	TowerVector.push_back(tower2);
 	tower2->setPosition(Vec2(x, y));
 	/*hero 初始化*/
-	hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-	hero2->initHeroAttr(100, 1.0, 1000, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
-														/*创建对象元素-Monsters*/
+	switch (HeroRole)       //创建英雄
+	{
+	case ChangE:
+	{
+		hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		break;
+	}
+	case SunWukong:
+	{
+		hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		break;
+	}
+	case HuaMulan:
+	{
+		hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
+		break;
+	}
+	default:break;
+	}
+	
+	/*创建对象元素-DefendTowers*/
+	spawnPoint = group->getObject("DefendTower1");
+	auto DefendTower1 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	//Tower1->initPos = Vec2(x, y);
+	TowerVector.push_back(DefendTower1);
+	DefendTower1->setPosition(Vec2(x, y));
+	spawnPoint = group->getObject("DefendTower2");
+	hero2->enemyDefendTower = DefendTower1;
+	auto DefendTower2 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	//Tower1->initPos = Vec2(x, y);
+	TowerVector.push_back(DefendTower2);
+	DefendTower2->setPosition(Vec2(x, y));
+	hero1->enemyDefendTower = DefendTower2;
+	/*创建对象元素-Monsters*/
 	spawnPoint = group->getObject("fieldMonster1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -109,6 +147,8 @@ inline void GameController::mapElementsInit() {
 	monster1->initMonsterAttr(2, 100, 150, 20); //初始化属性，相当于构造函数 仍需更改其他！
 	monster2->initMonsterAttr(2, 100, 150, 20);
 	/*创建对象元素-Soldiers*/
+	//hero1->thisSoldierVector = new std::vector<EnemySoldier*>;
+
 	spawnPoint = group->getObject("soldier1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -140,7 +180,7 @@ inline void GameController::mapElementsInit() {
 	clientSoldier3->enemyHero = hero1;
 	clientSoldierVector.push_back(clientSoldier3);
 	hero1->thisSoldierVector->push_back(clientSoldier3);
-
+	//hero2->thisSoldierVector = new std::vector<EnemySoldier*>;
 	spawnPoint = group->getObject("soldier4");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -173,42 +213,81 @@ inline void GameController::mapElementsInit() {
 	clientSoldierVector.push_back(clientSoldier6);
 	hero2->thisSoldierVector->push_back(clientSoldier6);
 
+
 	/*addchild 设置初值*/
 	addChild(monster1, 100);
 	addChild(monster2, 200);
 	addChild(hero1, 300);
 	addChild(hero2, 400);
+
 	int i = 0;
-	for (auto it = TowerVector.begin(); it != TowerVector.end(), i<2; it++, i++) {
-		if (i == 0)
-			(*it)->initTowerAttr(10, 1000, 150, 20, hero2);	//应该分开！
-		else  (*it)->initTowerAttr(10, 1000, 150, 20, hero1);	//应该分开！
-																//(*it)->initBloodBar();
+	for (auto it = TowerVector.begin(); it != TowerVector.end(), i<4; it++, i++) {
+		switch (i) {
+		case 0:
+			(*it)->initTowerAttr(10, 1000, 500, 400, hero2);	//应该分开！
+			break;
+		case 1:
+			(*it)->initTowerAttr(10, 1000, 500, 400, hero1);	//应该分开！
+			break;
+		case 2:
+			(*it)->initTowerAttr(40, 300, 300, 200, hero2);	//应该分开！
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			break;
+		case 3:
+			(*it)->initTowerAttr(40, 300, 300, 200, hero1);	//应该分开！
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			break;
+		}
 		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
 		addChild(*it);
 	}
 	//因为tower没有初始化，所以hero放在这里初始化。
 
-
 	i = 0;
 	for (auto it = clientSoldierVector.begin(); it != clientSoldierVector.end(), i<6; it++, i++) {
 		if (i <= 2) {
-			(*it)->initMonsterAttr(20, 100, 150, 20, tower1->getPosition()); //先设置小怪攻击量20
+			switch ((*it)->monsterType) {
+			case 1:
+				(*it)->initMonsterAttr(20, 100, 150, 20, tower1->getPosition()); //先设置小怪攻击量20
+				break;
+			case 2:
+				(*it)->initMonsterAttr(30, 300, 300, 30, tower1->getPosition()); //先设置小怪攻击量20
+				break;
+			case 3:
+				(*it)->initMonsterAttr(40, 400, 400, 40, tower1->getPosition()); //先设置小怪攻击量20
+				break;
+			}
 																			 //(*it)->initBloodBar();
 			addChild(*it);
-			(*it)->enemyTower = tower1;		//后需修改！！
+			(*it)->enemyTower = tower1;		
+			(*it)->enemyDefendTower = DefendTower1;
+			//(*it)->retain();
 			tower1->enemySoldierOfTower->pushBack(*it);
+			DefendTower1->enemySoldierOfTower->pushBack(*it);
 		}
 		else {
-			(*it)->initMonsterAttr(20, 100, 150, 20, tower2->getPosition()); //先设置小怪攻击量20
-																			 //(*it)->initBloodBar();
+			switch ((*it)->monsterType) {
+			case 1:
+				(*it)->initMonsterAttr(20, 100, 150, 20, tower2->getPosition()); //先设置小怪攻击量20
+				break;
+			case 2:
+				(*it)->initMonsterAttr(30, 300, 300, 30, tower2->getPosition()); //先设置小怪攻击量20
+				break;
+			case 3:
+				(*it)->initMonsterAttr(40, 400, 400, 40, tower2->getPosition()); //先设置小怪攻击量20
+				break;
+			}
+																		 //(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower2;		//后需修改！！
+			//(*it)->retain();
+			(*it)->enemyDefendTower = DefendTower2;
 			tower2->enemySoldierOfTower->pushBack(*it);
+			DefendTower2->enemySoldierOfTower->pushBack(*it);
 		}
 	}
 
-
+	
 }
 void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
@@ -221,6 +300,13 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 		if (keyCode == EventKeyboard::KeyCode::KEY_W) {
 			//换成clientPlayer
 			clientPlayerAttack();
+		}
+		if (keyCode == EventKeyboard::KeyCode::KEY_A) {
+			//换成clientPlayer
+			clientPlayer->bonusAttack += 10;
+			clientPlayerAttack();
+			clientPlayer->skillAnimation();
+			clientPlayer->bonusAttack -= 10;
 		}
 		log("Key with keycode %d released", keyCode);
 	};
@@ -257,7 +343,12 @@ void GameController::clientPlayerAttack() {
 	auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testTower->getPosition()));
 	if (checkPlayerHit && testTower->attack_rect->containsPoint(clientPlayer->getPosition()))
 			testTower->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
-	
+	auto testDefendTower = clientPlayer->enemyDefendTower;
+	checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testDefendTower->getPosition()));
+	if (checkPlayerHit && testDefendTower->attack_rect->containsPoint(clientPlayer->getPosition())) {
+		log("DefendTower minusBlood");
+		testDefendTower->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
+	}
 }
 void GameController::collidableCheck()
 {
@@ -325,9 +416,9 @@ void GameController::AI_Hero_Run(float dt) {
 	else if (serverPlayer->thisSoldierVector->at(2)->bloodNum>0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(2)->getPosition());
 	}
-	else {
-		serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
-	}
+	else if (serverPlayer->enemyDefendTower->bloodNum>0) {
+		serverPlayer->autoRun(serverPlayer->enemyDefendTower->getPosition());
+	}else serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
 }
 
 void GameController::AI_Hero_Attack(float dt) {
@@ -352,6 +443,7 @@ void GameController::AI_Hero_Attack(float dt) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
 		//serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
+		serverPlayer->autoAttack(serverPlayer->enemyDefendTower);
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 		serverPlayer->autoAttack(clientPlayer);
 
@@ -360,6 +452,8 @@ void GameController::AI_Hero_Attack(float dt) {
 
 void GameController::spriteRectCheck(float dt) {
 	playTime++;
+	clientPlayer->retain();
+	serverPlayer->retain();
 	if (TowerVector.at(0)->bloodNum <= 0 || clientPlayer->getBloodNum()<=0) {
 		this->unscheduleAllSelectors();
 		GameResult[0] = playTime;
@@ -402,15 +496,23 @@ void GameController::spriteRectCheck(float dt) {
 		clientSoldierVector[i]->setNewAttackRect();
 		bool judge = clientSoldierVector[i]->checkHeroInRect();
 		bool towerJudge = clientSoldierVector[i]->enemyTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
+		bool defendtowerJudge = clientSoldierVector[i]->enemyDefendTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
+
 		/*
 		if(judge==false)
 			log ("Enemy is not in rect");
 		else log("Enemy is  in rect");
 		*/
-		Tower* tempEnemyTower;
-		if (i <= 2)
+		Tower* tempEnemyTower, *tempEnemyDefendTower;
+		if (i <= 2) {
 			tempEnemyTower = TowerVector.at(0);
-		else tempEnemyTower = TowerVector.at(1);
+			tempEnemyDefendTower = TowerVector.at(2);
+		}
+		else {
+			tempEnemyTower = TowerVector.at(1);
+			tempEnemyDefendTower = TowerVector.at(3);
+
+		}
 
 		if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == false) {
 			int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
@@ -429,6 +531,14 @@ void GameController::spriteRectCheck(float dt) {
 				log("enemy is attacking");
 				continue;
 			}
+				if (defendtowerJudge &&clientSoldierVector[i]->enemyDefendTower->bloodNum>0) {		//塔没有死才可以进入攻击状态
+					clientSoldierVector[i]->isWalking = false;
+					clientSoldierVector[i]->isAttacking = true;
+					clientSoldierVector[i]->stopAllActions();
+					clientSoldierVector[i]->scheduleAttack(1);
+					log("enemy is attacking");
+					continue;
+				}
 			if (judge && clientSoldierVector[i]->enemyHero->getBloodNum()>0) {		//英雄没有死才可以进入攻击状态
 				clientSoldierVector[i]->isWalking = false;
 				clientSoldierVector[i]->isAttacking = true;
@@ -459,8 +569,9 @@ void GameController::spriteRectCheck(float dt) {
 			if ((*it1)->attack_rect->containsPoint((*it2)->getPosition()))
 				(*it2)->towerAttackMinusBlood((*it1)->attackMinusNum);
 		}
-		if ((*it1)->attack_rect->containsPoint((*it1)->enemyHero->getPosition()))
+		if ((*it1)->attack_rect->containsPoint((*it1)->enemyHero->getPosition())) 
 			(*it1)->enemyHero->minusBlood((*it1)->attackMinusNum);
+		
 	}
 }
 
@@ -716,6 +827,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	//log("dis is %f", dis);
 	clientPlayer->runAction(MoveTo::create(dis*(speed-(float)(clientPlayer->bonusSpeed/100.0)) / 100.0, touchLocation));
 	clientPlayer->isHeroWalking = false;
+	//clientPlayer->skillSprite->setPosition(touchLocation);
 	//hero1->stopAllActions();
 	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动
 }

@@ -43,6 +43,7 @@ void Hero::autoAttack(Node* thisSoldier) {
 	}
 	
 }
+
 void Hero::autoRun(Vec2 pos) {
 	isHeroWalking = true;
 	this->stopAllActions();
@@ -179,12 +180,38 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 	Animate *action = Animate::create(animation);
 	this->runAction(Repeat::create(action,1)); //播放一次
 }
+void Hero::skillAnimation()   //播放动画
+{
+	skillSprite->stopAllActions();
+	Animation *animation = Animation::create();
+	__String *frameName;
+	for (int i = 0; i < 10; i++)
+	{
+
+		switch (HeroRole) {
+		case ChangE:
+			frameName = __String::createWithFormat(hero_ChangE_skill,i); break;
+		case HuaMulan:
+			frameName = __String::createWithFormat(hero_HuaMulan_skill, i); break;
+		case SunWukong:
+			frameName = __String::createWithFormat(hero_SunWukong_skill,  i);
+		}
+		//log("frameName = %s", frameName->getCString());
+		//SpriteFrame *spriteFrame = SpriteFrame::
+		animation->addSpriteFrameWithFile(frameName->getCString());
+	}
+	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
+	animation->setRestoreOriginalFrame(true);
+	Animate *action = Animate::create(animation);
+	skillSprite->runAction(Repeat::create(action, 1)); //播放一次
+}
 void Hero::updateHeroSpeed(float newspeed)
 {
 	speed = newspeed;
 }
 void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack, int _exp, Tower * _tower)
 {
+	this->thisSoldierVector = new std::vector<EnemySoldier*>;
 	inRect = new Rect(this->getPositionX() - 100, this->getPositionY() - 100, 200, 200);
 	fullBlood = _blood;
 	money = _money;
@@ -202,6 +229,9 @@ void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack,
 	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
 	isHeroWalking = false;
 	killCount = 0;
+	skillSprite = Sprite::create("towerTile.png");
+
+	this->addChild(skillSprite);
 	this->addChild(blood);
 }
 void Hero::equipbonusBlood(int num) {

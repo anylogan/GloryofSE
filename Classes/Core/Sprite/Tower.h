@@ -11,6 +11,7 @@ class Tower :public Sprite
 public:
 	Progress * blood;   //血量
 	int bloodNum;  //血量
+	int fullBlood;
 	Vec2 initPos;
 	Vec2 attackTowerPos;
 	int deadRewardmoney;	//打死奖励金币数量

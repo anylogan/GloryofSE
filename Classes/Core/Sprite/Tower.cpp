@@ -7,6 +7,7 @@ void Tower::initTowerAttr(int attackAbility, int _bloodNum, int _rewardMoney, in
 	isAttacking = false;
 	attackMinusNum = attackAbility;
 	bloodNum = _bloodNum;
+	fullBlood = _bloodNum;
 	deadRewardmoney = _rewardMoney;
 	deadRewardExp = _rewardExp;
 	enemyHero = hero;
@@ -38,7 +39,7 @@ void Tower::soldierAttackMinusBlood(int num)
 {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
-		blood->setPercentage(((float)bloodNum) / 10.0);
+		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//ÀëÊÀÅĞ¶Ï
 		blood->setPercentage(0);

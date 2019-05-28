@@ -30,13 +30,6 @@ public:
 	fieldMonster* monster1;
 	fieldMonster* monster2;
 	std::vector<Tower*>TowerVector;				//存放塔指针的容器
-	bool ismousedown;
-	char *bigSkillFormat;    //大招路径
-	char *mediumSkillFormat;  //中招路径
-	char *smallSkillFormat;   //小招路径
-	int bigSkillNum;    //大招动画的照片数
-	int mediumSkillNum;    //大招动画的照片数
-	int smallSkillNum;    //大招动画的照片数
 						  //方法
 	ValueMap player1_initPos;
 	void setViewpointCenter(Vec2 position);
@@ -63,7 +56,6 @@ public:
 	void createHero();
 	void updateView(float dt);
 	void AI_Hero_Run(float dt);
-	void AI_Hero(float dt);
 	//hero_role HeroRole);  //创建英雄
 	bool isHeroDeath();           //判断英雄是否死亡
 	void menuCloseCallback(cocos2d::Ref* pSender);

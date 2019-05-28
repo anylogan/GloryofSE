@@ -46,6 +46,8 @@ public:
 	int bonusAttack;
 	int bonusDefend;
 	int bonusBlood;
+	Tower* enemyDefendTower;
+	Sprite* skillSprite;
 	//EnemySoldier* thisSoldierVector[3];
 	std::vector<EnemySoldier*> *thisSoldierVector; //定义的是客户端用户的soldier
 	void addReward(int moneyNum,int expNum) {
@@ -69,6 +71,7 @@ public:
 	int getNowPointDir(Node * player, Vec2 newpoint);
 	//掉血&死亡判断
 	void attackEnemyAnimation(int dir);
+	void skillAnimation();
 	void updateHeroSpeed(float newspeed);
 	void setMoney(int num) { money = num; }
 	int getMoney() { return money; }

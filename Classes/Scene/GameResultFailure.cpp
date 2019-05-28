@@ -20,7 +20,7 @@ bool GameResultFailure::init()
 		return false;
 	}
 
-	auto rootNode = CSLoader::createNode("SuccessResultScene.csb");
+	auto rootNode = CSLoader::createNode("FailureResultScene.csb");
 	auto button = static_cast<ui::Button*>(rootNode->getChildByName("BackButton"));
 	//button->addClickEventListener(CC_CALLBACK_1(GameResultFailure::BackToMain, this));
 

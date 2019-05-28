@@ -23,3 +23,7 @@ typedef enum {
 #define xixuebianfu_init "monster/xixuebianfu/0968-60b2e461-00000.png"
 #define kongjumo_init "monster/kongjumo/pao/1004-6579bfb5-00000.png"
 #define houjing_init "monster/wukong/pao/0448-2c4d8ec8-00000.png"
+#define hero_ChangE_skill "skills/role_skill/ziqidonglai/ziqidonglai%d.png"
+#define hero_HuaMulan_skill "skills/kongjumo/skill_kongjimo_0000%d.png"
+#define hero_SunWukong_skill "skills/xixue/skill_xixue_0000%d.png"
+
