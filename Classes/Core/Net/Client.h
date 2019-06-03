@@ -18,7 +18,9 @@ private:
 	//client中的数据
 	io_service io;
 	ip::tcp::endpoint ep; //连接地址
+	ip::tcp::endpoint message_ep; //聊天连接地址
 	std::shared_ptr<ip::tcp::socket> sock;  //套接字指针
+	std::shared_ptr<ip::tcp::socket> message_sock;//聊天套接字指针
 public:
 	bool isConnected; //是否连接成功的标记
 	static Client* getInstance(); //获取单例
@@ -30,7 +32,9 @@ public:
 	                     //内有while true循环
 	void sendAttack();  //发送攻击信号 调用：键盘函数里调用（注意一下次数）
 	void sendClickPos(float x, float y); //发送鼠标点击位置 调用：点击函数里调用（注意一下次数）
-	std::vector<command> getcommands(); //接收对方指令集 调用：UPDATE里
+	std::vector<command> getCommands(); //接收对方指令集 调用：UPDATE里
+	void sendMessage(std::string &text);//发送聊天信息
+	std::string getMessage();       //接收聊天信息
 	void clear();          //关闭客户端 调用：一局结束以后或某个客户端临时退出
 	void destory();       //清理客户端 调用级别：必须！！游戏彻底退出时调用，释放内存
 };

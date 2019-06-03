@@ -1,7 +1,8 @@
 #include "Core/Net/Client.h"
 #include"Core/Net/NetCommand.h"
 
-Client::Client():io(),ep(ip::address::from_string("127.0.0.1"), 6688),sock(nullptr){}
+Client::Client():io(),ep(ip::address::from_string("127.0.0.1"), 6688),message_ep(ip::address::from_string("127.0.0.1"), 5566),\
+sock(nullptr),message_sock(nullptr){}
 
 Client::~Client()
 {
@@ -20,14 +21,19 @@ bool Client::connectWithServer()
 {
 	try
 	{
+		if(sock==nullptr)
 		sock = std::make_shared<ip::tcp::socket>(io);
 		sock->connect(ep);
+		if(message_sock==nullptr)
+		message_sock = std::make_shared<ip::tcp::socket>(io);
+		message_sock->connect(message_ep);
 		isConnected = true;
 		return true;
 	}
 	catch (std::exception& e)
 	{
 		sock = nullptr;
+		message_sock = nullptr;
 		isConnected = false;
 		return false;
 	}
@@ -93,7 +99,7 @@ void Client::sendClickPos(float x,float y)
 	sock->write_some(buffer(sends));
 }
 
-std::vector<command> Client::getcommands()
+std::vector<command> Client::getCommands()
 {
 	std::vector<command> once_receives;
 	if (sock->available())
@@ -108,6 +114,27 @@ std::vector<command> Client::getcommands()
 		}
 	}
 	return once_receives;
+}
+
+void Client::sendMessage(std::string &text)
+{
+	text += "\n";
+	message_sock->write_some(buffer(text));
+}
+
+std::string Client::getMessage()
+{
+	if (message_sock->available())
+	{
+		auto text = std::string();
+		auto buf = std::string(1, '\0');
+		while (true)
+		{
+			message_sock->read_some(buffer(buf));
+			if (*buf.begin() == '\n') break;
+			text += buf;
+		}
+	}
 }
 
 void Client::clear()
