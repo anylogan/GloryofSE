@@ -1,5 +1,5 @@
 #include "Core/Net/Client.h"
-#include"Core/Net/NetCommand.h"
+
 
 Client::Client():io(),ep(ip::address::from_string("127.0.0.1"), 6688),message_ep(ip::address::from_string("127.0.0.1"), 5566),\
 sock(nullptr),message_sock(nullptr){}
@@ -124,9 +124,10 @@ void Client::sendMessage(std::string &text)
 
 std::string Client::getMessage()
 {
+	auto text = std::string();
 	if (message_sock->available())
 	{
-		auto text = std::string();
+		
 		auto buf = std::string(1, '\0');
 		while (true)
 		{
@@ -135,6 +136,7 @@ std::string Client::getMessage()
 			text += buf;
 		}
 	}
+	return text;
 }
 
 void Client::clear()

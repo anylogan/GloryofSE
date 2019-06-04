@@ -1,9 +1,10 @@
 #include"Core/Controller/GameScene.h"
-
+#include"Core/Net/Client.h"
 #include<vector>
 //全局变量初始化
 std::vector<int> equipmentBoughtList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前拥有装备的状态
 std::vector<int> equipmentEquippedList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前装备装备的状态
+Client *Client::instance = nullptr;
 
 Scene* GameScene::createScene()
 

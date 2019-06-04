@@ -3,6 +3,7 @@
 
 enum CommandType { connection = 0, heroInform, attackInform, clickInform,exitConnect };
 
+
 class command
 {
 public:

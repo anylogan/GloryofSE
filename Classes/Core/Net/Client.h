@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include<thread>
+#include"Core/Net/NetCommand.h"
 using namespace boost::asio;
 
 class Client
