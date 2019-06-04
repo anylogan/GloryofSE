@@ -136,7 +136,7 @@ void EnemySoldier::unscheduleAttack()
 void EnemySoldier::attackHero(float dt) {
 	//isWalking = false;
 	//isAttacking = true;
-
+	this->image->stopAllActions();
 	if (enemyHero != NULL && isAttacking == true) {
 		enemyHero->minusBlood(attackMinusNum);
 		Animation *animation = Animation::create();
@@ -162,7 +162,7 @@ void EnemySoldier::attackHero(float dt) {
 		animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 		animation->setRestoreOriginalFrame(true);
 		Animate *action = Animate::create(animation);
-		this->runAction(Repeat::create(action, 1)); //播放一次
+		this->image->runAction(Repeat::create(action, 1)); //播放一次
 		log("enemyHero minusBloos %d", attackMinusNum);
 	}
 	else {
@@ -199,7 +199,7 @@ void EnemySoldier::attackTower(float dt) {
 		animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 		animation->setRestoreOriginalFrame(true);
 		Animate *action = Animate::create(animation);
-		this->runAction(Repeat::create(action, 1)); //播放一次
+		this->image->runAction(Repeat::create(action, 1)); //播放一次
 		log("enemyTower minusBloos %d", attackMinusNum);
 	}
 	else if (enemyDefendTower != NULL && isAttacking == true) {
@@ -227,7 +227,7 @@ void EnemySoldier::attackTower(float dt) {
 		animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 		animation->setRestoreOriginalFrame(true);
 		Animate *action = Animate::create(animation);
-		this->runAction(Repeat::create(action, 1)); //播放一次
+		this->image->runAction(Repeat::create(action, 1)); //播放一次
 		log("enemyDefendTower minusBloos %d", attackMinusNum);
 	}else{
 		isAttacking = false;
@@ -273,7 +273,7 @@ void EnemySoldier::startWalkTowardsTower(int dir) {
 	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 	animation->setRestoreOriginalFrame(true);
 	Animate *action = Animate::create(animation);
-	runAction(RepeatForever::create(action));
+	image->runAction(RepeatForever::create(action));
 	auto soldierPos = getPosition();
 	float x1 = soldierPos.x;
 	float y1 = soldierPos.y;

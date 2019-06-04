@@ -22,7 +22,7 @@ void Tower::minusBlood(int num, Node * attacker)
 {
 	if (bloodNum - num >= 0) {
 		bloodNum -= num;
-		blood->setPercentage(((float)bloodNum)/10.0);
+		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//ÀëÊÀÅĞ¶Ï
 		blood->setPercentage(0);

@@ -11,6 +11,7 @@ class EnemySoldier : public Sprite
 {
 public:
 	Progress * blood;   //ÑªÁ¿
+	Sprite* image;
 	int monsterType;
 	int bloodNum;  //ÑªÁ¿
 	Vec2 initPos;

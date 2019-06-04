@@ -10,6 +10,7 @@ class Tower :public Sprite
 {
 public:
 	Progress * blood;   //ÑªÁ¿
+	Sprite* image;
 	int bloodNum;  //ÑªÁ¿
 	int fullBlood;
 	Vec2 initPos;

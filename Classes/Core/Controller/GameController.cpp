@@ -33,8 +33,6 @@ bool GameController::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	createHero();
-	hero2 = (Hero*)Hero::create(hero_ChangE); //Just for test,revise;
-
 	/*创建地图*/
 	_tileMap = TMXTiledMap::create("map/map.tmx");
 	addChild(_tileMap, 0, 100);
@@ -46,18 +44,19 @@ bool GameController::init()
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	this->schedule(schedule_selector(GameController::updateView), 0.01f);
 	//spriteRectCheck 也做结束检查、时间增加
+	
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//执行一次；
 	this->schedule(schedule_selector(GameController::AI_Hero_Run), 6.0f);
 	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 2.0f);
-
+	
 	return true;
 }
 inline void GameController::mapElementsInit() {
 	/*创建对象元素-Players*/
 	//创建player1
-	hero1->retain();
-	hero2->retain();
+	//hero1->retain();
+	//hero2->retain();
 	TMXObjectGroup* group = _tileMap->getObjectGroup("Objects");
 	auto spawnPoint = group->getObject("Player1");
 	_collidable = _tileMap->getLayer("Collidable");
@@ -76,7 +75,9 @@ inline void GameController::mapElementsInit() {
 	hero2->setPosition(Vec2(x, y));
 	/*建塔—Tower*/
 	spawnPoint = group->getObject("Tower1");
-	auto tower1 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	auto tower1 = new Tower();
+	tower1->image = Sprite::create("towerTile.png");
+	tower1->addChild(tower1->image);
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
 	//Tower1->initPos = Vec2(x, y);
@@ -84,7 +85,9 @@ inline void GameController::mapElementsInit() {
 	tower1->setPosition(Vec2(x, y));
 
 	spawnPoint = group->getObject("Tower2");
-	auto tower2 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	auto tower2 = new Tower();
+	tower2->image = Sprite::create("towerTile.png");
+	tower2->addChild(tower2->image);
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
 	//Tower1->initPos = Vec2(x, y);
@@ -116,15 +119,19 @@ inline void GameController::mapElementsInit() {
 	
 	/*创建对象元素-DefendTowers*/
 	spawnPoint = group->getObject("DefendTower1");
-	auto DefendTower1 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	auto DefendTower1 = new Tower();
+	DefendTower1->image = Sprite::create("towerTile.png");	
+	DefendTower1->addChild(DefendTower1->image);
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
 	//Tower1->initPos = Vec2(x, y);
 	TowerVector.push_back(DefendTower1);
 	DefendTower1->setPosition(Vec2(x, y));
-	spawnPoint = group->getObject("DefendTower2");
 	hero2->enemyDefendTower = DefendTower1;
-	auto DefendTower2 = static_cast<Tower*>(Tower::create("towerTile.png"));
+	spawnPoint = group->getObject("DefendTower2");
+	auto DefendTower2 = new Tower();
+	DefendTower2->image = Sprite::create("towerTile.png");	
+	DefendTower2->addChild(DefendTower2->image);
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
 	//Tower1->initPos = Vec2(x, y);
@@ -135,13 +142,18 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("fieldMonster1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	monster1 = static_cast<fieldMonster*>(fieldMonster::create("monster/monsterofField_1.png"));
+	monster1 = new fieldMonster();
+	monster1->image = Sprite::create("monster/monsterofField_1.png");
+	monster1->addChild(monster1->image);
 	monster1->initPos = Vec2(x, y);	//初始位置供死亡以后用
 	monster1->setPosition(Vec2(x, y));
 	spawnPoint = group->getObject("fieldMonster2");
+
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	monster2 = static_cast<fieldMonster*>(fieldMonster::create("monster/monsterofField_2.png"));
+	monster2 = new fieldMonster();
+	monster2->image = Sprite::create("monster/monsterofField_2.png");
+	monster2->addChild(monster2->image);
 	monster2->initPos = Vec2(x, y);
 	monster2->setPosition(Vec2(x, y));
 	monster1->initMonsterAttr(2, 100, 150, 20); //初始化属性，相当于构造函数 仍需更改其他！
@@ -152,7 +164,9 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier1 = static_cast<EnemySoldier*>(EnemySoldier::create(xixuebianfu_init));
+	auto clientSoldier1 = new EnemySoldier();
+	clientSoldier1->image = Sprite::create(xixuebianfu_init);
+	clientSoldier1->addChild(clientSoldier1->image);
 	clientSoldier1->initPos = Vec2(x, y);
 	clientSoldier1->setPosition(Vec2(x, y));
 	clientSoldier1->enemyHero = hero1;
@@ -162,7 +176,9 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier2");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier2 = static_cast<EnemySoldier*>(EnemySoldier::create(kongjumo_init));
+	auto clientSoldier2 = new EnemySoldier();
+	clientSoldier2->image = Sprite::create(kongjumo_init);
+	clientSoldier2->addChild(clientSoldier2->image);
 	clientSoldier2->initPos = Vec2(x, y);
 	clientSoldier2->setPosition(Vec2(x, y));
 	clientSoldier2->enemyHero = hero1;
@@ -173,7 +189,9 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier3");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier3 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create(houjing_init));
+	auto clientSoldier3 = new EnemySoldier();
+	clientSoldier3->image = Sprite::create(houjing_init);	
+	clientSoldier3->addChild(clientSoldier3->image);
 	clientSoldier3->initPos = Vec2(x, y);
 	clientSoldier3->setPosition(Vec2(x, y));
 	clientSoldier3->monsterType = 3;
@@ -184,7 +202,9 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier4");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier4 = static_cast<EnemySoldier*>(EnemySoldier::create(xixuebianfu_init));
+	auto clientSoldier4 = new EnemySoldier();
+	clientSoldier4->image = Sprite::create(xixuebianfu_init);
+	clientSoldier4->addChild(clientSoldier4->image);
 	clientSoldier4->initPos = Vec2(x, y);
 	clientSoldier4->setPosition(Vec2(x, y));
 	clientSoldier4->enemyHero = hero2;
@@ -194,7 +214,9 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier5");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier5 = static_cast<EnemySoldier*>(EnemySoldier::create(kongjumo_init));
+	auto clientSoldier5 = new EnemySoldier();
+	clientSoldier5->image = Sprite::create(kongjumo_init);
+	clientSoldier5->addChild(clientSoldier5->image);
 	clientSoldier5->initPos = Vec2(x, y);
 	clientSoldier5->setPosition(Vec2(x, y));
 	clientSoldier5->enemyHero = hero2;
@@ -205,14 +227,15 @@ inline void GameController::mapElementsInit() {
 	spawnPoint = group->getObject("soldier6");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
-	auto clientSoldier6 = static_cast<EnemySoldier*>((EnemySoldier*)EnemySoldier::create(houjing_init));
+	auto clientSoldier6 = new EnemySoldier();
+	clientSoldier6->image = Sprite::create(houjing_init);
+	clientSoldier6->addChild(clientSoldier6->image);
 	clientSoldier6->initPos = Vec2(x, y);
 	clientSoldier6->setPosition(Vec2(x, y));
 	clientSoldier6->enemyHero = hero2;
 	clientSoldier6->monsterType = 3;
 	clientSoldierVector.push_back(clientSoldier6);
 	hero2->thisSoldierVector->push_back(clientSoldier6);
-
 
 	/*addchild 设置初值*/
 	addChild(monster1, 100);
@@ -380,7 +403,12 @@ void GameController::createHero()
 	{
 	case ChangE:
 	{
-		hero1 = (Hero*)Hero::create(hero_ChangE);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_ChangE);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_ChangE);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	case SunWukong:
@@ -454,12 +482,14 @@ void GameController::spriteRectCheck(float dt) {
 	playTime++;
 	clientPlayer->retain();
 	serverPlayer->retain();
+	
 	if (TowerVector.at(0)->bloodNum <= 0 || clientPlayer->getBloodNum()<=0) {
 		this->unscheduleAllSelectors();
 		GameResult[0] = playTime;
 		GameResult[1] = clientPlayer->getExp();
 		GameResult[2] = clientPlayer->killCount;
 		GameResult[3] = clientPlayer->getMoney();
+		playTime = 0;
 		auto sc = GameResultFailure::createScene();
 		Director::getInstance()->pushScene(sc);
 	}
@@ -470,11 +500,12 @@ void GameController::spriteRectCheck(float dt) {
 			GameResult[1] = clientPlayer->getExp();
 			GameResult[2] = clientPlayer->killCount;
 			GameResult[3] = clientPlayer->getMoney();
-
+			playTime = 0;
 			auto sc = GameResultSuccess::createScene();
 			Director::getInstance()->pushScene(sc);
 		}
 	}
+	
 
 	clientPlayer->inRect= new Rect(clientPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
 	//serverPlayer->inRect = new Rect(serverPlayer->getPositionX() - 100, clientPlayer->getPositionY() - 100, 200, 200);
@@ -774,6 +805,8 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 		return;
 	clientPlayer->isHeroWalking = true;
 	clientPlayer->stopAllActions();
+	clientPlayer->image->stopAllActions();
+
 	//log("onTouchEnded");
 	//获得在OpenGL坐标
 	Vec2 touchLocation = touch->getLocation();
@@ -804,7 +837,7 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	animation->setDelayPerUnit(0.15f);
 	animation->setRestoreOriginalFrame(false);
 	Animate* action = Animate::create(animation);
-	clientPlayer->runAction(RepeatForever::create(action));
+	clientPlayer->image->runAction(RepeatForever::create(action));
 	//log(_tileMap->getTileSize().height);
 	Vec2 tileCoord = this->tileCoordFromPosition(touchLocation);
 	//获得瓦片的GID

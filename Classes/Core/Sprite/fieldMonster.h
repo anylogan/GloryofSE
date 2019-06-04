@@ -9,6 +9,7 @@ class fieldMonster : public Sprite
 public:
 	Progress * blood;   //血量
 	int bloodNum;  //血量
+	Sprite* image;
 	//void attack();
 	Vec2 initPos;
 	int deadRewardmoney;	//打死奖励金币数量

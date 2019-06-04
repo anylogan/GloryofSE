@@ -47,6 +47,7 @@ void Hero::autoAttack(Node* thisSoldier) {
 void Hero::autoRun(Vec2 pos) {
 	isHeroWalking = true;
 	this->stopAllActions();
+	image->stopAllActions();
 	Vec2 playerPos = this->getPosition();
 	Vec2 diff = pos - playerPos;
 	int newDir = getNowPointDir(this, pos);
@@ -70,7 +71,7 @@ void Hero::autoRun(Vec2 pos) {
 	animation->setDelayPerUnit(0.15f);
 	animation->setRestoreOriginalFrame(false);
 	Animate* action = Animate::create(animation);
-	this->runAction(RepeatForever::create(action));
+	image->runAction(RepeatForever::create(action));
 	//log(_tileMap->getTileSize().height);
 	float speed = this->getHeroSpeed();
 	float x1 = playerPos.x;
@@ -158,6 +159,7 @@ int Hero::getNowPointDir(Node* player, Vec2 newpoint)
 void Hero::attackEnemyAnimation(int dir)   //播放动画
 {
 	this->stopAllActions();
+	image->stopAllActions();
 	Animation *animation = Animation::create();
 	__String *frameName;
 	for (int i = 0; i < 10; i++)
@@ -178,7 +180,7 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
 	animation->setRestoreOriginalFrame(true);
 	Animate *action = Animate::create(animation);
-	this->runAction(Repeat::create(action,1)); //播放一次
+	image->runAction(Repeat::create(action,1)); //播放一次
 }
 void Hero::skillAnimation()   //播放动画
 {

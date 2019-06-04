@@ -6,7 +6,6 @@ bool fieldMonster::init()  //  英雄的总的控制
 	return true;
 }
 
-
 void fieldMonster::initMonsterAttr(int attackAbility,int _bloodNum,int _rewardMoney,int _rewardExp)
 {
 	attack_rect = new Rect(this->getPositionX()- 100, this->getPositionY() - 100, 200, 200);

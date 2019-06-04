@@ -43,6 +43,7 @@ public:
 	int killCount;       //É±µÐ¼ÆÊý
 	Tower* enemyTower;
 	int bonusSpeed;
+	Sprite* image;
 	int bonusAttack;
 	int bonusDefend;
 	int bonusBlood;
