@@ -33,6 +33,7 @@ public:
 	void minusBlood(int num,Hero* hero);
 	void startWalkTowardsTower(int dir);
 	void towerAttackMinusBlood(int num);
+	void soldierRevive(float dt);
 	//Hero* heroInRect;
 	Hero* enemyHero;
 	Tower* enemyTower;

@@ -12,8 +12,8 @@ void Tower::initTowerAttr(int attackAbility, int _bloodNum, int _rewardMoney, in
 	deadRewardExp = _rewardExp;
 	enemyHero = hero;
 	blood = Progress::create("empty_bar.png", "full_bar.png");
-	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
-	this->addChild(blood);
+	blood->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.1));
+	image->addChild(blood);
 	this->retain();
 
 }

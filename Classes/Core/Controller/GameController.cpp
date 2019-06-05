@@ -38,17 +38,15 @@ bool GameController::init()
 	addChild(_tileMap, 0, 100);
 	NotificationCenter::getInstance()->removeAllObservers(this);
 	mapElementsInit();
-	this->retain();//???
 	this->setViewpointCenter(clientPlayer->getPosition());
 	setTouchEnabled(true);
 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 	this->schedule(schedule_selector(GameController::updateView), 0.01f);
 	//spriteRectCheck 也做结束检查、时间增加
-	
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//执行一次；
-	this->schedule(schedule_selector(GameController::AI_Hero_Run), 6.0f);
-	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 2.0f);
+	this->schedule(schedule_selector(GameController::AI_Hero_Run), 3.0f);
+	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 0.2f);
 	
 	return true;
 }
@@ -413,12 +411,22 @@ void GameController::createHero()
 	}
 	case SunWukong:
 	{
-		hero1 = (Hero*)Hero::create(hero_SunWukong);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_SunWukong);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_SunWukong);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	case HuaMulan:
 	{
-		hero1 = (Hero*)Hero::create(hero_HuaMulan);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_HuaMulan);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_HuaMulan);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	default:break;
@@ -483,7 +491,7 @@ void GameController::spriteRectCheck(float dt) {
 	clientPlayer->retain();
 	serverPlayer->retain();
 	
-	if (TowerVector.at(0)->bloodNum <= 0 || clientPlayer->getBloodNum()<=0) {
+	if (TowerVector.at(0)->bloodNum <= 0 ) {
 		this->unscheduleAllSelectors();
 		GameResult[0] = playTime;
 		GameResult[1] = clientPlayer->getExp();
@@ -525,44 +533,37 @@ void GameController::spriteRectCheck(float dt) {
 	for (auto i=0; i<6; i++) {
 		log("A new judge %d",i);
 		clientSoldierVector[i]->setNewAttackRect();
-		bool judge = clientSoldierVector[i]->checkHeroInRect();
-		bool towerJudge = clientSoldierVector[i]->enemyTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
-		bool defendtowerJudge = clientSoldierVector[i]->enemyDefendTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
+		if (clientSoldierVector[i]->bloodNum > 0) {
+			bool judge = clientSoldierVector[i]->checkHeroInRect();
+			bool towerJudge = clientSoldierVector[i]->enemyTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
+			bool defendtowerJudge = clientSoldierVector[i]->enemyDefendTower->attack_rect->containsPoint(clientSoldierVector[i]->getPosition());
 
-		/*
-		if(judge==false)
-			log ("Enemy is not in rect");
-		else log("Enemy is  in rect");
-		*/
-		Tower* tempEnemyTower, *tempEnemyDefendTower;
-		if (i <= 2) {
-			tempEnemyTower = TowerVector.at(0);
-			tempEnemyDefendTower = TowerVector.at(2);
-		}
-		else {
-			tempEnemyTower = TowerVector.at(1);
-			tempEnemyDefendTower = TowerVector.at(3);
+			/*
+			if(judge==false)
+				log ("Enemy is not in rect");
+			else log("Enemy is  in rect");
+			*/
+			Tower* tempEnemyTower, *tempEnemyDefendTower;
+			if (i <= 2) {
+				tempEnemyTower = TowerVector.at(0);
+				tempEnemyDefendTower = TowerVector.at(2);
+			}
+			else {
+				tempEnemyTower = TowerVector.at(1);
+				tempEnemyDefendTower = TowerVector.at(3);
 
-		}
+			}
 
-		if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == false) {
-			int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
-			int attackDir = getAttackDir(tempDir);
-			clientSoldierVector[i]->startWalkTowardsTower(attackDir);
-			clientSoldierVector[i]->isWalking = true;
-			log("enemy is walking");
-			continue;
-		}
-		if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == true) {
-			if (towerJudge &&clientSoldierVector[i]->enemyTower->bloodNum>0) {		//塔没有死才可以进入攻击状态
-				clientSoldierVector[i]->isWalking = false;
-				clientSoldierVector[i]->isAttacking = true;
-				clientSoldierVector[i]->stopAllActions();
-				clientSoldierVector[i]->scheduleAttack(1);
-				log("enemy is attacking");
+			if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == false) {
+				int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
+				int attackDir = getAttackDir(tempDir);
+				clientSoldierVector[i]->startWalkTowardsTower(attackDir);
+				clientSoldierVector[i]->isWalking = true;
+				log("enemy is walking");
 				continue;
 			}
-				if (defendtowerJudge &&clientSoldierVector[i]->enemyDefendTower->bloodNum>0) {		//塔没有死才可以进入攻击状态
+			if (clientSoldierVector[i]->isAttacking == false && clientSoldierVector[i]->isWalking == true) {
+				if (towerJudge &&clientSoldierVector[i]->enemyTower->bloodNum > 0) {		//塔没有死才可以进入攻击状态
 					clientSoldierVector[i]->isWalking = false;
 					clientSoldierVector[i]->isAttacking = true;
 					clientSoldierVector[i]->stopAllActions();
@@ -570,27 +571,36 @@ void GameController::spriteRectCheck(float dt) {
 					log("enemy is attacking");
 					continue;
 				}
-			if (judge && clientSoldierVector[i]->enemyHero->getBloodNum()>0) {		//英雄没有死才可以进入攻击状态
-				clientSoldierVector[i]->isWalking = false;
-				clientSoldierVector[i]->isAttacking = true;
-				clientSoldierVector[i]->stopAllActions();
-				clientSoldierVector[i]->scheduleAttack(0);//0打人
-				log("enemy is attacking");
-				continue;
-			}
-		}
-		if (clientSoldierVector[i]->isAttacking == true && clientSoldierVector[i]->isWalking == false) {
-			if (!judge) {
-				if (!towerJudge) {
-					clientSoldierVector[i]->isAttacking = false;
-					clientSoldierVector[i]->isWalking = true;
+				if (defendtowerJudge &&clientSoldierVector[i]->enemyDefendTower->bloodNum > 0) {		//塔没有死才可以进入攻击状态
+					clientSoldierVector[i]->isWalking = false;
+					clientSoldierVector[i]->isAttacking = true;
 					clientSoldierVector[i]->stopAllActions();
-					clientSoldierVector[i]->unscheduleAttack();
-					int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
-					int attackDir = getAttackDir(tempDir);
-					clientSoldierVector[i]->startWalkTowardsTower(attackDir);
-					log("enemy stop attacking");
+					clientSoldierVector[i]->scheduleAttack(1);
+					log("enemy is attacking");
 					continue;
+				}
+				if (judge && clientSoldierVector[i]->enemyHero->getBloodNum() > 0) {		//英雄没有死才可以进入攻击状态
+					clientSoldierVector[i]->isWalking = false;
+					clientSoldierVector[i]->isAttacking = true;
+					clientSoldierVector[i]->stopAllActions();
+					clientSoldierVector[i]->scheduleAttack(0);//0打人
+					log("enemy is attacking");
+					continue;
+				}
+			}
+			if (clientSoldierVector[i]->isAttacking == true && clientSoldierVector[i]->isWalking == false) {
+				if (!judge) {
+					if (!towerJudge) {
+						clientSoldierVector[i]->isAttacking = false;
+						clientSoldierVector[i]->isWalking = true;
+						clientSoldierVector[i]->stopAllActions();
+						clientSoldierVector[i]->unscheduleAttack();
+						int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
+						int attackDir = getAttackDir(tempDir);
+						clientSoldierVector[i]->startWalkTowardsTower(attackDir);
+						log("enemy stop attacking");
+						continue;
+					}
 				}
 			}
 		}

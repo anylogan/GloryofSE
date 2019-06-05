@@ -105,11 +105,11 @@
   <object id="13" x="1737" y="187"/>
   <object id="14" name="soldier1" x="378" y="213" width="33" height="31"/>
   <object id="17" name="soldier2" x="952" y="667" width="30" height="33"/>
-  <object id="18" name="soldier3" x="1483" y="1085" width="39" height="38"/>
+  <object id="18" name="soldier3" x="1491" y="1069" width="39" height="38"/>
   <object id="19" name="Tower1" x="411" y="1039" width="43" height="35"/>
   <object id="21" name="soldier4" x="456.5" y="179.5" width="33" height="31"/>
   <object id="22" name="soldier5" x="978.5" y="652.5" width="33" height="31"/>
-  <object id="23" name="soldier6" x="1660.5" y="994.5" width="33" height="31"/>
+  <object id="23" name="soldier6" x="1644.5" y="974.5" width="33" height="31"/>
   <object id="24" name="Tower2" x="1606.5" y="202.5" width="43" height="35"/>
  </objectgroup>
 </map>

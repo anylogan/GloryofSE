@@ -1,5 +1,6 @@
 #include"Scene/SelectHeroScene.h"
 #include "cocostudio/CocoStudio.h"
+#include "Scene/SelectPlayMode.h"
 #include "ui/CocosGUI.h"
 using namespace CocosDenshion;
 hero_role HeroRole; //定义一个全局变量  并且初始化
@@ -33,20 +34,20 @@ void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
 	HeroRole =ChangE;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = GameScene::createScene();
-	Director::getInstance()->pushScene(scene);
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
 }
 void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 {
 	HeroRole = HuaMulan;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = GameScene::createScene();
-	Director::getInstance()->pushScene(scene);
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
 }
 void  SelectHeroScene::SunCallBack(Ref *pSender)
 {
 	HeroRole = SunWukong;   //给全局变量赋值
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = GameScene::createScene();
-	Director::getInstance()->pushScene(scene);
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
 }

@@ -42,6 +42,7 @@ public:
 	Vec2 initPos;			//瓦片地图初始化位置
 	int killCount;       //杀敌计数
 	Tower* enemyTower;
+	hero_role heroType;
 	int bonusSpeed;
 	Sprite* image;
 	int bonusAttack;
@@ -69,6 +70,7 @@ public:
 	int getCommonAttack() { return commonAttack; }       //返回普通攻击值
 	int getBloodNum() { return bloodNum; }	//返回血量
 	void minusBlood(int num);
+	void HeroRevive(float dt);
 	int getNowPointDir(Node * player, Vec2 newpoint);
 	//掉血&死亡判断
 	void attackEnemyAnimation(int dir);

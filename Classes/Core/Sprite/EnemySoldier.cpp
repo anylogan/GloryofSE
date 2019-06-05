@@ -18,8 +18,8 @@ void EnemySoldier::initMonsterAttr(int attackAbility, int _bloodNum, int _reward
 	deadRewardExp = _rewardExp;
 	attackTowerPos = towerPos;
 	blood = Progress::create("Enemy_empty_bar.png", "Enemy_full_bar.png");
-	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
-	this->addChild(blood);
+	blood->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.1));
+	image->addChild(blood);
 	this->retain();
 }
 void EnemySoldier::setNewAttackRect() {
@@ -240,12 +240,16 @@ void EnemySoldier::minusBlood(int num,Hero* hero) {
 		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//离世判断
+		this->unscheduleAllSelectors();
 		blood->setPercentage(0);
 		this->setVisible(false);	//离世了，不可见
 		bloodNum = 0;
-		//this->setPosition(initPos);
+		isWalking = false;
+		isAttacking = false;
+		this->setPosition(initPos);
 		hero->addReward(deadRewardmoney, deadRewardExp);
-		this->unscheduleAllSelectors();
+		this->scheduleOnce(schedule_selector(EnemySoldier::soldierRevive), 15.0f); //在2.0f之后执行，并且只执行一次。
+
 	}
 }
 void EnemySoldier::startWalkTowardsTower(int dir) {
@@ -294,10 +298,20 @@ void EnemySoldier::towerAttackMinusBlood(int num)
 		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 	}
 	else {//离世判断
+		this->unscheduleAllSelectors();
 		blood->setPercentage(0);
 		this->setVisible(false);	//离世了，不可见
 		bloodNum = 0;
-		//this->setPosition(initPos);
-		this->unscheduleAllSelectors();
+		isWalking = false;
+		isAttacking = false;
+		this->setPosition(initPos);
+		this->scheduleOnce(schedule_selector(EnemySoldier::soldierRevive), 10.0f); //在2.0f之后执行，并且只执行一次。
 	}
+}
+
+void EnemySoldier::soldierRevive(float dt) {//
+	bloodNum = fullBlood;
+	blood->setPercentage(100);
+	this->setVisible(true);
+	this->image->setVisible(true);
 }

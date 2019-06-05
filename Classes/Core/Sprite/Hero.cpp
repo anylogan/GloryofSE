@@ -203,7 +203,7 @@ void Hero::skillAnimation()   //播放动画
 		animation->addSpriteFrameWithFile(frameName->getCString());
 	}
 	animation->setDelayPerUnit(0.15f);     //设置两个帧播放事件
-	animation->setRestoreOriginalFrame(true);
+	animation->setRestoreOriginalFrame(false);
 	Animate *action = Animate::create(animation);
 	skillSprite->runAction(Repeat::create(action, 1)); //播放一次
 }
@@ -228,13 +228,13 @@ void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack,
 	bonusAttack = 0;
 	bonusBlood = 0;
 	blood = Progress::create("empty_bar.png", "full_bar.png");
-	blood->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 1.1));
+	blood->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.1));
 	isHeroWalking = false;
 	killCount = 0;
 	skillSprite = Sprite::create("towerTile.png");
 
 	this->addChild(skillSprite);
-	this->addChild(blood);
+	image->addChild(blood);
 }
 void Hero::equipbonusBlood(int num) {
 	this->bloodNum += num;
@@ -253,12 +253,19 @@ void Hero::minusBlood(int num) {
 			blood->setPercentage(((float)bloodNum) / ((float)(fullBlood)/100.0));
 		}
 		else {//离世判断
+			this->unscheduleAllSelectors();
 			blood->setPercentage(0);
 			this->setVisible(false);	//离世了，不可见
 			bloodNum = 0;
 			this->setPosition(initPos);
-
+			this->scheduleOnce(schedule_selector(Hero::HeroRevive), 15.0f); //在2.0f之后执行，并且只执行一次。
 		}
 	}
 }
 
+void Hero::HeroRevive(float dt) {//
+	bloodNum = fullBlood;
+	blood->setPercentage(100);
+	this->setVisible(true);
+	this->image->setVisible(true);
+}

@@ -318,7 +318,6 @@ void EquipScene::equipCallbackEquipped(Ref* pSender)
 			break;
 		case 12:
 			clientPlayer->bonusSpeed = ((clientPlayer->bonusSpeed - 5) > 0 ? (clientPlayer->bonusSpeed - 5) : 0);
-			clientPlayer->equipbonusBlood(clientPlayer->bonusBlood);
 			break;
 		case 13:
 			clientPlayer->bonusSpeed = ((clientPlayer->bonusSpeed - 15) > 0 ? (clientPlayer->bonusSpeed - 15) : 0);
