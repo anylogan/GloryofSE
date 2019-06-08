@@ -63,15 +63,20 @@ void Client::sendOwnHero(int hero_role)
 	sock->write_some(buffer(sends));
 }
 
-int Client::receiveHero()
+command Client::receiveHero()
 {
 	while (true)
 	{
 		if (sock->available()) {
 			std::vector<command> buf(1);
 			sock->read_some(buffer(buf));
-			if (buf[0].command_type == heroInform ) return buf[0].hero_type;
-			else return -1;
+			if (buf[0].command_type == heroInform ) return buf[0];
+			else
+			{
+				command m;
+				m.hero_type = -1;
+				return m;
+			}
 		}
 	}
 }
@@ -150,6 +155,7 @@ void Client::clear()
 	sock->write_some(buffer(sends));
 	sock->close();
 	sock = nullptr;
+	message_sock = nullptr;
 }
 
 void Client::destory()

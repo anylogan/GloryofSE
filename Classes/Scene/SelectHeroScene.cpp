@@ -1,9 +1,10 @@
 #include"Scene/SelectHeroScene.h"
 #include "cocostudio/CocoStudio.h"
-#include "Scene/SelectPlayMode.h"
 #include "ui/CocosGUI.h"
 using namespace CocosDenshion;
-hero_role HeroRole; //定义一个全局变量  并且初始化
+hero_role HeroRole; //定义三个全局变量  并且初始化
+hero_role EnemyHero;
+int PlayMode; //左上or右下
 
 Scene*  SelectHeroScene::createScene()
 {
@@ -32,22 +33,136 @@ bool  SelectHeroScene::init()
 
 void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
-	HeroRole =ChangE;   //给全局变量赋值
-	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = SelectPlayMode::createScene();
-	Director::getInstance()->replaceScene(scene);
+	int mode_tag = this->getTag();
+	if (mode_tag == 020)
+	{
+		bool check_connect = Client::getInstance()->checkConnect();
+		if (check_connect)
+		{
+			HeroRole = ChangE;   //给全局变量赋值
+			Client::getInstance()->sendOwnHero(0);
+			command hero_command = (Client::getInstance()->receiveHero());
+			switch (hero_command.hero_type)
+			{
+			case 0:
+			{
+				EnemyHero = ChangE;
+				break;
+			}
+			case 1:
+			{
+				EnemyHero = HuaMulan;
+				break;
+			}
+			case 2:
+			{
+				EnemyHero = SunWukong;
+				break;
+			}
+			default:
+				break;
+			}
+			PlayMode = hero_command.player_type;
+			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+			auto scene = GameSceneOnline::createScene();
+			Director::getInstance()->replaceScene(scene);
+		}
+	}
+	else
+	{
+		HeroRole = ChangE;   //给全局变量赋值
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
 }
 void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 {
-	HeroRole = HuaMulan;   //给全局变量赋值
-	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = SelectPlayMode::createScene();
-	Director::getInstance()->replaceScene(scene);
+	int mode_tag = this->getTag();
+	if (mode_tag == 020)
+	{
+		bool check_connect = Client::getInstance()->checkConnect();
+		if (check_connect)
+		{
+			HeroRole = HuaMulan;   //给全局变量赋值
+			Client::getInstance()->sendOwnHero(1);
+			command hero_command=(Client::getInstance()->receiveHero());
+			switch (hero_command.hero_type)
+			{
+			case 0:
+			{
+				EnemyHero = ChangE;
+				break;
+			}
+			case 1:
+			{
+				EnemyHero = HuaMulan;
+				break;
+			}
+			case 2:
+			{
+				EnemyHero = SunWukong;
+				break;
+			}
+			default:
+				break;
+			}
+			PlayMode = hero_command.player_type;
+			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+			auto scene = GameSceneOnline::createScene();
+			Director::getInstance()->replaceScene(scene);
+		}
+	}
+	else
+	{
+		HeroRole = HuaMulan;   //给全局变量赋值
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
 }
 void  SelectHeroScene::SunCallBack(Ref *pSender)
 {
-	HeroRole = SunWukong;   //给全局变量赋值
-	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = SelectPlayMode::createScene();
-	Director::getInstance()->replaceScene(scene);
+	int mode_tag = this->getTag();
+	if (mode_tag == 020)
+	{
+		bool check_connect = Client::getInstance()->checkConnect();
+		if (check_connect)
+		{
+			HeroRole = SunWukong;   //给全局变量赋值
+			Client::getInstance()->sendOwnHero(2);
+			command hero_command = (Client::getInstance()->receiveHero());
+			switch (hero_command.hero_type)
+			{
+			case 0:
+			{
+				EnemyHero = ChangE;
+				break;
+			}
+			case 1:
+			{
+				EnemyHero = HuaMulan;
+				break;
+			}
+			case 2:
+			{
+				EnemyHero = SunWukong;
+				break;
+			}
+			default:
+				break;
+			}
+			PlayMode = hero_command.player_type;
+			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+			auto scene = GameSceneOnline::createScene();
+			Director::getInstance()->replaceScene(scene);
+		}
+	}
+	else
+	{
+		HeroRole = SunWukong;   //给全局变量赋值
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
 }

@@ -2,9 +2,8 @@
 #include"Core/Net/Client.h"
 #include<vector>
 //全局变量初始化
-std::vector<int> equipmentBoughtList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前拥有装备的状态
-std::vector<int> equipmentEquippedList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前装备装备的状态
-Client *Client::instance = nullptr;
+extern std::vector<int> equipmentBoughtList;//标记当前拥有装备的状态
+extern std::vector<int> equipmentEquippedList;//标记当前装备装备的状态
 
 Scene* GameSceneOnline::createScene()
 
@@ -14,7 +13,9 @@ Scene* GameSceneOnline::createScene()
 
 bool GameSceneOnline::init()
 {
-	auto controller = GameController::createScene();//创建控制层
+	equipmentBoughtList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前拥有装备的状态
+	equipmentEquippedList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前装备装备的状态
+	auto controller = GameControllerOnline::createScene();//创建控制层
 	addChild(controller);
 	//创建商城及装备查看界面
 	Size visibleSize = Director::getInstance()->getVisibleSize();

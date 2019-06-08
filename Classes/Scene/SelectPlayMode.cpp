@@ -1,10 +1,10 @@
 #include"Scene/SelectPlayMode.h"
 #include "cocostudio/CocoStudio.h"
-#include "Core/Controller/GameScene.h"
-#include "Core/Controller/GameSceneOnline.h"
-
+#include"Scene/SelectHeroScene.h"
 #include "ui/CocosGUI.h"
 using namespace CocosDenshion;
+
+Client* Client::instance = nullptr;
 
 Scene*  SelectPlayMode::createScene()
 {
@@ -33,12 +33,15 @@ bool  SelectPlayMode::init()
 void  SelectPlayMode::SingleModeCallBack(Ref *pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = GameScene::createScene();
+	auto scene = SelectHeroScene::createScene();
+	scene->setTag(010);
 	Director::getInstance()->replaceScene(scene);
 }
 void  SelectPlayMode::OnlineModeCallBack(Ref *pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	auto scene = GameSceneOnline::createScene();
-	Director::getInstance()->pushScene(scene);
+	auto scene = SelectHeroScene::createScene();
+	scene->setTag(020);
+	Client::getInstance()->connectWithServer();
+	Director::getInstance()->replaceScene(scene);
 }

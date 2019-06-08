@@ -4,7 +4,7 @@
 #include"SimpleAudioEngine.h"
 #include"Scene/StartScene.h"
 //#include"Scene/GameScene.h"
-#include"Scene/SelectHeroScene.h"
+#include"Scene/SelectPlayMode.h"
 USING_NS_CC;
 
 class LoginScene :public cocos2d::Scene

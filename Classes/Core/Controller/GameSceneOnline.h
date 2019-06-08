@@ -1,6 +1,6 @@
 #pragma once
 #include "cocos2d.h"
-#include"Core/Controller/GameController.h"
+#include"Core/Controller/GameControllerOnline.h"
 #include"Scene/SelectHeroScene.h"
 #include"Core/Controller/StoreScene.h"
 #include"Core/Controller/EquipScene.h"

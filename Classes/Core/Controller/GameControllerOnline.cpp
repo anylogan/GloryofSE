@@ -5,10 +5,12 @@
 USING_NS_CC;
 //初始化全局变量
 extern hero_role HeroRole;
-Hero* clientPlayer;
-Hero* serverPlayer;
-int GameResult[4]; //传递游戏结果
-int playTime = 0;
+extern hero_role EnemyHero;
+extern int PlayMode;
+extern Hero* clientPlayer;
+extern Hero* serverPlayer;
+extern int GameResult[4]; //传递游戏结果
+extern int playTime;
 GameControllerOnline* GameControllerOnline::createScene()
 {
 	return GameControllerOnline::create();
@@ -30,6 +32,7 @@ bool GameControllerOnline::init()
 	{
 		return false;
 	}
+	playTime = 0;
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	createHero();
@@ -44,9 +47,9 @@ bool GameControllerOnline::init()
 	this->schedule(schedule_selector(GameControllerOnline::updateView), 0.01f);
 	//spriteRectCheck 也做结束检查、时间增加
 	this->schedule(schedule_selector(GameControllerOnline::spriteRectCheck), 1.0f);
-	AI_Hero_Run(0);//执行一次；
-	this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Run), 3.0f);
-	this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Attack), 0.2f);
+	//AI_Hero_Run(0);//执行一次；
+	//this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Run), 3.0f);
+	//this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Attack), 0.2f);
 	
 	return true;
 }
@@ -93,25 +96,53 @@ inline void GameControllerOnline::mapElementsInit() {
 	{
 	case ChangE:
 	{
-		hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		if(clientPlayer==hero1)
+			hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
 		break;
 	}
 	case SunWukong:
 	{
-		hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		if(clientPlayer==hero1)
+			hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2);//如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
 		break;
 	}
 	case HuaMulan:
 	{
-		hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
+		if(clientPlayer==hero1)
+			hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
 		break;
 	}
 	default:break;
 	}
 	
+	switch (EnemyHero)       //创建英雄
+	{
+	case ChangE:
+	{
+		if(serverPlayer==hero1)
+			hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		break;
+	}
+	case SunWukong:
+	{
+		if(serverPlayer==hero1)
+			hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2);//如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
+		break;
+	}
+	case HuaMulan:
+	{
+		if(serverPlayer==hero1)
+			hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		else hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
+		break;
+	}
+	default:break;
+	}
 	/*创建对象元素-DefendTowers*/
 	spawnPoint = group->getObject("DefendTower1");
 	auto DefendTower1 = new Tower();
@@ -398,7 +429,7 @@ void GameControllerOnline::collidableCheck()
 		 pos = serverPlayer->getPosition();
 		 tileCoord = this->tileCoordFromPosition(pos);
 		//获得瓦片的GID
-		int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
+		tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
 		if (tileGid > 0) {
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
 			serverPlayer->stopAllActions();
@@ -415,48 +446,72 @@ Key with keycode 127 released
 */
 void GameControllerOnline::createHero()
 {
+	hero1 = new Hero();
+	hero2 = new Hero();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	//这里请根据网络判断情况设置clientPlayer和serverplayer
-	clientPlayer = hero1;
-	serverPlayer = hero2;
-	clientPlayer->heroType = ChangE;
-	serverPlayer->heroType = ChangE;
-	//下面也需要修改，hero1是左下角，hero2右上角
-	switch (HeroRole)       //创建英雄
+
+	if (PlayMode == 2)
+	{
+		clientPlayer = hero1;
+		serverPlayer = hero2;
+	}
+	else
+	{
+		clientPlayer = hero2;
+		serverPlayer = hero1;
+	}
+
+	clientPlayer->heroType = HeroRole;
+	serverPlayer->heroType = EnemyHero;
+
+	switch (HeroRole)       //  
 	{
 	case ChangE:
 	{
-		hero1 = new Hero();
-		hero1->image = Sprite::create(hero_ChangE);
-		hero1->addChild(hero1->image);
-		hero2 = new Hero();
-		hero2->image = Sprite::create(hero_ChangE);
-		hero2->addChild(hero2->image);
+		clientPlayer->image = Sprite::create(hero_ChangE);
+		clientPlayer->addChild(clientPlayer->image);
 		break;
 	}
 	case SunWukong:
 	{
-		hero1 = new Hero();
-		hero1->image = Sprite::create(hero_SunWukong);
-		hero1->addChild(hero1->image);
-		hero2 = new Hero();
-		hero2->image = Sprite::create(hero_SunWukong);
-		hero2->addChild(hero2->image);
+		clientPlayer->image = Sprite::create(hero_SunWukong);
+		clientPlayer->addChild(clientPlayer->image);
 		break;
 	}
 	case HuaMulan:
 	{
-		hero1 = new Hero();
-		hero1->image = Sprite::create(hero_HuaMulan);
-		hero1->addChild(hero1->image);
-		hero2 = new Hero();
-		hero2->image = Sprite::create(hero_HuaMulan);
-		hero2->addChild(hero2->image);
+		clientPlayer->image = Sprite::create(hero_HuaMulan);
+		clientPlayer->addChild(clientPlayer->image);
 		break;
 	}
 	default:break;
 	}
+	switch (EnemyHero)
+	{
+	case ChangE:
+	{
+
+		serverPlayer->image = Sprite::create(hero_ChangE);
+		serverPlayer->addChild(serverPlayer->image);
+		break;
+	}
+	case SunWukong:
+	{
+
+		serverPlayer->image = Sprite::create(hero_SunWukong);
+		serverPlayer->addChild(serverPlayer->image);
+		break;
+	}
+	case HuaMulan:
+	{
+		serverPlayer->image = Sprite::create(hero_HuaMulan);
+		serverPlayer->addChild(serverPlayer->image);
+
+	}
+	default:break;
+	}
+
 }
 
 void  GameControllerOnline::updateView(float dt)  //刷新函数

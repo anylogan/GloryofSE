@@ -2,6 +2,8 @@
 
 #include "cocos2d.h"
 #include"SimpleAudioEngine.h"
+#include"Core/Net/Client.h"
+#include"Core/Net/NetCommand.h"
 USING_NS_CC;
 
 class SelectPlayMode : public cocos2d::Scene
