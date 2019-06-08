@@ -48,6 +48,7 @@ public:
 	int bonusAttack;
 	int bonusDefend;
 	int bonusBlood;
+	int playerType;
 	Tower* enemyDefendTower;
 	Sprite* skillSprite;
 	//EnemySoldier* thisSoldierVector[3];

@@ -46,7 +46,7 @@ bool GameController::init()
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//Ö´ÐÐÒ»´Î£»
 	this->schedule(schedule_selector(GameController::AI_Hero_Run), 3.0f);
-	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 0.2f);
+	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 1.0f);
 	
 	return true;
 }
@@ -407,6 +407,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_ChangE);
 		hero2->addChild(hero2->image);
+		hero1->heroType = ChangE;
+		hero2->heroType = ChangE;
 		break;
 	}
 	case SunWukong:
@@ -417,6 +419,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_SunWukong);
 		hero2->addChild(hero2->image);
+		hero1->heroType = SunWukong;
+		hero2->heroType = SunWukong;
 		break;
 	}
 	case HuaMulan:
@@ -427,6 +431,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_HuaMulan);
 		hero2->addChild(hero2->image);
+		hero1->heroType = HuaMulan;
+		hero2->heroType = HuaMulan;
 		break;
 	}
 	default:break;

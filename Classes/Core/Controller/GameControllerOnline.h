@@ -4,7 +4,6 @@
 #include <vector>
 #include"Scene/SelectHeroScene.h"
 //包含层类头文件
-#include"Scene/ButtonLayer.h"
 //包含精灵类头文件
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/EnemySoldier.h"
@@ -18,11 +17,6 @@ class GameControllerOnline : public Layer   //游戏控制类
 {
 
 public:
-	//属性
-	//层属性
-	ButtonLayer * button;
-	//
-	//属性
 	TMXTiledMap * _tileMap;
 	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
