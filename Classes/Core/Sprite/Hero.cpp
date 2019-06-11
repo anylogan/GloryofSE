@@ -2,6 +2,7 @@
 #include"Core/Sprite/EnemySoldier.h"
 #include<vector>
 extern Hero* clientPlayer;
+extern hero_role HeroRole;
 
 bool Hero::init()  //  英雄的总的控制
 {
@@ -55,7 +56,7 @@ void Hero::autoRun(Vec2 pos) {
 	__String *frameName;
 	for (int i = 0; i <= 7; i++)
 	{
-		switch (heroType) {
+		switch (HeroRole) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
 		case HuaMulan:
@@ -164,7 +165,7 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 	for (int i = 0; i < 10; i++)
 	{
 
-		switch (heroType) {
+		switch (HeroRole) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_attack, dir, i); break;
 		case HuaMulan:
@@ -189,7 +190,7 @@ void Hero::skillAnimation()   //播放动画
 	for (int i = 0; i < 10; i++)
 	{
 
-		switch (heroType) {
+		switch (HeroRole) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_skill,i); break;
 		case HuaMulan:

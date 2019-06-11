@@ -21,6 +21,10 @@ public:
 	/*void menuSoundCallback(cocos2d::Ref*pSender);
 	void menuMusicCallback(cocos2d::Ref*pSender);*/
 	// implement the "static create()" method manually
+
+	virtual void onExit();
+	virtual void onExitTransitionDidStart();
+	virtual void cleanup();
 	CREATE_FUNC(SettingScene);
 };
 
