@@ -4,8 +4,6 @@
 using namespace CocosDenshion;
 USING_NS_CC_EXT;
 using namespace cocos2d::ui;
-extern bool isMusicEffect;
-extern bool isSoundEffect;
 Scene* LoginScene::createScene()
 {
 	return LoginScene::create();
@@ -17,19 +15,7 @@ bool LoginScene::init()
 		return false;
 	}
 	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/music_logo.mp3", true);
-	if (isMusicEffect == false)
-	{
-		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-	}
 
-	else
-	{
-		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/music_logo.mp3", true);
-	}
-	if (isSoundEffect == false)
-	{
-		SimpleAudioEngine::getInstance()->stopAllEffects();
-	}
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -75,33 +61,7 @@ void LoginScene::addLoginButton()
 //(CC_CALLBACK_1(StartScene::menuItemStartCallback, this));
 void LoginScene::menuItemStartCallback(Ref *pSender)
 {
-	if (isSoundEffect == false)
-	{
-		SimpleAudioEngine::getInstance()->stopAllEffects();
-	}
-	else
-	{
-		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	}
-	auto sc = SelectHeroScene::createScene();
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	auto sc = SelectPlayMode::createScene();
 	Director::getInstance()->pushScene(sc);
-}
-void LoginScene::onExit()
-{
-	Scene::onExit();
-	log("MainMenu onExit");
-}
-
-void LoginScene::onExitTransitionDidStart()
-{
-	Scene::onExitTransitionDidStart();
-	log("MainMenu onExitTransitionDidStart");
-}
-
-void LoginScene::cleanup()
-{
-	Scene::cleanup();
-	log("MainMenu cleanup");
-	//ֹͣ
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
 }

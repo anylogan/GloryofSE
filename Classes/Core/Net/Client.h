@@ -29,7 +29,7 @@ public:
 	bool checkConnect();   //确认连接 Note:第一次接收信息！！调用级别:必须，S1，一次调用
 	                      //内有while循环，只有对方连接时才结束函数返回结果
 	void sendOwnHero(int hero_role); //发送己方英雄类型 Note:第一次发送信息！！调用级别：必须，S2，一次调用
-	int receiveHero();   //接收对方英雄类型 Note:第二次接收信息！！ 调用级别：必须，S3,一次调用
+	command receiveHero();   //接收对方英雄类型 Note:第二次接收信息！！ 调用级别：必须，S3,一次调用
 	                     //内有while true循环
 	void sendAttack();  //发送攻击信号 调用：键盘函数里调用（注意一下次数）
 	void sendClickPos(float x, float y); //发送鼠标点击位置 调用：点击函数里调用（注意一下次数）

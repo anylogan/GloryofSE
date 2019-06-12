@@ -25,7 +25,7 @@ bool StartScene::init()
 	{
 		return false;
 	}
-	
+
 	if (isMusicEffect == false)
 	{
 		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
@@ -47,7 +47,7 @@ bool StartScene::init()
 	MenuItemImage*helpMenuItem = MenuItemImage::create("help.jpg", "help.jpg", CC_CALLBACK_1(StartScene::menuItemHelpCallback, this));
 	helpMenuItem->setPosition(origin.x + visibleSize.width * 0.015, origin.y + visibleSize.height *0.97);
 	//将菜单项放到菜单对象中
-	Menu *mn = Menu::create(helpMenuItem,NULL);
+	Menu *mn = Menu::create(helpMenuItem, NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(rootNode);
 	this->addChild(mn);
@@ -73,8 +73,8 @@ void StartScene::menuItemLoginCallback(Ref *pSender)
 		SimpleAudioEngine::getInstance()->stopAllEffects();
 	}
 	else
-	{ 
-	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	{
+		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 
 	auto sc = LoginScene::createScene();

@@ -2,9 +2,11 @@
 //考虑在选择英雄的时候背景音是王者荣耀中英雄专属的那种
 #include"cocos2d.h"
 #include"SimpleAudioEngine.h"
-#include"Core/Controller/GameScene.h"
-#include"Core/Controller/GameController.h"
 #include"Scene/GlobalDefine.h"
+#include "Core/Controller/GameScene.h"
+#include "Core/Controller/GameSceneOnline.h"
+#include"Core/Net/Client.h"
+#include"Core/Net/NetCommand.h"
 USING_NS_CC;
 
 
@@ -22,9 +24,7 @@ public:
 	void SunCallBack(Ref *pSender);
 
     // implement the "static create()" method manually
-	virtual void onExit();
-	virtual void onExitTransitionDidStart();
-	virtual void cleanup();
+
 	CREATE_FUNC(SelectHeroScene);
 
 

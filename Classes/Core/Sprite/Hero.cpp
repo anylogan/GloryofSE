@@ -2,7 +2,6 @@
 #include"Core/Sprite/EnemySoldier.h"
 #include<vector>
 extern Hero* clientPlayer;
-extern hero_role HeroRole;
 
 bool Hero::init()  //  英雄的总的控制
 {
@@ -56,7 +55,7 @@ void Hero::autoRun(Vec2 pos) {
 	__String *frameName;
 	for (int i = 0; i <= 7; i++)
 	{
-		switch (HeroRole) {
+		switch (heroType) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
 		case HuaMulan:
@@ -84,6 +83,7 @@ void Hero::autoRun(Vec2 pos) {
 	//log("dis is %f", dis);
 	this->runAction(MoveTo::create(dis*speed / 100, pos));
 	this->isHeroWalking = false;
+
 }
 int Hero::getAttackDir(int tempDir) { //转换8个方向
 												//int tempDir = getNowPointDir(newPoint);
@@ -165,7 +165,7 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 	for (int i = 0; i < 10; i++)
 	{
 
-		switch (HeroRole) {
+		switch (heroType) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_attack, dir, i); break;
 		case HuaMulan:
@@ -190,7 +190,7 @@ void Hero::skillAnimation()   //播放动画
 	for (int i = 0; i < 10; i++)
 	{
 
-		switch (HeroRole) {
+		switch (heroType) {
 		case ChangE:
 			frameName = __String::createWithFormat(hero_ChangE_skill,i); break;
 		case HuaMulan:
@@ -228,14 +228,20 @@ void Hero::initHeroAttr(int _money, float _speed, int _blood, int _commonAttack,
 	bonusAttack = 0;
 	bonusBlood = 0;
 	blood = Progress::create("empty_bar.png", "full_bar.png");
-	blood->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.1));
+	blood->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.0));
+	hp = Progress::create("empty_bar_hp.png", "full_bar_hp.png");
+	hp->setPosition(Vec2(image->getContentSize().width / 2, image->getContentSize().height / 1.1));
 	isHeroWalking = false;
 	killCount = 0;
 	skillSprite = Sprite::create("towerTile.png");
-
+	fullHP = 100;
 	this->addChild(skillSprite);
 	image->addChild(blood);
+	image->addChild(hp);
+	this->schedule(schedule_selector(Hero::updateHP), 0.5f); //在2.0f之后执行，并且只执行一次。
+
 }
+
 void Hero::equipbonusBlood(int num) {
 	this->bloodNum += num;
 	this->fullBlood += num;
@@ -262,10 +268,26 @@ void Hero::minusBlood(int num) {
 		}
 	}
 }
+void Hero::updateHP(float dt) {
+	fullHP += (fullHP + 2 <= 100) ? 2 : 0;
+	hp->setPercentage(fullHP);
+}
 
 void Hero::HeroRevive(float dt) {//
 	bloodNum = fullBlood;
 	blood->setPercentage(100);
 	this->setVisible(true);
 	this->image->setVisible(true);
+}
+void Hero::minusHP(int num) {//
+	int actualMinus = fullHP - num;		
+	if (actualMinus >= 0) {
+		fullHP = actualMinus;
+		hp->setPercentage(fullHP);
+	}
+	else {
+		fullHP = 0;
+		hp->setPercentage(0);
+	}
+
 }

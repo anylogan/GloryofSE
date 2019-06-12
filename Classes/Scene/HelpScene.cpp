@@ -82,7 +82,7 @@ bool HelpScene::init()
 
 
 	//Back菜单
-	MenuItemImage*backMenuItem = MenuItemImage::create("quit01.png", "quit02.png", CC_CALLBACK_1(HelpScene::menuItemGoBackCallback, this));
+	MenuItemImage*backMenuItem = MenuItemImage::create("backbutton.png", "backbutton2.png", CC_CALLBACK_1(HelpScene::menuItemGoBackCallback, this));
 	backMenuItem->setPosition(origin.x + visibleSize.width * 0.9, origin.y + visibleSize.height * 0.1);
 	//将菜单项放到菜单对象中
 	Menu *mn = Menu::create(backMenuItem, NULL);
@@ -109,23 +109,4 @@ void HelpScene::menuItemGoBackCallback(cocos2d::Ref*pSender)
 {
 	Director::getInstance()->popScene();
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-}
-void HelpScene::onExit()
-{
-	Scene::onExit();
-	log("MainMenu onExit");
-}
-
-void HelpScene::onExitTransitionDidStart()
-{
-	Scene::onExitTransitionDidStart();
-	log("MainMenu onExitTransitionDidStart");
-}
-
-void HelpScene::cleanup()
-{
-	Scene::cleanup();
-	log("MainMenu cleanup");
-	//停止
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
 }

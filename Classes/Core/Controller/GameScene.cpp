@@ -5,7 +5,7 @@ using namespace cocos2d::ui;
 //全局变量初始化
 std::vector<int> equipmentBoughtList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前拥有装备的状态
 std::vector<int> equipmentEquippedList = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };//标记当前装备装备的状态
-//Client *Client::instance = nullptr;
+																			 //Client *Client::instance = nullptr;
 extern hero_role HeroRole;
 Scene* GameScene::createScene()
 
@@ -31,7 +31,7 @@ bool GameScene::init()
 	expitem->setPosition(origin.x + visibleSize.width * 0.03, origin.y + visibleSize.height * 0.65);
 
 
-	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem,NULL);
+	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	addChild(mu);
 
@@ -63,7 +63,7 @@ void GameScene::displaymoney(float dt)
 	text1->setColor(Color3B(128, 0, 128));  //设置颜色
 	text1->setPosition(Vec2(origin.x + visibleSize.width * 0.03, origin.y + visibleSize.height *0.7));
 
-	this->addChild(text1,6,13);
+	this->addChild(text1, 6, 13);
 }
 void GameScene::displayexp(float dt)
 {
@@ -94,7 +94,7 @@ void GameScene::displayskillicon()
 	}
 	else if (HeroRole == HuaMulan)
 	{
-		skillitem = MenuItemImage::create(hero_HuaMulan_attack,hero_HuaMulan_attack);
+		skillitem = MenuItemImage::create(hero_HuaMulan_attack, hero_HuaMulan_attack);
 	}
 	else
 	{

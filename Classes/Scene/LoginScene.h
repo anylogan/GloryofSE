@@ -4,7 +4,7 @@
 #include"SimpleAudioEngine.h"
 #include"Scene/StartScene.h"
 //#include"Scene/GameScene.h"
-#include"Scene/SelectHeroScene.h"
+#include"Scene/SelectPlayMode.h"
 USING_NS_CC;
 
 class LoginScene :public cocos2d::Scene
@@ -20,8 +20,5 @@ public:
 	void menuItemStartCallback(Ref *pSender);
 	CREATE_FUNC(LoginScene);
 	bool init();
-	virtual void onExit();
-	virtual void onExitTransitionDidStart();
-	virtual void cleanup();
 
 };

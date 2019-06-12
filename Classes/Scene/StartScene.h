@@ -27,7 +27,7 @@ public:
 	void menuItemLoginCallback(Ref *pSender);
 	void menuItemSettingCallback(cocos2d::Ref*pSender);  //设置菜单回调
 	void menuItemHelpCallback(cocos2d::Ref*pSender);   //  帮助菜单回调
-	// implement the "static create()" method manually
+													   // implement the "static create()" method manually
 
 
 

@@ -2,6 +2,8 @@
 
 #include "cocos2d.h"
 #include"SimpleAudioEngine.h"
+#include"Core/Net/Client.h"
+#include"Core/Net/NetCommand.h"
 USING_NS_CC;
 
 class SelectPlayMode : public cocos2d::Scene
@@ -13,8 +15,10 @@ public:
 	// a selector callback
 	void SingleModeCallBack(Ref *pSender);
 	void RuleCallBack(Ref *pSender);
-	CREATE_FUNC(SelectPlayMode);
+	void BattleHistory(Ref * pSender);
 	virtual void onExit();
 	virtual void onExitTransitionDidStart();
 	virtual void cleanup();
+	CREATE_FUNC(SelectPlayMode);
+
 };

@@ -1,7 +1,7 @@
 #include"Core/Controller/GameController.h"
 #include"Scene/GameResultSuccess.h"
 #include"Scene/GameResultFailure.h"
-using namespace cocos2d::ui;
+
 USING_NS_CC;
 //初始化全局变量
 extern hero_role HeroRole;
@@ -45,12 +45,8 @@ bool GameController::init()
 	//spriteRectCheck 也做结束检查、时间增加
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//执行一次；
-
-
-	//auto moneyitem = Sprite::create("money.png");
-	//moneyitem->setPosition(Vec2(origin.x + visibleSize.width*0.2, origin.y + visibleSize.height*0.5));
 	this->schedule(schedule_selector(GameController::AI_Hero_Run), 3.0f);
-	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 0.2f);
+	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 1.0f);
 	
 	return true;
 }
@@ -249,17 +245,17 @@ inline void GameController::mapElementsInit() {
 	for (auto it = TowerVector.begin(); it != TowerVector.end(), i<4; it++, i++) {
 		switch (i) {
 		case 0:
-			(*it)->initTowerAttr(10, 1000, 500, 400, hero2);	//应该分开！
+			(*it)->initTowerAttr(20, 1000, 500, 400, hero2);	//应该分开！
 			break;
 		case 1:
-			(*it)->initTowerAttr(10, 1000, 500, 400, hero1);	//应该分开！
+			(*it)->initTowerAttr(20, 1000, 500, 400, hero1);	//应该分开！
 			break;
 		case 2:
-			(*it)->initTowerAttr(40, 300, 300, 200, hero2);	//应该分开！
+			(*it)->initTowerAttr(10, 300, 300, 200, hero2);	//应该分开！
 			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		case 3:
-			(*it)->initTowerAttr(40, 300, 300, 200, hero1);	//应该分开！
+			(*it)->initTowerAttr(10, 300, 300, 200, hero1);	//应该分开！
 			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		}
@@ -328,10 +324,14 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 		}
 		if (keyCode == EventKeyboard::KeyCode::KEY_A) {
 			//换成clientPlayer
-			clientPlayer->bonusAttack += 10;
-			clientPlayerAttack();
-			clientPlayer->skillAnimation();
-			clientPlayer->bonusAttack -= 10;
+			if (clientPlayer->fullHP >= 50) {
+				clientPlayer->bonusAttack += 10;
+				clientPlayerAttack();
+				clientPlayer->skillAnimation();
+				clientPlayer->minusHP(50);
+				clientPlayer->bonusAttack -= 10;
+			}
+			
 		}
 		log("Key with keycode %d released", keyCode);
 	};
@@ -411,6 +411,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_ChangE);
 		hero2->addChild(hero2->image);
+		hero1->heroType = ChangE;
+		hero2->heroType = ChangE;
 		break;
 	}
 	case SunWukong:
@@ -421,6 +423,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_SunWukong);
 		hero2->addChild(hero2->image);
+		hero1->heroType = SunWukong;
+		hero2->heroType = SunWukong;
 		break;
 	}
 	case HuaMulan:
@@ -431,6 +435,8 @@ void GameController::createHero()
 		hero2 = new Hero();
 		hero2->image = Sprite::create(hero_HuaMulan);
 		hero2->addChild(hero2->image);
+		hero1->heroType = HuaMulan;
+		hero2->heroType = HuaMulan;
 		break;
 	}
 	default:break;
@@ -445,7 +451,7 @@ void  GameController::updateView(float dt)  //刷新函数
 }
 void GameController::AI_Hero_Run(float dt) {
 	log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
-
+	/*
 	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum >0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(0)->getPosition());
 		log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
@@ -459,6 +465,8 @@ void GameController::AI_Hero_Run(float dt) {
 	else if (serverPlayer->enemyDefendTower->bloodNum>0) {
 		serverPlayer->autoRun(serverPlayer->enemyDefendTower->getPosition());
 	}else serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
+	*/
+	serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
 }
 
 void GameController::AI_Hero_Attack(float dt) {
@@ -482,8 +490,7 @@ void GameController::AI_Hero_Attack(float dt) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
-		//serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
-		serverPlayer->autoAttack(serverPlayer->enemyDefendTower);
+		//serverPlayer->autoAttack(serverPlayer->enemyDefendTower);
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 		serverPlayer->autoAttack(clientPlayer);
 
@@ -878,8 +885,6 @@ void GameController::onTouchEnded(Touch *touch, Event *event)
 	//hero1->stopAllActions();
 	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动
 }
-
-
 
 
 

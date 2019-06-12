@@ -1,4 +1,4 @@
-#include"Scene/SettingScene.h"
+ï»¿#include"Scene/SettingScene.h"
 USING_NS_CC;
 bool isMusicEffect = true;
 bool isSoundEffect = true;
@@ -25,7 +25,7 @@ bool SettingScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//Ìí¼Ó±³¾°
+	//æ·»åŠ èƒŒæ™¯
 	Sprite *bg = Sprite::create("settingground.png");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	this->addChild(bg);
@@ -34,16 +34,16 @@ bool SettingScene::init()
 	this->addChild(item);
 
 	//
-	//ÉèÖÃÒôÐ§ºÍ±³¾°Òô¿Ø¼þ
+	//è®¾ç½®éŸ³æ•ˆå’ŒèƒŒæ™¯éŸ³æŽ§ä»¶
 	Text *sound = Text::create("sound", "font/Marker Felt.ttf", 40);
-	//ÉèÖÃÎÄ±¾ÑÕÉ«
-	sound->setColor(Color3B(128,0,128));
+	//è®¾ç½®æ–‡æœ¬é¢œè‰²
+	sound->setColor(Color3B(128, 0, 128));
 	sound->setPosition(Vec2(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.63));
 	this->addChild(sound);
 
-	Text *music = Text::create("music", "font/Marker Felt.ttf",40);
-	//ÉèÖÃÎÄ±¾ÑÕÉ«
-	music->setColor(Color3B(128,0,128));
+	Text *music = Text::create("music", "font/Marker Felt.ttf", 40);
+	//è®¾ç½®æ–‡æœ¬é¢œè‰²
+	music->setColor(Color3B(128, 0, 128));
 	music->setPosition(Vec2(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.56));
 	this->addChild(music);
 
@@ -58,19 +58,19 @@ bool SettingScene::init()
 
 	soundToggleMenuItem->setPosition(origin.x + visibleSize.width * 0.64, origin.y + visibleSize.height * 0.63);//(Director::getInstance()->convertToGL(Vec2(710,279 )));
 
-																											   //ÒôÀÖ
+																												//éŸ³ä¹
 	auto musicToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(SettingScene::menuMusicToggleCallback, this),
 		MenuItemImage::create("onbutton.png", "onbutton.png"),
 		MenuItemImage::create("offbutton.png", "offbutton.png"),
 		NULL);
 	musicToggleMenuItem->setPosition(origin.x + visibleSize.width * 0.64, origin.y + visibleSize.height * 0.56);
-	
-	//OK²Ëµ¥
+
+	//OKèœå•
 	MenuItemImage*okMenuItem = MenuItemImage::create("okbutton.png", "okbutton2.png", CC_CALLBACK_1(SettingScene::menuItemOKCallback, this));
 	okMenuItem->setPosition(origin.x + visibleSize.width * 0.5, origin.y + visibleSize.height * 0.1);
-	//½«²Ëµ¥Ïî·Åµ½²Ëµ¥¶ÔÏóÖÐ
-	Menu *mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem,okMenuItem,NULL);
-	
+	//å°†èœå•é¡¹æ”¾åˆ°èœå•å¯¹è±¡ä¸­
+	Menu *mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
+
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 	return true;
@@ -91,7 +91,7 @@ void SettingScene::menuCloseCallback(Ref* pSender)
 void SettingScene::menuSoundToggleCallback(Ref *pSender)
 {
 	MenuItem *item = (MenuItem*)pSender;
-	log("Touch ÒôÐ§ Menu Item %p", item);
+	log("Touch éŸ³æ•ˆ Menu Item %p", item);
 
 	auto soundToggleMenuItem = (MenuItemToggle*)pSender;
 
@@ -99,7 +99,7 @@ void SettingScene::menuSoundToggleCallback(Ref *pSender)
 	{
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
-	if (soundToggleMenuItem->getSelectedIndex()== 1)
+	if (soundToggleMenuItem->getSelectedIndex() == 1)
 	{
 
 		isSoundEffect = false;
@@ -117,18 +117,18 @@ void SettingScene::menuMusicToggleCallback(Ref *pSender)
 
 	if (isEffect)
 	{
-		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 	if (soundToggleMenuItem->getSelectedIndex() == 1)
 	{
 
-		isEffect = false;
-		SimpleAudioEngine::getInstance()->pauseAllEffects();
+	isEffect = false;
+	SimpleAudioEngine::getInstance()->pauseAllEffects();
 	}
 	else
 	{
-		isEffect = true;
-		SimpleAudioEngine::getInstance()->resumeAllEffects();
+	isEffect = true;
+	SimpleAudioEngine::getInstance()->resumeAllEffects();
 	}*/
 	auto musicToggleMenuItem = (MenuItemToggle*)pSender;
 
@@ -179,6 +179,6 @@ void  SettingScene::cleanup()
 {
 	Scene::cleanup();
 	log("MainMenu cleanup");
-	//Í£Ö¹
+	//åœæ­¢
 	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
 }

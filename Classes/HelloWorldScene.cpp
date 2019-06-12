@@ -1,17 +1,17 @@
-#include "HelloWorldScene.h"
+ï»¿#include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
-    return HelloWorld::create();
+	return HelloWorld::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+	printf("Error while loading: %s\n", filename);
+	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
 // on "init" you need to initialize your instance
@@ -25,19 +25,19 @@ bool HelloWorld::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//Ìí¼Ó±³¾°
+	//æ·»åŠ èƒŒæ™¯
 	Sprite *bg = Sprite::create("bg.jpg");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	this->addChild(bg);
 
-	//Ìí¼Ó²Ëµ¥
+	//æ·»åŠ èœå•
 	MenuItemFont::setFontName("Times New Roman");
 	MenuItemFont::setFontSize(86);
 
-	//ÉèÖÃµÚÒ»¸ö²Ëµ¥Ïî
+	//è®¾ç½®ç¬¬ä¸€ä¸ªèœå•é¡¹
 	MenuItemFont *item1 = MenuItemFont::create("Start", CC_CALLBACK_1(HelloWorld::menuItem1Callback, this));
 
-	//½«²Ëµ¥Ïî·Åµ½²Ëµ¥¶ÔÏóÖÐ
+	//å°†èœå•é¡¹æ”¾åˆ°èœå•å¯¹è±¡ä¸­
 	Menu *mn = Menu::create(item1, NULL);
 	mn->alignItemsVertically();
 	this->addChild(mn);
@@ -48,17 +48,17 @@ bool HelloWorld::init()
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+	//Close the cocos2d-x game scene and quit the application
+	Director::getInstance()->end();
 
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
 #endif
 
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
+	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
+	//EventCustom customEndEvent("game_scene_close_event");
+	//_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
 }

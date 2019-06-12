@@ -40,6 +40,18 @@ bool GameResultFailure::init()
 	if (bonusMoney < 0)
 		bonusMoney = 0;
 	MoneyText->setText(MoneyDisplay + "+"+ std::to_string(bonusMoney));
+	int success, failure, exp;
+
+
+		success = UserDefault::getInstance()->getIntegerForKey("success");
+		failure = UserDefault::getInstance()->getIntegerForKey("failure");
+		exp = UserDefault::getInstance()->getIntegerForKey("exp");
+		UserDefault::getInstance()->setIntegerForKey("success",success);
+		UserDefault::getInstance()->setIntegerForKey("failure", failure+1);
+		UserDefault::getInstance()->setIntegerForKey("exp", exp+GameResult[1]);
+		UserDefault::getInstance()->flush();
+
+	
 	addChild(rootNode);
 	this->schedule(schedule_selector(GameResultFailure::BackToMain), 1.0f);
 	return true;
@@ -52,24 +64,4 @@ void GameResultFailure::BackToMain(float dt) {
 		auto sc = StartScene::createScene();
 		Director::getInstance()->replaceScene(sc);
 	}
-}
-
-void GameResultFailure::onExit()
-{
-	Scene::onExit();
-	log("MainMenu onExit");
-}
-
-void GameResultFailure::onExitTransitionDidStart()
-{
-	Scene::onExitTransitionDidStart();
-	log("MainMenu onExitTransitionDidStart");
-}
-
-void GameResultFailure::cleanup()
-{
-	Scene::cleanup();
-	log("MainMenu cleanup");
-	//ֹͣ
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
 }
