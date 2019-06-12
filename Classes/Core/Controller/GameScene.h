@@ -9,8 +9,8 @@
 #include"proj.win32/MyUtility.h"
 //全局变量
 #include<vector>
-extern std::vector<int> equipmentBoughtList;//标记当前拥有装备的状态
-extern std::vector<int> equipmentEquippedList;//标记当前装备装备的状态
+extern vector<int> equipmentBoughtList;//标记当前拥有装备的状态
+extern vector<int> equipmentEquippedList;//标记当前装备装备的状态
 
 
 class GameScene : public cocos2d::Scene
