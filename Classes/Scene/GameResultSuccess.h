@@ -11,7 +11,4 @@ public:
 	// a selector callback
 	void BackToMain(float dt);
 	CREATE_FUNC(GameResultSuccess);
-	virtual void onExit();
-	virtual void onExitTransitionDidStart();
-	virtual void cleanup();
 };

@@ -55,22 +55,3 @@ void GameResultSuccess::BackToMain(float dt) {
 	}
 }
 
-void GameResultSuccess::onExit()
-{
-	Scene::onExit();
-	log("MainMenu onExit");
-}
-
-void GameResultSuccess::onExitTransitionDidStart()
-{
-	Scene::onExitTransitionDidStart();
-	log("MainMenu onExitTransitionDidStart");
-}
-
-void GameResultSuccess::cleanup()
-{
-	Scene::cleanup();
-	log("MainMenu cleanup");
-	//ֹͣ
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
-}

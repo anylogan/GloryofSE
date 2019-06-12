@@ -16,8 +16,8 @@ public:
 	void menuCloseCallback(cocos2d::Ref* pSender);
 	void menuItemGoBackCallback(cocos2d::Ref*pSender);
 
-	virtual void onExit();
-	virtual void onExitTransitionDidStart();
-	virtual void cleanup();
+	/*void menuSoundCallback(cocos2d::Ref*pSender);
+	void menuMusicCallback(cocos2d::Ref*pSender);*/
+	// implement the "static create()" method manually
 	CREATE_FUNC(HelpScene);
 };

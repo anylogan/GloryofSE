@@ -4,8 +4,6 @@
 //#include"Scene/GameScene.h"
 USING_NS_CC;
 using namespace CocosDenshion;
-extern bool isMusicEffect;
-extern bool isSoundEffect;
 Scene* StartScene::createScene()
 {
 	return StartScene::create();
@@ -25,15 +23,8 @@ bool StartScene::init()
 	{
 		return false;
 	}
-	
-	if (isMusicEffect == false)
-	{
-		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-	}
-	else
-	{
-		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/1.mp3", true);
-	}
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto rootNode = CSLoader::createNode("MainScene.csb");
@@ -68,15 +59,7 @@ void StartScene::menuCloseCallback(Ref* pSender)
 
 void StartScene::menuItemLoginCallback(Ref *pSender)
 {
-	if (isSoundEffect == false)
-	{
-		SimpleAudioEngine::getInstance()->stopAllEffects();
-	}
-	else
-	{ 
 	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-	}
-
 	auto sc = LoginScene::createScene();
 	Director::getInstance()->pushScene(sc);
 }
@@ -91,12 +74,15 @@ void StartScene::menuItemSettingCallback(cocos2d::Ref*pSender)
 {
 	auto sc = SettingScene::createScene();
 	Director::getInstance()->pushScene(sc);
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 }
 
 void StartScene::menuItemHelpCallback(cocos2d::Ref*pSender)
 {
 	auto sc = HelpScene::createScene();
 	Director::getInstance()->pushScene(sc);
+	SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
+
 }
 void StartScene::onEnter()
 {
@@ -131,5 +117,5 @@ void StartScene::cleanup()
 	Scene::cleanup();
 	log("MainMenu cleanup");
 	//ֹͣ
-	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/Lose.mp3");
 }
