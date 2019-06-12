@@ -1,11 +1,11 @@
 #include"Scene/SelectHeroScene.h"
 #include "cocostudio/CocoStudio.h"
+#include "Scene/SelectPlayMode.h"
 #include "ui/CocosGUI.h"
 using namespace CocosDenshion;
-hero_role HeroRole; //定义三个全局变量  并且初始化
-hero_role EnemyHero;
-int PlayMode; //左上or右下
-
+hero_role HeroRole; //定义一个全局变量  并且初始化
+extern bool isMusicEffect;
+extern bool isSoundEffect;
 Scene*  SelectHeroScene::createScene()
 {
 	return  SelectHeroScene::create();
@@ -17,7 +17,22 @@ bool  SelectHeroScene::init()
 	{
 		return false;
 	}
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Lose1.mp3", true);
+
+
+	if (isMusicEffect == false)
+	{
+		SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	}
+	else
+	{
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/2.mp3", true);
+	}
+
+	if (isSoundEffect == false)
+	{
+		SimpleAudioEngine::getInstance()->stopAllEffects();
+	}
+
 	auto rootNode = CSLoader::createNode("SelectHeroScene.csb");
 	auto ChangEbutton = static_cast<ui::Button*>(rootNode->getChildByName("CreateChange"));
 	ChangEbutton->addClickEventListener(CC_CALLBACK_1(SelectHeroScene::ChangeCallBack, this));
@@ -33,136 +48,64 @@ bool  SelectHeroScene::init()
 
 void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
-	int mode_tag = this->getTag();
-	if (mode_tag == 020)
+	HeroRole =ChangE;   //给全局变量赋值
+
+	if (isSoundEffect == false)
 	{
-		bool check_connect = Client::getInstance()->checkConnect();
-		if (check_connect)
-		{
-			HeroRole = ChangE;   //给全局变量赋值
-			Client::getInstance()->sendOwnHero(0);
-			command hero_command = (Client::getInstance()->receiveHero());
-			switch (hero_command.hero_type)
-			{
-			case 0:
-			{
-				EnemyHero = ChangE;
-				break;
-			}
-			case 1:
-			{
-				EnemyHero = HuaMulan;
-				break;
-			}
-			case 2:
-			{
-				EnemyHero = SunWukong;
-				break;
-			}
-			default:
-				break;
-			}
-			PlayMode = hero_command.player_type;
-			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-			auto scene = GameSceneOnline::createScene();
-			Director::getInstance()->replaceScene(scene);
-		}
+		SimpleAudioEngine::getInstance()->stopAllEffects();
 	}
 	else
 	{
-		HeroRole = ChangE;   //给全局变量赋值
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-		auto scene = GameScene::createScene();
-		Director::getInstance()->replaceScene(scene);
 	}
+	
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
 }
 void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 {
-	int mode_tag = this->getTag();
-	if (mode_tag == 020)
+	HeroRole = HuaMulan;   //给全局变量赋值
+	if (isSoundEffect == false)
 	{
-		bool check_connect = Client::getInstance()->checkConnect();
-		if (check_connect)
-		{
-			HeroRole = HuaMulan;   //给全局变量赋值
-			Client::getInstance()->sendOwnHero(1);
-			command hero_command=(Client::getInstance()->receiveHero());
-			switch (hero_command.hero_type)
-			{
-			case 0:
-			{
-				EnemyHero = ChangE;
-				break;
-			}
-			case 1:
-			{
-				EnemyHero = HuaMulan;
-				break;
-			}
-			case 2:
-			{
-				EnemyHero = SunWukong;
-				break;
-			}
-			default:
-				break;
-			}
-			PlayMode = hero_command.player_type;
-			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-			auto scene = GameSceneOnline::createScene();
-			Director::getInstance()->replaceScene(scene);
-		}
+		SimpleAudioEngine::getInstance()->stopAllEffects();
 	}
 	else
 	{
-		HeroRole = HuaMulan;   //给全局变量赋值
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-		auto scene = GameScene::createScene();
-		Director::getInstance()->replaceScene(scene);
 	}
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
 }
 void  SelectHeroScene::SunCallBack(Ref *pSender)
 {
-	int mode_tag = this->getTag();
-	if (mode_tag == 020)
+	HeroRole = SunWukong;   //给全局变量赋值
+	if (isSoundEffect == false)
 	{
-		bool check_connect = Client::getInstance()->checkConnect();
-		if (check_connect)
-		{
-			HeroRole = SunWukong;   //给全局变量赋值
-			Client::getInstance()->sendOwnHero(2);
-			command hero_command = (Client::getInstance()->receiveHero());
-			switch (hero_command.hero_type)
-			{
-			case 0:
-			{
-				EnemyHero = ChangE;
-				break;
-			}
-			case 1:
-			{
-				EnemyHero = HuaMulan;
-				break;
-			}
-			case 2:
-			{
-				EnemyHero = SunWukong;
-				break;
-			}
-			default:
-				break;
-			}
-			PlayMode = hero_command.player_type;
-			SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-			auto scene = GameSceneOnline::createScene();
-			Director::getInstance()->replaceScene(scene);
-		}
+		SimpleAudioEngine::getInstance()->stopAllEffects();
 	}
 	else
 	{
-		HeroRole = SunWukong;   //给全局变量赋值
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
-		auto scene = GameScene::createScene();
-		Director::getInstance()->replaceScene(scene);
 	}
+	auto scene = SelectPlayMode::createScene();
+	Director::getInstance()->replaceScene(scene);
+}
+void SelectHeroScene::onExit()
+{
+	Scene::onExit();
+	log("MainMenu onExit");
+}
+
+void SelectHeroScene::onExitTransitionDidStart()
+{
+	Scene::onExitTransitionDidStart();
+	log("MainMenu onExitTransitionDidStart");
+}
+
+void SelectHeroScene::cleanup()
+{
+	Scene::cleanup();
+	log("MainMenu cleanup");
+	//停止
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
 }

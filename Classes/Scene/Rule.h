@@ -5,10 +5,10 @@
 #include"proj.win32/MyUtility.h"
 using namespace cocos2d::ui;
 using namespace CocosDenshion;
-class HelpScene : public cocos2d::Scene
+class Rule : public cocos2d::Scene
 {
 public:
-	static cocos2d::Scene* createScene();
+	static Rule* createScene();
 
 	virtual bool init();
 
@@ -19,5 +19,5 @@ public:
 	virtual void onExit();
 	virtual void onExitTransitionDidStart();
 	virtual void cleanup();
-	CREATE_FUNC(HelpScene);
+	CREATE_FUNC(Rule);
 };

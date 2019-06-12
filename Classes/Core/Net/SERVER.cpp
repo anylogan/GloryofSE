@@ -41,33 +41,33 @@ void handle_chat()
 {
 	while (true)
 	{
-		if (message_player1 != nullptr&&message_player1->sock().available())
+		if (player1 != nullptr&&player1->sock().available())
 		{
 			auto text = std::string();
 			auto buf = std::string(1, '\0');
 			while (true)
 			{
-				message_player1->sock().read_some(buffer(buf));
+				player1->sock().read_some(buffer(buf));
 				if (*buf.begin() == '\n') break;
 				text += buf;
 			}
 			//text += "\n";
-			if (message_player2 != nullptr)
-				message_player2->sock().write_some(buffer(text));
+			if (player2 != nullptr)
+				player2->sock().write_some(buffer(text));
 		}
-		if (message_player2 != nullptr&&message_player2->sock().available())
+		if (player2 != nullptr&&player2->sock().available())
 		{
 			auto text = std::string();
 			auto buf = std::string(1, '\0');
 			while (true)
 			{
-				message_player2->sock().read_some(buffer(buf));
+				player2->sock().read_some(buffer(buf));
 				if (*buf.begin() == '\n') break;
 				text += buf;
 			}
 			text += "\n";
-			if (message_player1 != nullptr)
-				message_player1->sock().write_some(buffer(text));
+			if (player1 != nullptr)
+				player1->sock().write_some(buffer(text));
 		}
 		if (player1 == nullptr&&player2 == nullptr) break;      //当两个客户端都退出时，服务端才结束发送和读取消息的循环
 	}

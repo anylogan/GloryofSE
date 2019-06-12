@@ -4,6 +4,7 @@
 #include <vector>
 #include"Scene/SelectHeroScene.h"
 //包含层类头文件
+#include"Scene/ButtonLayer.h"
 //包含精灵类头文件
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/EnemySoldier.h"
@@ -17,6 +18,10 @@ class GameController : public Layer   //游戏控制类
 {
 
 public:
+	//属性
+	//层属性
+	ButtonLayer * button;
+	//
 	//属性
 	TMXTiledMap * _tileMap;
 	TMXLayer * _collidable;
@@ -54,6 +59,8 @@ public:
 	//hero_role HeroRole);  //创建英雄
 	bool isHeroDeath();           //判断英雄是否死亡
 	void menuCloseCallback(cocos2d::Ref* pSender);
+
+
 	CREATE_FUNC(GameController);
 
 };

@@ -5,12 +5,10 @@
 USING_NS_CC;
 //初始化全局变量
 extern hero_role HeroRole;
-extern hero_role EnemyHero;
-extern int PlayMode;
-extern Hero* clientPlayer;
-extern Hero* serverPlayer;
-extern int GameResult[4]; //传递游戏结果
-extern int playTime;
+Hero* clientPlayer;
+Hero* serverPlayer;
+int GameResult[4]; //传递游戏结果
+int playTime = 0;
 GameControllerOnline* GameControllerOnline::createScene()
 {
 	return GameControllerOnline::create();
@@ -32,7 +30,6 @@ bool GameControllerOnline::init()
 	{
 		return false;
 	}
-	playTime = 0;
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	createHero();
@@ -47,10 +44,9 @@ bool GameControllerOnline::init()
 	this->schedule(schedule_selector(GameControllerOnline::updateView), 0.01f);
 	//spriteRectCheck 也做结束检查、时间增加
 	this->schedule(schedule_selector(GameControllerOnline::spriteRectCheck), 1.0f);
-	//AI_Hero_Run(0);//执行一次；
-	//this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Run), 3.0f);
-	//this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Attack), 0.2f);
-	this->schedule(schedule_selector(GameControllerOnline::updateEnemy), 0.01f);
+	AI_Hero_Run(0);//执行一次；
+	this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Run), 3.0f);
+	this->schedule(schedule_selector(GameControllerOnline::AI_Hero_Attack), 0.2f);
 	
 	return true;
 }
@@ -97,53 +93,25 @@ inline void GameControllerOnline::mapElementsInit() {
 	{
 	case ChangE:
 	{
-		if(clientPlayer==hero1)
-			hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
+		hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
 		break;
 	}
 	case SunWukong:
 	{
-		if(clientPlayer==hero1)
-			hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2);//如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
+		hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
 		break;
 	}
 	case HuaMulan:
 	{
-		if(clientPlayer==hero1)
-			hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
+		hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
+		hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来
 		break;
 	}
 	default:break;
 	}
 	
-	switch (EnemyHero)       //创建英雄
-	{
-	case ChangE:
-	{
-		if(serverPlayer==hero1)
-			hero1->initHeroAttr(100, 1.0, 1000, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 1.0, 1200, 10, 0, tower1); //如果是tower1，就是0号 这里做测试用 记得改回来		
-		break;
-	}
-	case SunWukong:
-	{
-		if(serverPlayer==hero1)
-			hero1->initHeroAttr(100, 0.9, 1200, 20, 0, tower2);//如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 0.9, 1400, 20, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
-		break;
-	}
-	case HuaMulan:
-	{
-		if(serverPlayer==hero1)
-			hero1->initHeroAttr(100, 0.8, 1500, 10, 0, tower2); //如果是tower1，就是0号 这里做测试用 记得改回来
-		else hero2->initHeroAttr(100, 0.8, 1700, 10, 0, tower1);//如果是tower1，就是0号 这里做测试用 记得改回来	
-		break;
-	}
-	default:break;
-	}
 	/*创建对象元素-DefendTowers*/
 	spawnPoint = group->getObject("DefendTower1");
 	auto DefendTower1 = new Tower();
@@ -281,11 +249,11 @@ inline void GameControllerOnline::mapElementsInit() {
 			break;
 		case 2:
 			(*it)->initTowerAttr(40, 300, 300, 200, hero2);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		case 3:
 			(*it)->initTowerAttr(40, 300, 300, 200, hero1);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		}
 		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
@@ -369,8 +337,6 @@ void GameControllerOnline::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 
 }
 void GameControllerOnline::clientPlayerAttack() {
-	//发送攻击信息
-	Client::getInstance()->sendAttack();
 	//换成clientPlayer,加死亡判断；
 	clientPlayer->attackEnemyAnimation(getAttackDir(clientPlayer->currentPos));//播放攻击动画
 	auto monster1Hit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer,monster1->getPosition()));
@@ -388,7 +354,7 @@ void GameControllerOnline::clientPlayerAttack() {
 		if (monster2->attack_rect->containsPoint(clientPlayer->getPosition()))
 			monster2->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	for (int i = 0; i < 3; i++) {
-		auto testEnemy = clientPlayer->thisSoldierVector->at(i);
+		auto testEnemy = clientSoldierVector[i];
 		auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testEnemy->getPosition()));
 		if (checkPlayerHit && testEnemy->attack_rect->containsPoint(clientPlayer->getPosition()))
 			testEnemy->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack,clientPlayer);
@@ -403,13 +369,10 @@ void GameControllerOnline::clientPlayerAttack() {
 		log("DefendTower minusBlood");
 		testDefendTower->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	}
-	
 
 }
 void GameControllerOnline::serverPlayerAttack() {
 	//换成clientPlayer,加死亡判断；
-	serverPlayer->stopAllActions();
-	serverPlayer->attackEnemyAnimation(getAttackDir(serverPlayer->currentPos));//播放攻击动画
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
@@ -427,13 +390,11 @@ void GameControllerOnline::collidableCheck()
 		int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
 		if (tileGid > 0 && lastCollidablePos!=pos) {
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
-			/*请在这里添加stopAllactions的指令发送*/
 			clientPlayer->stopAllActions();
 			//thisCollidableCheck = false;
 			lastCollidablePos = pos;
 		}
 		//日后改成clientPlayer
-		/*
 		 pos = serverPlayer->getPosition();
 		 tileCoord = this->tileCoordFromPosition(pos);
 		//获得瓦片的GID
@@ -443,8 +404,6 @@ void GameControllerOnline::collidableCheck()
 			serverPlayer->stopAllActions();
 			//thisCollidableCheck = false;
 		}
-		*/
-		
 	}
 
 
@@ -456,72 +415,48 @@ Key with keycode 127 released
 */
 void GameControllerOnline::createHero()
 {
-	hero1 = new Hero();
-	hero2 = new Hero();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	if (PlayMode == 2)
-	{
-		clientPlayer = hero1;
-		serverPlayer = hero2;
-	}
-	else
-	{
-		clientPlayer = hero2;
-		serverPlayer = hero1;
-	}
-
-	clientPlayer->heroType = HeroRole;
-	serverPlayer->heroType = EnemyHero;
-
-	switch (HeroRole)       //  
+	//这里请根据网络判断情况设置clientPlayer和serverplayer
+	clientPlayer = hero1;
+	serverPlayer = hero2;
+	clientPlayer->heroType = ChangE;
+	serverPlayer->heroType = ChangE;
+	//下面也需要修改，hero1是左下角，hero2右上角
+	switch (HeroRole)       //创建英雄
 	{
 	case ChangE:
 	{
-		clientPlayer->image = Sprite::create(hero_ChangE);
-		clientPlayer->addChild(clientPlayer->image);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_ChangE);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_ChangE);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	case SunWukong:
 	{
-		clientPlayer->image = Sprite::create(hero_SunWukong);
-		clientPlayer->addChild(clientPlayer->image);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_SunWukong);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_SunWukong);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	case HuaMulan:
 	{
-		clientPlayer->image = Sprite::create(hero_HuaMulan);
-		clientPlayer->addChild(clientPlayer->image);
+		hero1 = new Hero();
+		hero1->image = Sprite::create(hero_HuaMulan);
+		hero1->addChild(hero1->image);
+		hero2 = new Hero();
+		hero2->image = Sprite::create(hero_HuaMulan);
+		hero2->addChild(hero2->image);
 		break;
 	}
 	default:break;
 	}
-	switch (EnemyHero)
-	{
-	case ChangE:
-	{
-
-		serverPlayer->image = Sprite::create(hero_ChangE);
-		serverPlayer->addChild(serverPlayer->image);
-		break;
-	}
-	case SunWukong:
-	{
-
-		serverPlayer->image = Sprite::create(hero_SunWukong);
-		serverPlayer->addChild(serverPlayer->image);
-		break;
-	}
-	case HuaMulan:
-	{
-		serverPlayer->image = Sprite::create(hero_HuaMulan);
-		serverPlayer->addChild(serverPlayer->image);
-
-	}
-	default:break;
-	}
-
 }
 
 void  GameControllerOnline::updateView(float dt)  //刷新函数
@@ -843,7 +778,6 @@ void GameControllerOnline::setPlayerPosition(Vec2 position) {
 	this->setViewpointCenter(clientPlayer->getPosition());
 	//hero1->stopAllActions();
 
-	
 }
 
 
@@ -958,34 +892,7 @@ void GameControllerOnline::onTouchEnded(Touch *touch, Event *event)
 	//clientPlayer->skillSprite->setPosition(touchLocation);
 	//hero1->stopAllActions();
 	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动
-	//传递走路信息
-	Client::getInstance()->sendClickPos(touchLocation.x, touchLocation.y);
 }
 
-void GameControllerOnline::updateEnemy(float dt)
-{
-	std::vector<command> commands = Client::getInstance()->getCommands();
-	for (auto &single_command : commands)
-	{
-		switch (single_command.command_type)
-		{
-		case 2:
-		{
-			this->serverPlayerAttack();
-			break;
-		}
-		case 3:
-		{
-			serverPlayer->autoRun(Vec2(single_command.click_x, single_command.click_y));
-			break;
-		}
-		case 4:
-		{
-			//对方断开连接
-			break;
-		}
-		default:break;
-		}
-	}
-}
+
 

@@ -4,12 +4,12 @@
 #include <vector>
 #include"Scene/SelectHeroScene.h"
 //包含层类头文件
+#include"Scene/ButtonLayer.h"
 //包含精灵类头文件
 #include"Core/Sprite/Hero.h"
 #include"Core/Sprite/EnemySoldier.h"
 #include"Core/Sprite/Tower.h"
 #include"Core/Sprite/fieldMonster.h"
-#include"Core/Net/NetCommand.h"
 
 USING_NS_CC;
 //全局变量
@@ -18,6 +18,11 @@ class GameControllerOnline : public Layer   //游戏控制类
 {
 
 public:
+	//属性
+	//层属性
+	ButtonLayer * button;
+	//
+	//属性
 	TMXTiledMap * _tileMap;
 	TMXLayer * _collidable;
 	Hero * hero1, *hero2;
@@ -54,7 +59,6 @@ public:
 	void AI_Hero_Run(float dt);
 	//hero_role HeroRole);  //创建英雄
 	bool isHeroDeath();           //判断英雄是否死亡
-	void updateEnemy(float dt);             //联机函数
 	void menuCloseCallback(cocos2d::Ref* pSender);
 	CREATE_FUNC(GameControllerOnline);
 

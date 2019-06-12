@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="60" height="42" tilewidth="32" tileheight="32" nextobjectid="27">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="60" height="42" tilewidth="32" tileheight="32" nextobjectid="25">
  <tileset firstgid="1" source="BackGround.tsx"/>
  <tileset firstgid="2605" source="collidable.tsx"/>
  <layer name="Background" width="60" height="42">
@@ -111,7 +111,5 @@
   <object id="22" name="soldier5" x="978.5" y="652.5" width="33" height="31"/>
   <object id="23" name="soldier6" x="1644.5" y="974.5" width="33" height="31"/>
   <object id="24" name="Tower2" x="1606.5" y="202.5" width="43" height="35"/>
-  <object id="25" name="DefendTower1" x="542.667" y="914.667" width="49.3333" height="50.6667"/>
-  <object id="26" name="DefendTower2" x="1458.67" y="297.333" width="36" height="44"/>
  </objectgroup>
 </map>

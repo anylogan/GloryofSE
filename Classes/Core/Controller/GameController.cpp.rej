@@ -1,0 +1,9 @@
+diff a/Classes/Core/Controller/GameController.cpp b/Classes/Core/Controller/GameController.cpp	(rejected hunks)
+@@ -95,6 +95,7 @@
+ 	//createCannonFodder();  //�����ڻ�
+ 	setTouchEnabled(true);
+ 	setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
++	//log("monster pos %f,%f", monster1->getPositionX(), monster1->getPositionY());
+ 	this->schedule(schedule_selector(GameController::updateGame), 0.2f);
+ 	return true;
+ 	

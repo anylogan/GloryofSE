@@ -53,3 +53,23 @@ void GameResultFailure::BackToMain(float dt) {
 		Director::getInstance()->replaceScene(sc);
 	}
 }
+
+void GameResultFailure::onExit()
+{
+	Scene::onExit();
+	log("MainMenu onExit");
+}
+
+void GameResultFailure::onExitTransitionDidStart()
+{
+	Scene::onExitTransitionDidStart();
+	log("MainMenu onExitTransitionDidStart");
+}
+
+void GameResultFailure::cleanup()
+{
+	Scene::cleanup();
+	log("MainMenu cleanup");
+	//ֹͣ
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic("sound/2.mp3");
+}
