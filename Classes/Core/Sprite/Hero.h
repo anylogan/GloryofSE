@@ -30,6 +30,7 @@ class Hero:public Sprite
 	
 private:
 	Progress* blood;   //血量
+	Progress* hp;   //血量
 	int bloodNum;
 	//vector<achievement_type> Achievement;  //所获得的成就
 	int money;				//经济
@@ -47,6 +48,7 @@ public:
 	Sprite* image;
 	int bonusAttack;
 	int bonusDefend;
+	int fullHP;
 	int bonusBlood;
 	int playerType;
 	Tower* enemyDefendTower;
@@ -71,7 +73,9 @@ public:
 	int getCommonAttack() { return commonAttack; }       //返回普通攻击值
 	int getBloodNum() { return bloodNum; }	//返回血量
 	void minusBlood(int num);
+	void updateHP(float dt);
 	void HeroRevive(float dt);
+	void minusHP(int num);
 	int getNowPointDir(Node * player, Vec2 newpoint);
 	//掉血&死亡判断
 	void attackEnemyAnimation(int dir);

@@ -251,12 +251,12 @@ inline void GameController::mapElementsInit() {
 			(*it)->initTowerAttr(10, 1000, 500, 400, hero1);	//应该分开！
 			break;
 		case 2:
-			(*it)->initTowerAttr(40, 300, 300, 200, hero2);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			(*it)->initTowerAttr(5, 300, 300, 200, hero2);	//应该分开！
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
 			break;
 		case 3:
-			(*it)->initTowerAttr(40, 300, 300, 200, hero1);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			(*it)->initTowerAttr(5, 300, 300, 200, hero1);	//应该分开！
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
 			break;
 		}
 		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
@@ -324,10 +324,14 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 		}
 		if (keyCode == EventKeyboard::KeyCode::KEY_A) {
 			//换成clientPlayer
-			clientPlayer->bonusAttack += 10;
-			clientPlayerAttack();
-			clientPlayer->skillAnimation();
-			clientPlayer->bonusAttack -= 10;
+			if (clientPlayer->fullHP >= 50) {
+				clientPlayer->bonusAttack += 10;
+				clientPlayerAttack();
+				clientPlayer->skillAnimation();
+				clientPlayer->minusHP(50);
+				clientPlayer->bonusAttack -= 10;
+			}
+			
 		}
 		log("Key with keycode %d released", keyCode);
 	};

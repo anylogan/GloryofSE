@@ -281,11 +281,11 @@ inline void GameControllerOnline::mapElementsInit() {
 			break;
 		case 2:
 			(*it)->initTowerAttr(40, 300, 300, 200, hero2);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
 			break;
 		case 3:
 			(*it)->initTowerAttr(40, 300, 300, 200, hero1);	//应该分开！
-			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
+			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 400, 400);
 			break;
 		}
 		(*it)->enemySoldierOfTower = new Vector<EnemySoldier*>;
@@ -388,7 +388,7 @@ void GameControllerOnline::clientPlayerAttack() {
 		if (monster2->attack_rect->containsPoint(clientPlayer->getPosition()))
 			monster2->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack, clientPlayer);
 	for (int i = 0; i < 3; i++) {
-		auto testEnemy = clientSoldierVector[i];
+		auto testEnemy = clientPlayer->thisSoldierVector->at(i);
 		auto checkPlayerHit = checkHit(clientPlayer->currentPos, getNowPointDir(clientPlayer, testEnemy->getPosition()));
 		if (checkPlayerHit && testEnemy->attack_rect->containsPoint(clientPlayer->getPosition()))
 			testEnemy->minusBlood(clientPlayer->getCommonAttack() + clientPlayer->bonusAttack,clientPlayer);
@@ -408,6 +408,8 @@ void GameControllerOnline::clientPlayerAttack() {
 }
 void GameControllerOnline::serverPlayerAttack() {
 	//换成clientPlayer,加死亡判断；
+	serverPlayer->stopAllActions();
+	serverPlayer->attackEnemyAnimation(getAttackDir(serverPlayer->currentPos));//播放攻击动画
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 	serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
@@ -425,6 +427,7 @@ void GameControllerOnline::collidableCheck()
 		int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
 		if (tileGid > 0 && lastCollidablePos!=pos) {
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
+			/*请在这里添加stopAllactions的指令发送*/
 			clientPlayer->stopAllActions();
 			//thisCollidableCheck = false;
 			lastCollidablePos = pos;
@@ -441,6 +444,7 @@ void GameControllerOnline::collidableCheck()
 			//thisCollidableCheck = false;
 		}
 		*/
+		
 	}
 
 
