@@ -60,6 +60,11 @@ public:
 		exp += expNum;
 		killCount += 1;
 	}
+	void addBlood(int num) {
+		bloodNum = ((bloodNum + num) <= fullBlood) ? bloodNum+num : fullBlood;
+		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
+
+	}
 	virtual bool init();   //  精灵初始化
 	//bool attackTrick(const char *format,int num);   //  放招
 	virtual bool checkIsAttack();  //检查是否受到攻击   
@@ -73,6 +78,7 @@ public:
 	int getCommonAttack() { return commonAttack; }       //返回普通攻击值
 	int getBloodNum() { return bloodNum; }	//返回血量
 	void minusBlood(int num);
+	void stopSkill(float dt);
 	void updateHP(float dt);
 	void HeroRevive(float dt);
 	void minusHP(int num);

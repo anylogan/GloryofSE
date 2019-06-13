@@ -336,8 +336,20 @@ inline void GameControllerOnline::mapElementsInit() {
 			DefendTower2->enemySoldierOfTower->pushBack(*it);
 		}
 	}
-
-	
+	spawnPoint = group->getObject("ReviveArea1");
+	auto reviveArea1 = Sprite::create("towerTile.png");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	reviveArea1->setPosition(Vec2(x, y));
+	reviveArea1->setTag(1);
+	addChild(reviveArea1); 
+	spawnPoint = group->getObject("ReviveArea2");
+	auto reviveArea2 = Sprite::create("towerTile.png");
+	x = spawnPoint["x"].asFloat();
+	y = spawnPoint["y"].asFloat();
+	reviveArea2->setPosition(Vec2(x, y));
+	reviveArea2->setTag(2);
+	addChild(reviveArea2);
 }
 void GameControllerOnline::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
@@ -703,6 +715,16 @@ void GameControllerOnline::spriteRectCheck(float dt) {
 		if ((*it1)->attack_rect->containsPoint((*it1)->enemyHero->getPosition())) 
 			(*it1)->enemyHero->minusBlood((*it1)->attackMinusNum);
 		
+	}
+	Sprite* testReviveArea = (Sprite*)getChildByTag(1);
+	auto inRect = new Rect(testReviveArea->getPositionX() - 100, testReviveArea->getPositionY() - 100, 200, 200);
+	if (inRect->containsPoint(hero1->getPosition())) {
+		hero1->addBlood(15);
+	}
+	testReviveArea = (Sprite*)getChildByTag(2);
+	inRect = new Rect(testReviveArea->getPositionX() - 100, testReviveArea->getPositionY() - 100, 200, 200);
+	if (inRect->containsPoint(hero2->getPosition())) {
+		hero2->addBlood(15);
 	}
 }
 

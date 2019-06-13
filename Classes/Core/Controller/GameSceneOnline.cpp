@@ -59,7 +59,7 @@ void GameSceneOnline::displaymoney(float dt)
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto money = std::to_string(clientPlayer->getMoney());
-	Text *text1 = Text::create(money, "font/Marker Felt.ttf", 40);
+	Text *text1 = Text::create(money, "fonts/Marker Felt.ttf", 40);
 	text1->setColor(Color3B(128, 0, 128));  //设置颜色
 	text1->setPosition(Vec2(origin.x + visibleSize.width * 0.03, origin.y + visibleSize.height *0.7));
 
@@ -72,7 +72,7 @@ void GameSceneOnline::displayexp(float dt)
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	auto exp = std::to_string(clientPlayer->getExp());
-	Text *text1 = Text::create(exp, "font/Marker Felt.ttf", 40);
+	Text *text1 = Text::create(exp, "fonts/Marker Felt.ttf", 40);
 	text1->setColor(Color3B(128, 0, 128));  //设置颜色
 	text1->setPosition(Vec2(origin.x + visibleSize.width * 0.03, origin.y + visibleSize.height *0.6));
 
@@ -84,7 +84,7 @@ void GameSceneOnline::displayskillicon()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Text *text1 = Text::create(MyUtility::gbk_2_utf8("W:释放普通技能"), "font/Marker Felt.ttf", 20);
+	Text *text1 = Text::create(MyUtility::gbk_2_utf8("W:释放普通技能"), "fonts/Marker Felt.ttf", 20);
 	text1->setColor(Color3B(32, 178, 170));  //设置颜色
 	text1->setPosition(Vec2(origin.x + visibleSize.width * 0.05, origin.y + visibleSize.height *0.55));
 	this->addChild(text1);
