@@ -7,6 +7,8 @@
 #include"ui/CocosGUI.h"
 #include"Scene/GlobalDefine.h"
 #include"proj.win32/MyUtility.h"
+#include "cocostudio/CocoStudio.h"
+#include"Core/Chat/ChatLayer.h"
 //全局变量
 #include<vector>
 extern std::vector<int> equipmentBoughtList;//标记当前拥有装备的状态
@@ -24,4 +26,5 @@ public:
 	void  displayexp(float dt);     //显示经验
 	void  displayskillicon();
 	CREATE_FUNC(GameSceneOnline);
+
 };

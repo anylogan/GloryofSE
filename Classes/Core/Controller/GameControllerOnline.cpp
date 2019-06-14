@@ -342,7 +342,7 @@ inline void GameControllerOnline::mapElementsInit() {
 	y = spawnPoint["y"].asFloat();
 	reviveArea1->setPosition(Vec2(x, y));
 	reviveArea1->setTag(1);
-	addChild(reviveArea1); 
+	addChild(reviveArea1);
 	spawnPoint = group->getObject("ReviveArea2");
 	auto reviveArea2 = Sprite::create("towerTile.png");
 	x = spawnPoint["x"].asFloat();
@@ -350,6 +350,7 @@ inline void GameControllerOnline::mapElementsInit() {
 	reviveArea2->setPosition(Vec2(x, y));
 	reviveArea2->setTag(2);
 	addChild(reviveArea2);
+	
 }
 void GameControllerOnline::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
@@ -440,6 +441,7 @@ void GameControllerOnline::collidableCheck()
 		if (tileGid > 0 && lastCollidablePos!=pos) {
 			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
 			/*请在这里添加stopAllactions的指令发送*/
+			Client::getInstance()->sendStopAction();
 			clientPlayer->stopAllActions();
 			//thisCollidableCheck = false;
 			lastCollidablePos = pos;
@@ -1003,6 +1005,11 @@ void GameControllerOnline::updateEnemy(float dt)
 		case 4:
 		{
 			//对方断开连接
+			break;
+		}
+		case 5:
+		{
+			serverPlayer->stopAllActions();
 			break;
 		}
 		default:break;

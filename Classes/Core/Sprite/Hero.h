@@ -61,7 +61,7 @@ public:
 		killCount += 1;
 	}
 	void addBlood(int num) {
-		bloodNum = ((bloodNum + num) <= fullBlood) ? bloodNum+num : fullBlood;
+		bloodNum = ((bloodNum + num) <= fullBlood) ? bloodNum + num : fullBlood;
 		blood->setPercentage(((float)bloodNum) / ((float)(fullBlood) / 100.0));
 
 	}

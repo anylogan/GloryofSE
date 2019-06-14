@@ -33,6 +33,7 @@ public:
 	                     //内有while true循环
 	void sendAttack();  //发送攻击信号 调用：键盘函数里调用（注意一下次数）
 	void sendClickPos(float x, float y); //发送鼠标点击位置 调用：点击函数里调用（注意一下次数）
+	void sendStopAction(); //发送停止动作信号
 	std::vector<command> getCommands(); //接收对方指令集 调用：UPDATE里
 	void sendMessage(std::string &text);//发送聊天信息
 	std::string getMessage();       //接收聊天信息

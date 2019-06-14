@@ -104,6 +104,16 @@ void Client::sendClickPos(float x,float y)
 	sock->write_some(buffer(sends));
 }
 
+void Client::sendStopAction()
+{
+	std::vector<command> sends;
+	command send;
+	send.use_flag = true;
+	send.command_type = 5;
+	sends.push_back(send);
+	sock->write_some(buffer(sends));
+}
+
 std::vector<command> Client::getCommands()
 {
 	std::vector<command> once_receives;
@@ -154,6 +164,7 @@ void Client::clear()
 	sends.push_back(send);
 	sock->write_some(buffer(sends));
 	sock->close();
+	message_sock ->close();
 	sock = nullptr;
 	message_sock = nullptr;
 }

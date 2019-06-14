@@ -1,7 +1,7 @@
 #ifndef __COMMAND_GAME_H__
 #define __COMMAND_GAME_H__
 
-enum CommandType { connection = 0, heroInform, attackInform, clickInform,exitConnect };
+enum CommandType { connection = 0, heroInform, attackInform, clickInform,exitConnect,stopAction };
 
 
 class command

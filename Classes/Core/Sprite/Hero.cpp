@@ -181,7 +181,6 @@ void Hero::attackEnemyAnimation(int dir)   //播放动画
 	animation->setRestoreOriginalFrame(true);
 	Animate *action = Animate::create(animation);
 	image->runAction(Repeat::create(action,1)); //播放一次
-
 }
 void Hero::skillAnimation()   //播放动画
 {
@@ -209,7 +208,7 @@ void Hero::skillAnimation()   //播放动画
 	Animate *action = Animate::create(animation);
 	skillSprite->runAction(Repeat::create(action, 1)); //播放一次
 	this->scheduleOnce(schedule_selector(Hero::stopSkill), 4.0f); //在2.0f之后执行，并且只执行一次。
-	
+
 }
 void Hero::stopSkill(float dt) {
 	skillSprite->setVisible(false);

@@ -321,6 +321,7 @@ inline void GameController::mapElementsInit() {
 	reviveArea2->setPosition(Vec2(x, y));
 	reviveArea2->setTag(2);
 	addChild(reviveArea2);
+	
 }
 void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 {
