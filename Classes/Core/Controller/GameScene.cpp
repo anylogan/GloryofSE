@@ -84,7 +84,7 @@ void GameScene::displayskillicon()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Text *text1 = Text::create(MyUtility::gbk_2_utf8("W:释放普通技能"), "fonts/Marker Felt.ttf", 20);
+	Text *text1 = Text::create(MyUtility::gbk_2_utf8("W:释放普通技能"), "", 20);
 	text1->setColor(Color3B(32, 178, 170));  //设置颜色
 	text1->setPosition(Vec2(origin.x + visibleSize.width * 0.05, origin.y + visibleSize.height *0.55));
 	MenuItemImage *skillitem;
@@ -103,7 +103,7 @@ void GameScene::displayskillicon()
 	skillitem->setPosition(origin.x + visibleSize.width * 0.03, origin.y + visibleSize.height * 0.5);
 
 
-	Text *text2 = Text::create(MyUtility::gbk_2_utf8("A:释放大招"), "fonts/Marker Felt.ttf", 20);
+	Text *text2 = Text::create(MyUtility::gbk_2_utf8("A:释放大招"), "", 20);
 	text2->setColor(Color3B(32, 178, 170));  //设置颜色
 	text2->setPosition(Vec2(origin.x + visibleSize.width * 0.036, origin.y + visibleSize.height *0.4));
 	MenuItemImage *skillitem2;

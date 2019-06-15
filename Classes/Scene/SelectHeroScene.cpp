@@ -1,7 +1,6 @@
 #include"Scene/SelectHeroScene.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
-#include"proj.win32/MyUtility.h"
 using namespace CocosDenshion;
 hero_role HeroRole; //定义三个全局变量  并且初始化
 hero_role EnemyHero;
@@ -66,10 +65,8 @@ void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 		if (check_connect)
 		{
 			HeroRole = ChangE;   //给全局变量赋值
-
 			Client::getInstance()->sendOwnHero(0);
 			command hero_command = (Client::getInstance()->receiveHero());
-
 			switch (hero_command.hero_type)
 			{
 			case 0:

@@ -35,7 +35,7 @@ public:
 	int player_type;      //区分客户端
 	command() :use_flag(false), command_type(-1), connected(false), hero_type(-1), hero_attack(false), click_x(0.0), click_y(0.0), player_type(0) {}
 };
-enum CommandType { connection = 0, heroInform, attackInform, clickInform , exitConnect，stopAction};
+enum CommandType { connection = 0, heroInform, attackInform, clickInform, exitConnect，stopAction };
 
 void handle_chat()
 {

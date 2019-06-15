@@ -21,8 +21,6 @@ bool GameResultSuccess::init()
 	}
 
 	auto rootNode = CSLoader::createNode("SuccessResultScene.csb");
-	auto button = static_cast<ui::Button*>(rootNode->getChildByName("BackButton"));
-	//button->addClickEventListener(CC_CALLBACK_1(GameResultSuccess::BackToMain, this));
 
 	auto timeText = dynamic_cast<ui::Text*>(rootNode->getChildByName("TimeTextView"));
 	auto ExpText = dynamic_cast<ui::Text*>(rootNode->getChildByName("ExpTextView"));

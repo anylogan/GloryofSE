@@ -26,6 +26,7 @@ public:
 	void  displaymoney(float dt);   //显示金币
 	void  displayexp(float dt);     //显示经验
 	void  displayskillicon();
+	void surrenderItemCallback(Ref * pSender);
 	CREATE_FUNC(GameSceneOnline);
 
 };
