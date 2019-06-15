@@ -100,8 +100,10 @@ void GameSceneOnline::displayskillicon()
 void GameSceneOnline::surrenderItemCallback(Ref *pSender){//投降
 	clientPlayer->friendTower->bloodNum = 0;
 	/*这里向对方发送退出信息*/
+	Client::getInstance()->sendExit();
 }
 GameSceneOnline::~GameSceneOnline()
 {
+	Client::getInstance()->sendExit();
 	Client::getInstance()->clear();
 }

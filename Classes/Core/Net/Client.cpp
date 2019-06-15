@@ -114,6 +114,20 @@ void Client::sendStopAction()
 	sock->write_some(buffer(sends));
 }
 
+void Client::sendExit()
+{
+	if (sock != nullptr)
+	{
+		std::vector<command> sends;
+		command send;
+		send.use_flag = true;
+		send.command_type = 4;
+		send.connected = false;
+		sends.push_back(send);
+		sock->write_some(buffer(sends));
+	}
+}
+
 std::vector<command> Client::getCommands()
 {
 	std::vector<command> once_receives;
@@ -156,13 +170,7 @@ std::string Client::getMessage()
 
 void Client::clear()
 {
-	std::vector<command> sends;
-	command send;
-	send.use_flag = true;
-	send.command_type = 4;
-	send.connected = false;
-	sends.push_back(send);
-	sock->write_some(buffer(sends));
+	
 	sock->close();
 	message_sock ->close();
 	sock = nullptr;
