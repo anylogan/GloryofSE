@@ -1005,6 +1005,12 @@ void GameControllerOnline::updateEnemy(float dt)
 		case 4:
 		{
 			//对方断开连接
+			Size visibleSize = Director::getInstance()->getVisibleSize();
+			Vec2 origin = Director::getInstance()->getVisibleOrigin();
+			auto linkLabel = LabelTTF::create(MyUtility::gbk_2_utf8("对方已下线"), "fonts/simkai.ttf", 35);
+			linkLabel->setPosition(Vec2(origin.x + visibleSize.width*0.72 , origin.y + visibleSize.height*1.45 ));
+			linkLabel->setColor(Color3B::RED);
+			this->addChild(linkLabel);
 			break;
 		}
 		case 5:

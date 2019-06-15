@@ -18,6 +18,7 @@ extern std::vector<int> equipmentEquippedList;//标记当前装备装备的状态
 class GameSceneOnline : public cocos2d::Scene
 {
 public:
+	~GameSceneOnline();
 	static cocos2d::Scene* createScene();
 	virtual bool init();
 	void storeItemCallback(Ref *pSender);// 创建商城
