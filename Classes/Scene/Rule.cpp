@@ -16,9 +16,40 @@ bool Rule::init()
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	//添加背景
-	Sprite *bg = Sprite::create("RuleBackground.jpg");
+	Sprite *bg = Sprite::create("SelectHeroBackground.jpg");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 	this->addChild(bg);
+
+
+	Vector<Text*>T;  //存放Text gui控件
+
+	Text *text1 = Text::create(MyUtility::gbk_2_utf8("本游戏是一款MOBA类游戏"), "font/Marker Felt.ttf", 40);
+	Text *text2 = Text::create(MyUtility::gbk_2_utf8("玩家通过鼠标点击移动英雄位置"), "font/Marker Felt.ttf", 40);
+	Text *text3 = Text::create(MyUtility::gbk_2_utf8("W键释放技能小招"), "font/Marker Felt.ttf", 40);
+
+	Text *text4 = Text::create(MyUtility::gbk_2_utf8("A键释放技能大招"), "font/Marker Felt.ttf", 40);
+	Text *text5 = Text::create(MyUtility::gbk_2_utf8("玩家通过击杀敌方玩家和野怪获得金钱和经验"), "font/Marker Felt.ttf", 40);
+	Text *text6 = Text::create(MyUtility::gbk_2_utf8("通过购买装备提升英雄能力"), "font/Marker Felt.ttf", 40);
+	Text *text7 = Text::create(MyUtility::gbk_2_utf8("当一方摧毁另一方大本营防御塔时游戏结束，该方获得胜利，另一方失败"), "font/Marker Felt.ttf", 40);
+
+	//放到容器中
+	T.pushBack(text1);
+	T.pushBack(text2);
+	T.pushBack(text3);
+	T.pushBack(text4);
+	T.pushBack(text5);
+	T.pushBack(text6);
+	T.pushBack(text7);
+
+
+	//设置文本颜色
+	for (int i = 0; i < (T.size() - 1); i++)
+	{
+		T.at(i)->setColor(Color3B(5, 39, 175));  //设置颜色
+		T.at(i)->setPosition(Vec2(origin.x + visibleSize.width * 0.5, origin.y + (visibleSize.height * (0.8 - i * 0.05))));
+		this->addChild(T.at(i));
+	}
+
 
 	//Back菜单
 	MenuItemImage*backMenuItem = MenuItemImage::create("quit01.png", "quit02.png", CC_CALLBACK_1(Rule::menuItemGoBackCallback, this));

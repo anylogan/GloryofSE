@@ -7,6 +7,7 @@ using namespace cocos2d::ui;
 //全局变量初始化
 extern std::vector<int> equipmentBoughtList;//标记当前拥有装备的状态
 extern std::vector<int> equipmentEquippedList;//标记当前装备装备的状态
+
 Scene* GameSceneOnline::createScene()
 
 {
@@ -31,10 +32,8 @@ bool GameSceneOnline::init()
 
 	MenuItemImage *expitem = MenuItemImage::create("exp.png", "exp.png");
 	expitem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.35);
-	MenuItemImage *surrenderItem = MenuItemImage::create("surrender.png", "surrender.png", CC_CALLBACK_1(GameSceneOnline::surrenderItemCallback, this));
-	surrenderItem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.45);
 
-	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, surrenderItem, NULL);
+	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	addChild(mu);
 	displayskillicon();
@@ -97,11 +96,4 @@ void GameSceneOnline::displayskillicon()
 	this->addChild(text1);
 
 }
-void GameSceneOnline::surrenderItemCallback(Ref *pSender){//投降
-	clientPlayer->friendTower->bloodNum = 0;
-	/*这里向对方发送退出信息*/
-}
-GameSceneOnline::~GameSceneOnline()
-{
-	Client::getInstance()->clear();
-}
+

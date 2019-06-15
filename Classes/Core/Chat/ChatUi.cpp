@@ -54,11 +54,11 @@ cui::RichText* ChatUI::getChatMsg(string  roleName, string  chatMsg)
 
 	//RichElementText* resrole = new RichElementText();
 
-	RichElementText* resrole = RichElementText::create(1, Color3B::GREEN, 255, roleName, "", 15 );
+	RichElementText* resrole = RichElementText::create(1, Color3B::GREEN, 255, MyUtility::gbk_2_utf8(roleName), "fonts/simkai.ttf", 15 );
 	resrole->setUnderLineSize(1);
 	resrole->setUnderLineColor(Color4B::GREEN);
-	auto fuhao = RichElementText::create(1, Color3B::BLACK, 255, MyUtility::gbk_2_utf8(":"),"", 15);
-	auto re = RichElementText::create(1, Color3B(0, 255, 255), 255, chatMsg,"", 15);
+	auto fuhao = RichElementText::create(1, Color3B::BLACK, 255, MyUtility::gbk_2_utf8(":"), "fonts/simkai.ttf", 15);
+	auto re = RichElementText::create(1, Color3B(0, 255, 255), 255, MyUtility::gbk_2_utf8(chatMsg), "fonts/simkai.ttf", 15);
 	_richChat->pushBackElement(resrole);
 	_richChat->pushBackElement(fuhao);
 	_richChat->pushBackElement(re);

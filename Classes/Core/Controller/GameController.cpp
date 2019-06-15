@@ -46,7 +46,7 @@ bool GameController::init()
 	this->schedule(schedule_selector(GameController::spriteRectCheck), 1.0f);
 	AI_Hero_Run(0);//执行一次；
 	this->schedule(schedule_selector(GameController::AI_Hero_Run), 3.0f);
-	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 0.5f);
+	this->schedule(schedule_selector(GameController::AI_Hero_Attack), 1.0f);
 	
 	return true;
 }
@@ -157,6 +157,8 @@ inline void GameController::mapElementsInit() {
 	monster1->initMonsterAttr(2, 100, 150, 20); //初始化属性，相当于构造函数 仍需更改其他！
 	monster2->initMonsterAttr(2, 100, 150, 20);
 	/*创建对象元素-Soldiers*/
+	//hero1->thisSoldierVector = new std::vector<EnemySoldier*>;
+
 	spawnPoint = group->getObject("soldier1");
 	x = spawnPoint["x"].asFloat();
 	y = spawnPoint["y"].asFloat();
@@ -243,17 +245,17 @@ inline void GameController::mapElementsInit() {
 	for (auto it = TowerVector.begin(); it != TowerVector.end(), i<4; it++, i++) {
 		switch (i) {
 		case 0:
-			(*it)->initTowerAttr(20, 1000, 500, 400, hero2);	
+			(*it)->initTowerAttr(20, 1000, 500, 400, hero2);	//应该分开！
 			break;
 		case 1:
-			(*it)->initTowerAttr(20, 1000, 500, 400, hero1);	
+			(*it)->initTowerAttr(20, 1000, 500, 400, hero1);	//应该分开！
 			break;
 		case 2:
-			(*it)->initTowerAttr(10, 300, 300, 200, hero2);	
+			(*it)->initTowerAttr(10, 300, 300, 200, hero2);	//应该分开！
 			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		case 3:
-			(*it)->initTowerAttr(10, 300, 300, 200, hero1);	
+			(*it)->initTowerAttr(10, 300, 300, 200, hero1);	//应该分开！
 			(*it)->attack_rect = new Rect((*it)->getPositionX() - 100, (*it)->getPositionY() - 100, 200, 200);
 			break;
 		}
@@ -276,9 +278,11 @@ inline void GameController::mapElementsInit() {
 				(*it)->initMonsterAttr(40, 400, 400, 40, tower1->getPosition()); //先设置小怪攻击量20
 				break;
 			}
+																			 //(*it)->initBloodBar();
 			addChild(*it);
 			(*it)->enemyTower = tower1;		
 			(*it)->enemyDefendTower = DefendTower1;
+			//(*it)->retain();
 			tower1->enemySoldierOfTower->pushBack(*it);
 			DefendTower1->enemySoldierOfTower->pushBack(*it);
 		}
@@ -400,6 +404,12 @@ void GameController::collidableCheck()
 	}
 
 
+/* WASD
+Key with keycode 146 released
+Key with keycode 124 released
+Key with keycode 142 released
+Key with keycode 127 released
+*/
 void GameController::createHero()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -449,10 +459,12 @@ void GameController::createHero()
 void  GameController::updateView(float dt)  //刷新函数
 {
 	this->setViewpointCenter(hero1->getPosition());
+	//CannonFodderMoving();  //让炮灰走几步   
 	collidableCheck();
 }
 void GameController::AI_Hero_Run(float dt) {
-	/*原来的AI写法
+	log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
+	/*
 	if ((serverPlayer->thisSoldierVector->at(0))->bloodNum >0) {
 		serverPlayer->autoRun(serverPlayer->thisSoldierVector->at(0)->getPosition());
 		log("First soldier %d", serverPlayer->thisSoldierVector->at(0)->bloodNum);
@@ -467,11 +479,7 @@ void GameController::AI_Hero_Run(float dt) {
 		serverPlayer->autoRun(serverPlayer->enemyDefendTower->getPosition());
 	}else serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
 	*/
-	if (serverPlayer->getBloodNum() > 0) {
-		if (clientPlayer->enemyTower->bloodNum <= 200)
-			serverPlayer->autoRun(clientPlayer->enemyTower->getPosition());	//去保护自己的塔
-		else serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
-	}
+	serverPlayer->autoRun(serverPlayer->enemyTower->getPosition());
 }
 
 void GameController::AI_Hero_Attack(float dt) {
@@ -492,14 +500,13 @@ void GameController::AI_Hero_Attack(float dt) {
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 	}
 	*/
-	if (serverPlayer->getBloodNum() > 0) {
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(0));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(1));
 		serverPlayer->autoAttack(serverPlayer->thisSoldierVector->at(2));
 		//serverPlayer->autoAttack(serverPlayer->enemyDefendTower);
 		serverPlayer->autoAttack(serverPlayer->enemyTower);
 		serverPlayer->autoAttack(clientPlayer);
-	}
+
 }
 
 
@@ -612,9 +619,10 @@ void GameController::spriteRectCheck(float dt) {
 						clientSoldierVector[i]->isWalking = true;
 						clientSoldierVector[i]->stopAllActions();
 						clientSoldierVector[i]->unscheduleAttack();
-						int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); 
+						int tempDir = getNowPointDir(clientSoldierVector[i], tempEnemyTower->getPosition()); //改一下
 						int attackDir = getAttackDir(tempDir);
 						clientSoldierVector[i]->startWalkTowardsTower(attackDir);
+						log("enemy stop attacking");
 						continue;
 					}
 				}
@@ -755,6 +763,7 @@ int GameController::getNowPointDir(Node* player,Vec2 newpoint)
 	return thisdir;
 }
 int GameController::getAttackDir(int tempDir) { //转换8个方向
+	//int tempDir = getNowPointDir(newPoint);
 	if (tempDir == rigth_down || tempDir == down)
 		return 0;
 	if (tempDir == left_down || tempDir == lefts)
@@ -765,10 +774,14 @@ int GameController::getAttackDir(int tempDir) { //转换8个方向
 		return 3;
 }
 void GameController::setPlayerPosition(Vec2 position) {
+	//hero1->stopAllActions();
+
+
 	//从像素点坐标转化为瓦片坐标
 	Vec2 tileCoord = this->tileCoordFromPosition(position);
 	//获得瓦片的GID
 	int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
+	//log("new Gid %d", tileGid);
 	if (tileGid > 0) {
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
 		clientPlayer->stopAllActions();
@@ -778,6 +791,8 @@ void GameController::setPlayerPosition(Vec2 position) {
 	clientPlayer->setPosition(position);
 	//滚动地图
 	this->setViewpointCenter(clientPlayer->getPosition());
+	//hero1->stopAllActions();
+
 }
 
 
@@ -830,61 +845,68 @@ bool GameController::checkHit(int standDir, int monsterDir) { //检查人物方向和怪
 }
 void GameController::onTouchEnded(Touch *touch, Event *event)
 {
-	if (clientPlayer->getBloodNum() > 0) {
-		if (clientPlayer->isHeroWalking == true)
-			return;
-		clientPlayer->isHeroWalking = true;
-		clientPlayer->stopAllActions();
-		clientPlayer->image->stopAllActions();
-		//获得在OpenGL坐标
-		Vec2 touchLocation = touch->getLocation();
-		//转换为当前层的模型坐标系
-		touchLocation = this->convertToNodeSpace(touchLocation);
+	if (clientPlayer->isHeroWalking == true)
+		return;
+	clientPlayer->isHeroWalking = true;
+	clientPlayer->stopAllActions();
+	clientPlayer->image->stopAllActions();
 
-		Vec2 playerPos = clientPlayer->getPosition();
-		Vec2 diff = touchLocation - playerPos;
-		int newDir = getNowPointDir(clientPlayer, touchLocation);
-		clientPlayer->currentPos = newDir;
-		Animation* animation = Animation::create();
-		__String * frameName;
-		for (int i = 0; i <= 7; i++)
-		{
+	//log("onTouchEnded");
+	//获得在OpenGL坐标
+	Vec2 touchLocation = touch->getLocation();
+	//转换为当前层的模型坐标系
+	touchLocation = this->convertToNodeSpace(touchLocation);
 
-			switch (HeroRole) {
-			case ChangE:
-				frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
-			case HuaMulan:
-				frameName = __String::createWithFormat(hero_HuaMulan_pao, newDir, i); break;
-			case SunWukong:
-				frameName = __String::createWithFormat(hero_SunWukong_pao, newDir, i);
-			}
-			log("frameName = %s", frameName->getCString());
-			animation->addSpriteFrameWithFile(frameName->getCString());
+	Vec2 playerPos = clientPlayer->getPosition();
+	Vec2 diff = touchLocation - playerPos;
+	int newDir = getNowPointDir(clientPlayer,touchLocation);
+	clientPlayer->currentPos = newDir;
+	Animation* animation = Animation::create();
+	__String * frameName;
+	for (int i = 0; i <= 7; i++)
+	{
+
+		switch (HeroRole) {
+		case ChangE:
+			frameName = __String::createWithFormat(hero_ChangE_pao, newDir, i); break;
+		case HuaMulan:
+			frameName = __String::createWithFormat(hero_HuaMulan_pao, newDir, i); break;
+		case SunWukong:
+			frameName = __String::createWithFormat(hero_SunWukong_pao, newDir, i);
 		}
-		animation->setDelayPerUnit(0.15f);
-		animation->setRestoreOriginalFrame(false);
-		Animate* action = Animate::create(animation);
-		clientPlayer->image->runAction(RepeatForever::create(action));
-		Vec2 tileCoord = this->tileCoordFromPosition(touchLocation);
-		//获得瓦片的GID
-		int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
-		if (tileGid > 0) {
-			CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
-			clientPlayer->isHeroWalking = false;
-			clientPlayer->stopAllActions();
-			return;
-		}
-		float speed = clientPlayer->getHeroSpeed();
-		float x1 = playerPos.x;
-		float y1 = playerPos.y;
-		float x2 = touchLocation.x;
-		float y2 = touchLocation.y;
-		float dif_x = x1 - x2;
-		float dif_y = y1 - y2;
-		float dis = sqrt(dif_x*dif_x + dif_y * dif_y);
-		clientPlayer->runAction(MoveTo::create(dis*(speed - (float)(clientPlayer->bonusSpeed / 100.0)) / 100.0, touchLocation));
-		clientPlayer->isHeroWalking = false;
+		log("frameName = %s", frameName->getCString());
+		//SpriteFrame *spriteFrame = SpriteFrame::
+		animation->addSpriteFrameWithFile(frameName->getCString());
 	}
+	animation->setDelayPerUnit(0.15f);
+	animation->setRestoreOriginalFrame(false);
+	Animate* action = Animate::create(animation);
+	clientPlayer->image->runAction(RepeatForever::create(action));
+	//log(_tileMap->getTileSize().height);
+	Vec2 tileCoord = this->tileCoordFromPosition(touchLocation);
+	//获得瓦片的GID
+	int tileGid = _collidable->getTileGIDAt(tileCoord);//只有碰撞层时
+	//log("new Gid %d", tileGid);
+	if (tileGid > 0) {
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/empty.wav");//提醒碰撞
+		clientPlayer->isHeroWalking = false;
+		clientPlayer->stopAllActions();
+		return;
+	}
+	float speed = clientPlayer->getHeroSpeed();
+	float x1 = playerPos.x;
+	float y1 = playerPos.y;
+	float x2 = touchLocation.x;
+	float y2 = touchLocation.y;
+	float dif_x = x1 - x2;
+	float dif_y = y1 - y2;
+	float dis = sqrt(dif_x*dif_x + dif_y * dif_y);
+	//log("dis is %f", dis);
+	clientPlayer->runAction(MoveTo::create(dis*(speed-(float)(clientPlayer->bonusSpeed/100.0)) / 100.0, touchLocation));
+	clientPlayer->isHeroWalking = false;
+	//clientPlayer->skillSprite->setPosition(touchLocation);
+	//hero1->stopAllActions();
+	//this->setViewpointCenter(hero1->getPosition()); //放到updateGame里实现顺滑滚动
 }
 
 

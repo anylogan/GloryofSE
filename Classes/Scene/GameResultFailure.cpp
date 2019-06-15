@@ -21,6 +21,7 @@ bool GameResultFailure::init()
 	}
 
 	auto rootNode = CSLoader::createNode("FailureResultScene.csb");
+	auto button = static_cast<ui::Button*>(rootNode->getChildByName("BackButton"));
 	//button->addClickEventListener(CC_CALLBACK_1(GameResultFailure::BackToMain, this));
 
 	auto timeText = dynamic_cast<ui::Text*>(rootNode->getChildByName("TimeTextView"));
