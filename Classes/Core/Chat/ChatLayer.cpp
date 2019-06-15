@@ -58,10 +58,10 @@ bool ChatLayer::init()
 	enterbt->addTouchEventListener(CC_CALLBACK_2(ChatLayer::sendChatMsg, this));
 
 	_chat = ChatUI::createScene();
-	_text = _chat->getChatMsg("system", MyUtility::gbk_2_utf8("welcome and enjoy!"));
+	_text = _chat->getChatMsg("system", "welcome and enjoy!");
 
 	_listview->insertCustomItem(_text, 0);
-	_listview->setInnerContainerSize(cocos2d::Size(200, 200));
+	
 	
 	this->schedule(schedule_selector(ChatLayer::updateMessage), 0.5f);
 	return true;

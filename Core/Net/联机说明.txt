@@ -1,4 +1,0 @@
-1.请自行下载配置boost库
-2.服务器另开小黑窗，由VS生成
-3.联机之前，请先开服务器
-参考网址：https://blog.csdn.net/DY_1024/article/details/83750872
