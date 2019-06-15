@@ -104,6 +104,7 @@ void Client::sendClickPos(float x,float y)
 	sock->write_some(buffer(sends));
 }
 
+
 void Client::sendStopAction()
 {
 	std::vector<command> sends;

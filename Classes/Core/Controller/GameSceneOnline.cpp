@@ -97,3 +97,7 @@ void GameSceneOnline::displayskillicon()
 
 }
 
+GameSceneOnline::~GameSceneOnline()
+{
+	Client::getInstance()->clear();
+}

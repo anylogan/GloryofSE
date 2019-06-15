@@ -35,7 +35,7 @@ public:
 	int player_type;      //区分客户端
 	command() :use_flag(false), command_type(-1), connected(false), hero_type(-1), hero_attack(false), click_x(0.0), click_y(0.0), player_type(0) {}
 };
-enum CommandType { connection = 0, heroInform, attackInform, clickInform , exitConnect};
+enum CommandType { connection = 0, heroInform, attackInform, clickInform , exitConnect，stopAction};
 
 void handle_chat()
 {
@@ -51,7 +51,7 @@ void handle_chat()
 				if (*buf.begin() == '\n') break;
 				text += buf;
 			}
-			//text += "\n";
+			text += "\n";
 			if (message_player2 != nullptr)
 				message_player2->sock().write_some(buffer(text));
 		}
@@ -197,6 +197,16 @@ int main()
 						player1 = nullptr;
 						break;
 					}
+					case 5:
+					{
+						command m;
+						m.use_flag = true;
+						m.command_type = 5;
+						m.player_type = 1;
+						loopbuff.push_back(m);
+						std::cout << "sever receive command from 1,command type " << m.command_type << std::endl;
+						break;
+					}
 					default:
 						std::cout << "wrong message from 1" << std::endl;
 					}
@@ -255,6 +265,16 @@ int main()
 						loopbuff.push_back(m);
 						std::cout << "sever receive command from 2,exit " << m.command_type << std::endl;
 						player2 = nullptr;
+						break;
+					}
+					case 5:
+					{
+						command m;
+						m.use_flag = true;
+						m.command_type = 5;
+						m.player_type = 2;
+						loopbuff.push_back(m);
+						std::cout << "sever receive command from 2,command type " << m.command_type << std::endl;
 						break;
 					}
 					default:
