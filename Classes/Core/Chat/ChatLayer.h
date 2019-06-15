@@ -12,6 +12,7 @@
 class ChatLayer: public cocos2d::Layer
 {
 public:
+	int GBKToUTF8(std::string & gbkStr, const char * toCode, const char * formCode);
 	static ChatLayer* createScene();
 	virtual bool init();
 

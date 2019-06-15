@@ -10,6 +10,8 @@
 #include"Core/Sprite/Tower.h"
 #include"Core/Sprite/fieldMonster.h"
 #include"Core/Net/NetCommand.h"
+#include"proj.win32/MyUtility.h"
+
 
 USING_NS_CC;
 //全局变量

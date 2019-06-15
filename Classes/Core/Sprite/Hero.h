@@ -52,6 +52,7 @@ public:
 	int bonusBlood;
 	int playerType;
 	Tower* enemyDefendTower;
+	Tower* friendTower;
 	Sprite* skillSprite;
 	//EnemySoldier* thisSoldierVector[3];
 	std::vector<EnemySoldier*> *thisSoldierVector; //定义的是客户端用户的soldier

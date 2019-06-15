@@ -77,7 +77,7 @@ void StartScene::menuItemLoginCallback(Ref *pSender)
 		SimpleAudioEngine::getInstance()->playEffect("sound/button.wav");
 	}
 
-	auto sc = LoginScene::createScene();
+	auto sc = SelectPlayMode::createScene();
 	Director::getInstance()->pushScene(sc);
 }
 //void StartScene::menuItemStartCallback(Ref *pSender)
