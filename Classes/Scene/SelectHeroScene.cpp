@@ -52,10 +52,6 @@ bool  SelectHeroScene::init()
 
 	addChild(rootNode);
 	
-	waitingScene = Sprite::create("waitinglayer.jpg");
-	waitingScene->setPosition(Vec2(800,450));
-	waitingScene->setVisible(false);
-	addChild(waitingScene, 200);
 	return true;
 
 }

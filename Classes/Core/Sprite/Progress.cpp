@@ -26,7 +26,7 @@ Progress* Progress::create(const char* background, const char* fillname)
 	else
 	{
 		delete progress;
-		progress = NULL;
-		return NULL;
+		progress = nullptr;
+		return nullptr;
 	}
 }

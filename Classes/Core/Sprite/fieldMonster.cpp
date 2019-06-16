@@ -39,7 +39,7 @@ bool fieldMonster::checkHeroInRect(Hero * hero1, Hero * hero2)
 		}
 	}
 	*/
-	heroInRect = NULL;
+	heroInRect = nullptr;
 	return false;
 }
 void fieldMonster::scheduleAttack()
@@ -57,7 +57,7 @@ void fieldMonster::unscheduleAttack()
 void fieldMonster::attackHero(float dt) {
 	log("heroInrect minusBloos %d", attackMinusNum);
 
-	if (heroInRect != NULL && isAttacking == true) {
+	if (heroInRect != nullptr && isAttacking == true) {
 		heroInRect->minusBlood(attackMinusNum);
 		log("heroInrect minusBloos %d", attackMinusNum);
 	}

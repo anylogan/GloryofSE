@@ -22,13 +22,14 @@ bool GameSceneOnline::init()
 	//创建商城及装备查看界面
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	/*
 	MenuItemImage *storeItem = MenuItemImage::create("shopbutton.png", "shopbutton.png", CC_CALLBACK_1(GameSceneOnline::storeItemCallback, this));
 	storeItem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.11);
 	MenuItemImage *equipmentItem = MenuItemImage::create("equipmentbutton.png", "equipmentbutton.png", CC_CALLBACK_1(GameSceneOnline::equipmentItemCallback, this));
 	equipmentItem->setPosition(origin.x + visibleSize.width *0.97, origin.y + visibleSize.height * 0.03);
+	*/
 	MenuItemImage *moneyitem = MenuItemImage::create("money.png", "money.png");
 	moneyitem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.23);
-
 	MenuItemImage *expitem = MenuItemImage::create("exp.png", "exp.png");
 	expitem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.35);
 	MenuItemImage *surrenderItem = MenuItemImage::create("surrender.png", "surrender.png", CC_CALLBACK_1(GameSceneOnline::surrenderItemCallback, this));
@@ -44,8 +45,9 @@ bool GameSceneOnline::init()
 	_chatLayer = ChatLayer::createScene();
 	addChild(_chatLayer);
 	chatOpen = true;
-	
-	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, surrenderItem,chatItem, NULL);
+	//	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, surrenderItem,chatItem, NULL);
+
+	Menu *mu = Menu::create(moneyitem, expitem, surrenderItem,chatItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	addChild(mu);
 

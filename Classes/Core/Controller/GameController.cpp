@@ -334,11 +334,11 @@ void GameController::onEnter()  //  主要用来注册键盘和鼠标事件监听器
 		if (keyCode == EventKeyboard::KeyCode::KEY_A) {
 			//换成clientPlayer
 			if (clientPlayer->fullHP >= 50) {
-				clientPlayer->bonusAttack += 10;
+				clientPlayer->bonusAttack += 80;
 				clientPlayerAttack();
 				clientPlayer->skillAnimation();
 				clientPlayer->minusHP(50);
-				clientPlayer->bonusAttack -= 10;
+				clientPlayer->bonusAttack -= 80;
 			}
 			
 		}
@@ -516,7 +516,7 @@ void GameController::spriteRectCheck(float dt) {
 		GameResult[3] = clientPlayer->getMoney();
 		playTime = 0;
 		auto sc = GameResultFailure::createScene();
-		Director::getInstance()->pushScene(sc);
+		Director::getInstance()->replaceScene(sc);
 	}
 	else {
 		if (TowerVector.at(1)->bloodNum <= 0) {
@@ -527,7 +527,7 @@ void GameController::spriteRectCheck(float dt) {
 			GameResult[3] = clientPlayer->getMoney();
 			playTime = 0;
 			auto sc = GameResultSuccess::createScene();
-			Director::getInstance()->pushScene(sc);
+			Director::getInstance()->replaceScene(sc);
 		}
 	}
 	
