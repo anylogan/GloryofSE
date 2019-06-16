@@ -63,7 +63,6 @@ bool  SelectHeroScene::init()
 
 void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
-	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{
@@ -123,7 +122,6 @@ void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 }
 void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 {
-	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{
@@ -183,7 +181,6 @@ void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 }
 void  SelectHeroScene::SunCallBack(Ref *pSender)
 {
-	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{

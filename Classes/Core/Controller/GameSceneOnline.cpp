@@ -125,4 +125,5 @@ GameSceneOnline::~GameSceneOnline()
 {
 	Client::getInstance()->sendExit();
 	Client::getInstance()->clear();
+	Client::getInstance()->destory();
 }
