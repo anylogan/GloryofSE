@@ -23,6 +23,8 @@ public:
 	void HuamulanCallBack(Ref *pSender);
 	void SunCallBack(Ref *pSender);
 
+	Sprite* waitingScene;
+
     // implement the "static create()" method manually
 
 	CREATE_FUNC(SelectHeroScene);

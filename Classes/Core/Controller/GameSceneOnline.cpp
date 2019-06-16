@@ -34,17 +34,21 @@ bool GameSceneOnline::init()
 	MenuItemImage *surrenderItem = MenuItemImage::create("surrender.png", "surrender.png", CC_CALLBACK_1(GameSceneOnline::surrenderItemCallback, this));
 	surrenderItem->setPosition(origin.x + visibleSize.width * 0.98, origin.y + visibleSize.height * 0.45);
 
-	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, surrenderItem, NULL);
-	mu->setPosition(Vec2::ZERO);
-	addChild(mu);
 	displayskillicon();
 	this->schedule(schedule_selector(GameSceneOnline::displaymoney), 1.0f);
 	this->schedule(schedule_selector(GameSceneOnline::displayexp), 1.0f);
 
 	//´´½¨ÁÄÌì¿ò
-	auto chatScene = ChatLayer::createScene();
-	addChild(chatScene);
+	MenuItemImage *chatItem = MenuItemImage::create("chatbutton.png", "chatbutton.png", CC_CALLBACK_1(GameSceneOnline::chatItemCallback, this));
+	chatItem->setPosition(origin.x + visibleSize.width * 0.97, origin.y + visibleSize.height * 0.5);
+	_chatLayer = ChatLayer::createScene();
+	addChild(_chatLayer);
+	chatOpen = true;
 	
+	Menu *mu = Menu::create(storeItem, equipmentItem, moneyitem, expitem, surrenderItem,chatItem, NULL);
+	mu->setPosition(Vec2::ZERO);
+	addChild(mu);
+
 	return true;
 }
 
@@ -72,6 +76,21 @@ void GameSceneOnline::displaymoney(float dt)
 
 	this->addChild(text1, 6, 13);
 }
+
+void GameSceneOnline::chatItemCallback(Ref *pSender)
+{
+	if (chatOpen == true)
+	{
+		_chatLayer->setVisible(false);
+		chatOpen = false;
+	}
+	else
+	{
+		_chatLayer->setVisible(true);
+		chatOpen = true;
+	}
+}
+
 void GameSceneOnline::displayexp(float dt)
 {
 	this->removeChildByTag(35, true);

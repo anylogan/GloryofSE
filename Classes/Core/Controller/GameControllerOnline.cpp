@@ -548,7 +548,7 @@ void GameControllerOnline::spriteRectCheck(float dt) {
 		GameResult[3] = clientPlayer->getMoney();
 		playTime = 0;
 		auto sc = GameResultFailure::createScene();
-		Director::getInstance()->pushScene(sc);
+		Director::getInstance()->replaceScene(sc);
 	}
 	else {
 		if (clientPlayer->enemyTower->bloodNum <= 0) {
@@ -559,7 +559,7 @@ void GameControllerOnline::spriteRectCheck(float dt) {
 			GameResult[3] = clientPlayer->getMoney();
 			playTime = 0;
 			auto sc = GameResultSuccess::createScene();
-			Director::getInstance()->pushScene(sc);
+			Director::getInstance()->replaceScene(sc);
 		}
 	}
 	

@@ -23,6 +23,9 @@ public:
 	virtual bool init();
 	void storeItemCallback(Ref *pSender);// 创建商城
 	void equipmentItemCallback(Ref *pSender);//创建装备查看
+	void chatItemCallback(Ref *pSender);  //聊天框的打开关闭
+	bool chatOpen;
+	ChatLayer* _chatLayer;
 	void  displaymoney(float dt);   //显示金币
 	void  displayexp(float dt);     //显示经验
 	void  displayskillicon();

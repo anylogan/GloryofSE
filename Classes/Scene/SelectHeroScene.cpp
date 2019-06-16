@@ -51,6 +51,11 @@ bool  SelectHeroScene::init()
 		SunWuKongbutton->setEnabled(false);
 
 	addChild(rootNode);
+	
+	waitingScene = Sprite::create("waitinglayer.jpg");
+	waitingScene->setPosition(Vec2(800,450));
+	waitingScene->setVisible(false);
+	addChild(waitingScene, 200);
 	return true;
 
 }
@@ -58,6 +63,7 @@ bool  SelectHeroScene::init()
 
 void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 {
+	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{
@@ -117,6 +123,7 @@ void  SelectHeroScene::ChangeCallBack(Ref *pSender)
 }
 void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 {
+	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{
@@ -176,6 +183,7 @@ void  SelectHeroScene::HuamulanCallBack(Ref *pSender)
 }
 void  SelectHeroScene::SunCallBack(Ref *pSender)
 {
+	waitingScene->setVisible(true);
 	int mode_tag = this->getTag();
 	if (mode_tag == 020)
 	{
